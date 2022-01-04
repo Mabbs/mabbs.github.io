@@ -1,0 +1,13 @@
+theme: jekyll-theme-minimal
+title: Mayx的博客
+logo: https://avatars0.githubusercontent.com/u/17966333
+author: mayx
+timezone: Asia/Shanghai
+excerpt_separator: <!--more-->
+paginate: 7
+plugins:
+  - jekyll-sitemap
+  - jekyll-feed
+feed:
+  path: atom.xml
+google_analytics: UA-137710294-1

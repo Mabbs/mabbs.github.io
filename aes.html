@@ -1,0 +1,91 @@
+<html>
+ <head> 
+  <title>AES加解密</title>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8"> 
+  <script src="js/aes.js"></script>
+  <script>
+ function getByteLen(val) {
+    var len = 0;
+    for (var i = 0; i < val.length; i++) {
+        if (val[i].match(/[^\x00-\xff]/ig) != null) len += 3;
+        else len += 1;
+    }
+    return len;
+}
+
+function onbtnEncrypto() {
+    var plaintText = document.getElementById("input").value;
+    var keyword = document.getElementById("inputkey").value;
+    if (plaintText.replace(/(^\s*)|(\s*$)/g, "") == '') {
+        alert("输入要加密的内容！");
+        return;
+    }
+    if (keyword.replace(/(^\s*)|(\s*$)/g, "") == '') {
+        alert("输入要加密的key！");
+        return;
+    }
+    while (getByteLen(keyword) % 8 != 0) {
+        keyword = keyword + "\0";
+    }
+
+    var key = CryptoJS.enc.Utf8.parse(keyword);
+    var encryptedData = CryptoJS.AES.encrypt(plaintText, key, {
+        mode: CryptoJS.mode.ECB,
+        padding: CryptoJS.pad.Pkcs7
+    });
+    encryptedData = encryptedData.ciphertext.toString();
+    document.getElementById("output").value = encryptedData;
+}
+
+function onbtnDecrypto() {
+    var encryptedData = document.getElementById("input").value;
+    var keyword = document.getElementById("inputkey").value;
+    if (encryptedData.replace(/(^\s*)|(\s*$)/g, "") == '') {
+        alert("输入要加密的内容！");
+        return;
+    }
+    if (keyword.replace(/(^\s*)|(\s*$)/g, "") == '') {
+        alert("输入要加密的key！");
+        return;
+    }
+    while (getByteLen(keyword) % 8 != 0) {
+        keyword = keyword + "\0";
+    }
+
+    var key = CryptoJS.enc.Utf8.parse(keyword);
+    var encryptedHexStr = CryptoJS.enc.Hex.parse(encryptedData);
+    var encryptedBase64Str = CryptoJS.enc.Base64.stringify(encryptedHexStr);
+
+    var decryptedData = CryptoJS.AES.decrypt(encryptedBase64Str, key, {
+        mode: CryptoJS.mode.ECB,
+        padding: CryptoJS.pad.Pkcs7
+    });
+
+    if (decryptedData.sigBytes < 0) {
+        document.getElementById("output").value = "解密失败！密文或者key错误!";
+        return;
+    }
+    try {
+        decryptedData.toString(CryptoJS.enc.Utf8)
+    } catch(e) {
+        document.getElementById("output").value = "解密失败！密文或者key错误!";
+        return;
+    }
+    var decryptedStr = decryptedData.toString(CryptoJS.enc.Utf8);
+    document.getElementById("output").value = decryptedStr;
+}
+</script>
+ </head> 
+ <body> 
+  <div> 
+   <br /> 
+   <textarea id="input" name="input" style="width: 80%" rows="8">这里是要加密的内容!</textarea> 
+   <br />key: 
+   <input id="inputkey" type="text" />  
+   <br /> 
+   <p> <button id="en" class="btn" onclick="onbtnEncrypto()" style="width:100px">加密</button> <button id="de" class="btn" onclick="onbtnDecrypto()" style="width:100px">解密</button> </p> 
+   <textarea id="output" name="output" style="width: 80%" rows="10"></textarea> 
+  </div>  
+
+ </body>
+</html>

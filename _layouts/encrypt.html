@@ -1,0 +1,55 @@
+---
+layout: post
+---
+
+<script src="/js/aes.js"></script>
+<script>
+function getByteLen(val) {
+    var len = 0;
+    for (var i = 0; i < val.length; i++) {
+        if (val[i].match(/[^\x00-\xff]/ig) != null) len += 3;
+        else len += 1;
+    }
+    return len;
+}
+
+function onbtnDecrypto() {
+    var encryptedData = "{{ content  | strip_html | strip_newlines }}";
+    var keyword = document.getElementById("inputkey").value;
+
+    if (keyword.replace(/(^\s*)|(\s*$)/g, "") == '') {
+        alert("请输入密码！");
+        return;
+    }
+    while (getByteLen(keyword) % 8 != 0) {
+        keyword = keyword + "\0";
+    }
+
+    var key = CryptoJS.enc.Utf8.parse(keyword);
+    var encryptedHexStr = CryptoJS.enc.Hex.parse(encryptedData);
+    var encryptedBase64Str = CryptoJS.enc.Base64.stringify(encryptedHexStr);
+
+    var decryptedData = CryptoJS.AES.decrypt(encryptedBase64Str, key, {
+        mode: CryptoJS.mode.ECB,
+        padding: CryptoJS.pad.Pkcs7
+    });
+
+    if (decryptedData.sigBytes < 0) {
+        document.getElementById("output").innerHTML = "解密失败！密文或者key错误!";
+        return;
+    }
+    try {
+        decryptedData.toString(CryptoJS.enc.Utf8)
+    } catch(e) {
+        document.getElementById("output").innerHTML = "解密失败！密文或者key错误!";
+        return;
+    }
+    var decryptedStr = decryptedData.toString(CryptoJS.enc.Utf8);
+    document.getElementById("output").innerHTML = decryptedStr;
+    document.getElementById("pwinput").style.display = "none";
+}
+</script>
+<div id="pwinput">{{ page.tips | default: "请输入密码:" }}<br />
+   <input id="inputkey" type="password" /> <button onclick="onbtnDecrypto()">解密</button>
+</div>
+<div id="output"></div>  <br />

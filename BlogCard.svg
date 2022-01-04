@@ -1,0 +1,139 @@
+---
+---
+
+      <svg
+        width="495"
+        height="195"
+        viewBox="0 0 495 195"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <style>
+          .header {
+            font: 600 18px 'Segoe UI', Ubuntu, Sans-Serif;
+            fill: #fff;
+            animation: fadeInAnimation 0.8s ease-in-out forwards;
+          }
+          
+    .stat {
+      font: 600 14px 'Segoe UI', Ubuntu, "Helvetica Neue", Sans-Serif; fill: #9f9f9f;
+    }
+    .stagger {
+      opacity: 0;
+      animation: fadeInAnimation 0.3s ease-in-out forwards;
+    }
+    .rank-text {
+      font: 800 100px 'Segoe UI', Ubuntu, Sans-Serif; fill: #66ccff; 
+      animation: scaleInAnimation 0.3s ease-in-out forwards;
+    }
+    
+    .bold { font-weight: 700 }
+    .icon {
+      fill: #79ff97;
+      display: block;
+    }
+          
+    /* Animations */
+    @keyframes scaleInAnimation {
+      from {
+        transform: translate(-5px, 5px) scale(0);
+      }
+      to {
+        transform: translate(-5px, 5px) scale(1);
+      }
+    }
+    @keyframes fadeInAnimation {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+  
+          
+        </style>
+
+        <rect
+          data-testid="card-bg"
+          x="0.5"
+          y="0.5"
+          rx="4.5"
+          height="99%"
+          stroke="#e4e2e2"
+          width="494"
+          fill="#151515"
+          stroke-opacity="1"
+        />
+
+        
+      <g
+        data-testid="card-title"
+        transform="translate(25, 35)"
+      >
+        <g transform="translate(0, 0)">
+      <text
+        x="0"
+        y="0"
+        class="header"
+        data-testid="header"
+      >Mayx's Blog Article</text>
+    </g>
+      </g>
+
+        <g
+          data-testid="main-card-body"
+          transform="translate(0, 55)"
+        >
+          
+    <g transform="translate(370, 47.5)">
+        <g class="rank-text">
+          <text
+            x="0"
+            y="0"
+            alignment-baseline="central"
+            dominant-baseline="central"
+            text-anchor="middle"
+          >
+            M
+          </text>
+        </g>
+      </g>
+
+    <svg x="0" y="0">
+      <g transform="translate(0, 0)">
+    <g class="stagger" style="animation-delay: 450ms" transform="translate(25, 0)">
+      <line x1="12" y1="6.25" x2="19" y2="6.25"
+style="stroke:rgb(255,255,255);stroke-width:2"/>
+      <text class="stat bold" x="25" y="12.5">{{ site.posts[0].title }}</text>
+    </g>
+  </g><g transform="translate(0, 25)">
+    <g class="stagger" style="animation-delay: 600ms" transform="translate(25, 0)">
+      <line x1="12" y1="6.25" x2="19" y2="6.25"
+style="stroke:rgb(255,255,255);stroke-width:2"/>
+      <text class="stat bold" x="25" y="12.5">{{ site.posts[1].title }}</text>
+    </g>
+  </g><g transform="translate(0, 50)">
+    <g class="stagger" style="animation-delay: 750ms" transform="translate(25, 0)">
+      <line x1="12" y1="6.25" x2="19" y2="6.25"
+style="stroke:rgb(255,255,255);stroke-width:2"/>
+      <text class="stat bold" x="25" y="12.5">{{ site.posts[2].title }}</text>
+    </g>
+  </g><g transform="translate(0, 75)">
+    <g class="stagger" style="animation-delay: 900ms" transform="translate(25, 0)">
+      <line x1="12" y1="6.25" x2="19" y2="6.25"
+style="stroke:rgb(255,255,255);stroke-width:2"/>
+      <text class="stat bold" x="25" y="12.5">{{ site.posts[3].title }}</text>
+    </g>
+  </g><g transform="translate(0, 100)">
+    <g class="stagger" style="animation-delay: 1050ms" transform="translate(25, 0)">
+      <line x1="12" y1="6.25" x2="19" y2="6.25"
+style="stroke:rgb(255,255,255);stroke-width:2"/>
+      <text class="stat bold" x="25" y="12.5">{{ site.posts[4].title }}</text>
+    </g>
+  </g>
+    </svg> 
+  
+        </g>
+      </svg>
+    

@@ -1,0 +1,14 @@
+---
+---
+[
+  {% for post in site.posts %}{% unless post.layout == "encrypt" %}
+    {
+      "title"    : "{{ post.title | escape }}",
+      "category" : "{{ post.category }}",
+      "tags"     : "{{ post.tags | join: ', ' }}",
+      "url"      : "{{ site.baseurl }}{{ post.url }}",
+      "date"     : "{{ post.date | date: "%Y/%m/%d" }}",
+      "content": {{ post.content | strip_html | strip_newlines | jsonify }}
+    }{% unless forloop.last %},{% endunless %}{% endunless %}
+  {% endfor %}
+]

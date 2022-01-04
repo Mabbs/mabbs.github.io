@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+{% seo %}
+{% feed_meta %}
+    <link rel="stylesheet" href="{{ "/assets/css/style.css?v=" | append: site.github.build_revision | relative_url }}">
+    <!--[if !IE]> -->
+    <link rel="stylesheet" href="/Live2dHistoire/live2d/css/live2d.css" />
+    <!-- <![endif]-->
+    <script src="//cdn.jsdelivr.net/npm/jquery@1.9.1/jquery.min.js"></script>
+    <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <![endif]-->
+    
+{% if site.google_analytics %}    
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id={{ site.google_analytics }}"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', '{{ site.google_analytics }}');
+  var lastUpdated = new Date("{{ site.time | date: "%FT%T%z" }}");
+  Date.prototype.format = function(fmt) { 
+     var o = { 
+        "M+" : this.getMonth()+1,                 //月份 
+        "d+" : this.getDate(),                    //日 
+        "h+" : this.getHours(),                   //小时 
+        "m+" : this.getMinutes(),                 //分 
+        "s+" : this.getSeconds(),                 //秒 
+        "q+" : Math.floor((this.getMonth()+3)/3), //季度 
+        "S"  : this.getMilliseconds()             //毫秒 
+    }; 
+    if(/(y+)/.test(fmt)) {
+            fmt=fmt.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length)); 
+    }
+     for(var k in o) {
+        if(new RegExp("("+ k +")").test(fmt)){
+             fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length)));
+         }
+     }
+    return fmt; 
+  }
+</script>
+{% endif %}
+<style>
+.backToTop {
+ display: none;
+ width: 18px;
+ line-height: 1.2;
+ padding: 5px 0;
+ background-color: #000;
+ color: #fff;
+ font-size: 12px;
+ text-align: center;
+ position: fixed;
+ _position: absolute;
+ right: 10px;
+ bottom: 100px;
+ _bottom: "auto";
+ cursor: pointer;
+ opacity: .6;
+ filter: Alpha(opacity=60);
+}
+</style>
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1><a href="{{ "/" | relative_url }}">{{ site.title | default: site.github.repository_name }}</a></h1>
+        
+        {% if site.logo %}
+          <img src="{{ site.logo | relative_url}}" alt="Logo" />
+        {% endif %}
+
+        <p>{{ site.description | default: site.github.project_tagline }}</p>
+        
+        <p><form action="/search.html"><input type="text" name="keyword" id="search-input-all" placeholder="Search blog posts.."> <input type="submit"></form></p>
+
+        {% if site.github.is_project_page %}
+        <p class="view"><a href="{{ site.github.repository_url }}">View the Project on GitHub <small>{{ site.github.repository_nwo }}</small></a></p>
+        {% endif %}
+
+        {% if site.github.is_user_page %}
+        <p class="view"><a href="{{ site.github.owner_url }}">View My GitHub Profile</a></p>
+        {% endif %}
+        
+        <a href="{{ "/Mabbs/" | relative_url }}">About Me</a>
+      </header>
+      <section>
+
+      {{ content }}
+
+      </section>
+<!--[if !IE]> -->
+<div id="landlord" style="left:5px;bottom:0px;">
+    <div class="message" style="opacity:0"></div>
+    <canvas id="live2d" width="500" height="560" class="live2d"></canvas>
+    <div class="live_talk_input_body">
+    	<div class="live_talk_input_name_body" style="display:none;">
+        	<input name="name" type="hidden" class="live_talk_name white_input" id="AIuserName" value="Mayx_Blog_Talk" />
+        </div>
+        <div class="live_talk_input_text_body">
+        	<input name="talk" type="text" class="live_talk_talk white_input" id="AIuserText" autocomplete="off" placeholder="要和我聊什么呀？"/>
+            <button type="button" class="live_talk_send_btn" id="talk_send">发送</button>
+        </div>
+    </div>
+    <input name="live_talk" id="live_talk" value="1" type="hidden" />
+    <div class="live_ico_box" style="display:none;">
+    	<div class="live_ico_item type_info" id="showInfoBtn"></div>
+    	<div class="live_ico_item type_talk" id="showTalkBtn"></div>
+        <div class="live_ico_item type_music" id="musicButton"></div>
+        <div class="live_ico_item type_youdu" id="youduButton"></div>
+        <div class="live_ico_item type_quit" id="hideButton"></div>
+        <input name="live_statu_val" id="live_statu_val" value="0" type="hidden" />
+        <audio src="" style="display:none;" id="live2d_bgm" data-bgm="0" preload="none"></audio>
+        <input id="duType" value="douqilai" type="hidden">
+    </div>
+</div>
+<div id="open_live2d">召唤伊斯特瓦尔</div>
+    <!-- <![endif]-->
+      <footer>
+        {% if site.github.is_project_page %}
+        <p>This project is maintained by <a href="{{ site.github.owner_url }}">{{ site.github.owner_name }}</a></p>
+        {% endif %}
+        <p><small>Made with ❤ by Mayx<br />Last updated at <script>document.write(lastUpdated.format("yyyy-MM-dd hh:mm:ss"));</script><br /> 总字数：{% assign count = 0 %}
+{% for post in site.posts %}
+    {% assign single_count = post.content | strip_html | strip_newlines | remove: " " | size %}
+    {% assign count = count | plus: single_count %}
+{% endfor %}
+{% if count > 10000 %}
+    {{ count | divided_by: 10000 }} 万 {{ count | modulo: 10000 }}
+{% else %}
+    {{ count }}
+          {% endif %} - 文章数：{% for post in site.posts %}
+              {% assign co = co | plus: 1 %}
+          {% endfor %}{{ co }} - <a href="{{ "/atom.xml" | relative_url }}" >Atom</a> - <a href="{{ "/README.html" | relative_url }}" >About</a></small></p>
+      </footer>
+    </div>
+    <script src="{{ "/assets/js/scale.fix.js" | relative_url }}"></script>
+
+<script src="/js/main.js"></script>
+<!--[if !IE]> -->
+<script src="/Live2dHistoire/live2d/js/live2d.js"></script>
+<script src="/Live2dHistoire/live2d/js/message.js"></script>
+
+<!-- <![endif]-->
+  </body>
+</html>

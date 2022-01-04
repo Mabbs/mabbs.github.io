@@ -1,0 +1,73 @@
+---
+layout: default
+title: 首页 - 我的文章
+---
+
+<h1 style="display:inline"> 首页 - 我的文章 </h1><small><a href="/archives.html">Archives</a></small><br /><br />
+
+<hr />
+
+<!-- 遍历分页后的文章 -->
+<table>
+{% for post in paginator.posts %}
+  <tr><td onclick="location='{{ post.url }}'">
+    <h2><a class="post-link" href="{{ post.url }}">{{ post.title }}{% if post.layout == "encrypt" %} [加密] {% endif %}</a></h2>
+  <p class="author">
+    <span class="date">{{ post.date | date: "%-d %B %Y" }}</span>
+    | Hits: <span id="{{ post.url }}" class="visitors-index" >Loading...</span>
+  </p>
+  <div class="content">
+    {{ post.excerpt | strip_html | strip_newlines }} 
+  </div>
+  </td></tr>
+{% endfor %}
+</table>
+{% if paginator.total_pages > 1 %}
+<div class="pagination">
+  {% if paginator.previous_page %}
+    {% if paginator.previous_page == 1 %}
+      <a href="{{ '/index.html' | prepend: site.baseurl | replace: '//', '/' }}">&laquo; Prev</a>
+    {% else %}
+      <a href="{{ paginator.previous_page_path | prepend: site.baseurl | replace: '//', '/' }}/">&laquo; Prev</a>
+    {% endif %}
+  {% else %}
+    <span>&laquo; Prev</span>
+  {% endif %}
+
+  {% for page in (1..paginator.total_pages) %}
+    {% if page == paginator.page %}
+      <em>{{ page }}</em>
+    {% elsif page == 1 %}
+      <a href="{{ '/index.html' | prepend: site.baseurl | replace: '//', '/' }}">{{ page }}</a>
+    {% else %}
+      <a href="{{ site.paginate_path | prepend: site.baseurl | replace: '//', '/' | replace: ':num', page }}/">{{ page }}</a>
+    {% endif %}
+  {% endfor %}
+
+  {% if paginator.next_page %}
+    <a href="{{ paginator.next_page_path | prepend: site.baseurl | replace: '//', '/' }}/">Next &raquo;</a>
+  {% else %}
+    <span>Next &raquo;</span>
+  {% endif %}
+</div>
+{% endif %}
+<hr />
+<input name="live2dBGM" value="https://music.163.com/song/media/outer/url?id=523658881.mp3" type="hidden">
+<p>
+<h2>其他页面</h2>
+ 
+ <a href="/pixiv-index/">Pixiv图片索引API</a><br>
+
+ <a href="/card.html">抽卡</a> - 由<a href="https://github.com/eeg1412/">广树</a>大佬提供卡牌<br>
+
+ <a href="/message.html">留言板</a><br>
+
+ <a href="/links.html">Links</a><br>
+
+ <a href="/proxylist.html">代理列表</a><br>
+
+ <a href="/MayxDaily">Mayx日报</a><br>
+
+<br>
+</p>
+<small><a href="https://icp.gov.moe/?keyword=20218888" target="_blank">萌ICP备 20218888号</a></small>
