@@ -20,7 +20,6 @@ Powered by [Jekyll](https://github.com/jekyll/jekyll)
 - Issue
 - Pages
 - Git
-- [Git.io](https://git.io/)
  
 [网易云音乐](https://music.163.com/)   
 [一言](https://hitokoto.cn/)   
