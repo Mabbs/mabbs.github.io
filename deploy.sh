@@ -1,11 +1,11 @@
 #!/bin/bash
-wget https://github.com/Mabbs/Mabbs/raw/main/README.md
+wget -O Mabbs.md https://github.com/Mabbs/Mabbs/raw/main/README.md
 mkdir Mabbs
 echo "---
 layout: default
 ---" > Mabbs/index.md
-cat README.md >> Mabbs/index.md
-rm -rf README.md
+cat Mabbs.md >> Mabbs/index.md
+rm -rf Mabbs.md
 rm -rf .git/
 bundle exec jekyll build -d public
 rm -rf .jekyll-cache/
