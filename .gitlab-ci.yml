@@ -30,9 +30,11 @@ test:
 pages:
   stage: deploy
   script:
+    - git clone https://github.com/Mabbs/Mabbs
     - bundle exec jekyll build -d public
-    - tar czvf MayxBlog.tgz .
-    - mv MayxBlog.tgz public/
+    - rm -rf .jekyll-cache/
+    - tar czvf ../MayxBlog.tgz .
+    - mv ../MayxBlog.tgz public/
   artifacts:
     paths:
       - public
