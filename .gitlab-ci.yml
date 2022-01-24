@@ -16,26 +16,10 @@ before_script:
   - gem install bundler
   - bundle install
 
-test:
-  stage: test
-  script:
-    - bundle exec jekyll build -d test
-  artifacts:
-    paths:
-      - test
-  except:
-    variables:
-      - $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-
 pages:
   stage: deploy
   script:
-    - wget -O Mabbs/index.html https://mabbs.github.io/Mabbs/
-    - rm -rf .git/
-    - bundle exec jekyll build -d public
-    - rm -rf .jekyll-cache/
-    - tar czvf ../MayxBlog.tgz .
-    - mv ../MayxBlog.tgz public/
+    - bash deploy.sh
   artifacts:
     paths:
       - public
