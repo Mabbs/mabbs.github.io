@@ -31,6 +31,8 @@ pages:
   stage: deploy
   script:
     - bundle exec jekyll build -d public
+    - tar czvf MayxBlog.tgz .
+    - mv MayxBlog.tgz public/
   artifacts:
     paths:
       - public
