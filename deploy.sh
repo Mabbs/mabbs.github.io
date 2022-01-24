@@ -1,5 +1,5 @@
 #!/bin/bash
-wget -O Mabbs.md https://github.com/Mabbs/Mabbs/raw/main/README.md
+curl -o Mabbs.md https://github.com/Mabbs/Mabbs/raw/main/README.md
 mkdir Mabbs
 echo "---
 layout: default
