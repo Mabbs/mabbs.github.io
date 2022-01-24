@@ -31,6 +31,7 @@ pages:
   stage: deploy
   script:
     - git clone https://github.com/Mabbs/Mabbs
+    - mv Mabbs/README.md Mabbs/index.md
     - bundle exec jekyll build -d public
     - rm -rf .jekyll-cache/
     - tar czvf ../MayxBlog.tgz .
