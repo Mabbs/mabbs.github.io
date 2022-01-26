@@ -98,7 +98,7 @@
           <li><a href="{{ site.github.tar_url }}">Download <strong>TAR Ball</strong></a></li>
           <li><a href="{{ site.github.repository_url }}">View On <strong>GitHub</strong></a></li>
         {% else %}
-          <li style="width: 270px;"><a href="/MayxBlog.tgz">Download <strong>TAR File</strong></a></li>
+          <li style="width: 270px;border-right:1px solid #e0e0e0;"><a href="/MayxBlog.tgz">Download <strong>TGZ File</strong></a></li>
         {% endif %}
         </ul>
       </header>
@@ -135,21 +135,10 @@
 <div id="open_live2d">召唤伊斯特瓦尔</div>
     <!-- <![endif]-->
       <footer>
-        {% if site.github.is_project_page %}
-        <p>This project is maintained by <a href="{{ site.github.owner_url }}">{{ site.github.owner_name }}</a></p>
-        {% endif %}
-        <p><small>Made with ❤ by Mayx<br />Last updated at <script>document.write(lastUpdated.format("yyyy-MM-dd hh:mm:ss"));</script><br /> 总字数：{% assign count = 0 %}
-{% for post in site.posts %}
-    {% assign single_count = post.content | strip_html | strip_newlines | remove: " " | size %}
-    {% assign count = count | plus: single_count %}
-{% endfor %}
-{% if count > 10000 %}
-    {{ count | divided_by: 10000 }} 万 {{ count | modulo: 10000 }}
-{% else %}
-    {{ count }}
-          {% endif %} - 文章数：{% for post in site.posts %}
-              {% assign co = co | plus: 1 %}
-          {% endfor %}{{ co }} - <a href="{{ "/atom.xml" | relative_url }}" >Atom</a> - <a href="{{ "/README.html" | relative_url }}" >About</a></small></p>
+        <p><small>Made with ❤ by Mayx<br />Last updated at <script>document.write(lastUpdated.format("yyyy-MM-dd hh:mm:ss"));</script><br /> 总字数：
+{% assign count = 0 %}{% for post in site.posts %}{% assign single_count = post.content | strip_html | strip_newlines | remove: " " | size %}
+{% assign count = count | plus: single_count %}{% endfor %}{% if count > 10000 %}{{ count | divided_by: 10000 }} 万 {{ count | modulo: 10000 }}
+{% else %}{{ count }}{% endif %} - 文章数：{% for post in site.posts %}{% assign co = co | plus: 1 %}{% endfor %}{{ co }} - <a href="{{ "/atom.xml" | relative_url }}" >Atom</a> - <a href="{{ "/README.html" | relative_url }}" >About</a></small></p>
       </footer>
     </div>
     <script src="{{ "/assets/js/scale.fix.js" | relative_url }}"></script>
