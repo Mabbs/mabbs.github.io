@@ -34,7 +34,7 @@ title: 首页 - 我的文章
     <span>&laquo; Prev</span>
   {% endif %}
 
-<select onchange="window.location = this.value == 1 ? '{{ '/index.html' | prepend: site.baseurl | replace: '//', '/' }}' : '{{ '/page' | prepend: site.baseurl | replace: '//', '/' }}" + this.value + '/'">
+<select onchange="window.location = this.value == 1 ? '{{ '/index.html' | prepend: site.baseurl | replace: '//', '/' }}' : '{{ '/page' | prepend: site.baseurl | replace: '//', '/' }}' + this.value + '/'">
   {% for page in (1..paginator.total_pages) %}
     {% if page == paginator.page %}
       <option value="{{ page }}" selected>{{ page }}</option>
