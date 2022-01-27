@@ -23,15 +23,6 @@ title: 首页 - 我的文章
 {% endfor %}
 </table>
 {% if paginator.total_pages > 1 %}
-<script>
-  function switchPage(sobj){
-    if (sobj.value == 1){
-      window.location = "{{ '/index.html' | prepend: site.baseurl | replace: '//', '/' }}";
-    } else {
-      window.location = "{{ '/page' | prepend: site.baseurl | replace: '//', '/' }}" + sobj.value + "/";
-    }
-  }
-</script>
 <div class="pagination">
   {% if paginator.previous_page %}
     {% if paginator.previous_page == 1 %}
@@ -43,7 +34,7 @@ title: 首页 - 我的文章
     <span>&laquo; Prev</span>
   {% endif %}
 
-<select onchange="switchPage(this)">
+<select onchange="window.location = this.value == 1 ? '{{ '/index.html' | prepend: site.baseurl | replace: '//', '/' }}' : '{{ '/page' | prepend: site.baseurl | replace: '//', '/' }}" + this.value + '/'">
   {% for page in (1..paginator.total_pages) %}
     {% if page == paginator.page %}
       <option value="{{ page }}" selected>{{ page }}</option>
