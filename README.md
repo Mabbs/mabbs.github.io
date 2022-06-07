@@ -8,7 +8,7 @@ Powered by [Jekyll](https://github.com/jekyll/jekyll)
 
 ## 使用的开源项目
 [Jekyll](https://github.com/jekyll/jekyll)   
-[Zepto](https://github.com/madrobby/zepto)   
+[jQuery](https://github.com/jquery/jquery)   
 [gitalk](https://github.com/gitalk/gitalk)   
 [minimal](https://github.com/pages-themes/minimal)   
 [jekyll-toc](https://github.com/allejo/jekyll-toc)   
