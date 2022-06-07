@@ -8,7 +8,7 @@ Powered by [Jekyll](https://github.com/jekyll/jekyll)
 
 ## 使用的开源项目
 [Jekyll](https://github.com/jekyll/jekyll)   
-[jQuery](https://github.com/jquery/jquery)   
+[Zepto](https://github.com/madrobby/zepto)   
 [gitalk](https://github.com/gitalk/gitalk)   
 [minimal](https://github.com/pages-themes/minimal)   
 [jekyll-toc](https://github.com/allejo/jekyll-toc)   
@@ -23,7 +23,6 @@ Powered by [Jekyll](https://github.com/jekyll/jekyll)
  
 [网易云音乐](https://music.163.com/)   
 [一言](https://hitokoto.cn/)   
-[jsDelivr](https://www.jsdelivr.com/)   
 [CDNJS](https://cdnjs.com/)   
 [unpkg](https://unpkg.com/)   
 
