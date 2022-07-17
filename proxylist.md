@@ -18,4 +18,5 @@ title: 代理列表
 - <https://mayx.gitlab.io/>   
 - <https://mayx.pages.dev/>   
 - <https://mayx.eu.org/>   
-- <https://mayx.vercel.app/>
+- <https://mayx.vercel.app/>   
+- <https://mayx.4everland.app/>（不是实时的）
