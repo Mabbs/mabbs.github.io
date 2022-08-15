@@ -14,7 +14,7 @@ tags: [Cloudflare, CDN, 安全]
   我们现在已经知道了Cloudflare除了本身CDN的业务外还加了很多花里胡哨的功能，比如Workers，WARP之类的，这些功能有一个特点就是能利用Cloudflare自己的IP来任意发起请求，那防火墙本来就是通过检测访问的IP是不是来自Cloudflare这种方式来判断，那如果能使用这些功能来向我的源站发起请求不就可以绕过WAF了嘛。   
 
 # 解决方法
-  以前我的想法是如果Cloudflare能发送一个只有我和Cloudflarez知道的请求头那不就可以了嘛，比如Token啥的，但是我没在Cloudflare上发现这个功能。不过今天又没事看了看Cloudflare的功能，发现居然有个叫做“经过身份验证的源服务器拉取”功能，看了看[功能解释](https://developers.cloudflare.com/ssl/origin-configuration/__authenticated-origin-pull/explanation/)，原来这是通过双向认证实现的，这配置起来也非常的简单，所以就按照[配置文档](https://developers.cloudflare.com/ssl/origin-configuration/authenticated-origin-pull/set-up)的说明设置了。   
+  以前我的想法是如果Cloudflare能发送一个只有我和Cloudflare知道的请求头那不就可以了嘛，比如Token啥的，但是我没在Cloudflare上发现这个功能。不过今天又没事看了看Cloudflare的功能，发现居然有个叫做“经过身份验证的源服务器拉取”功能，看了看[功能解释](https://developers.cloudflare.com/ssl/origin-configuration/authenticated-origin-pull/explanation/)，原来这是通过双向认证实现的，这配置起来也非常的简单，所以就按照[配置文档](https://developers.cloudflare.com/ssl/origin-configuration/authenticated-origin-pull/set-up)的说明设置了。   
   如果看不懂英文，我大概解释一下，首先下载[Cloudflare 客户端CA](https://developers.cloudflare.com/ssl/static/authenticated_origin_pull_ca.pem)，如果是Apache服务器就直接在配置文件里面写：   
 ```
 SSLVerifyClient require
