@@ -1,0 +1,35 @@
+<title>Iwara Downloader</title>
+<h1>Iwara Downloader</h1>
+URL: <input type="text" id="url" /> <button onclick="resolve()">Resolve</button>
+<table id="result-table" border="1" style="display:none">
+<tr><th>Resolution</th><th>URI</th><th>IP</th><th>Host</th></tr>
+<tbody id="result"></tbody>
+</table>
+<script src="/js/jquery.min.js"></script>
+<script>
+function resolve(){
+    $("#result-table").css('display', "none");
+    $("#result").empty();
+    $.get("https://iwara.mayx.eu.org/api/video/" + $("#url")[0].value.split("/").pop(), function(data){
+        if(!data.length){
+            alert("Resolve Failed");
+            return;
+        }
+        $("#result-table").css('display', "table");
+        var hosts = new Set();
+        console.log(data);
+        data.forEach(function(downuri){
+            var host = downuri["uri"].split("/")[2];
+            hosts.add(host);
+            $("#result").append("<tr><td>" + downuri["resolution"] + '</td><td><a href="' + downuri["uri"] + '">Download</a></td><td class="' + host.split(".")[0] + '">Loading...</td><td>' + host + '</td></tr>');
+        });
+        hosts.forEach(function(host){
+            $.get("https://dns.mayx.eu.org/resolve?type=A&name=" + host, function(result){
+                $("." + host.split(".")[0]).each(function(i, element){
+                    element.innerHTML = result["Answer"][0]["data"];
+                });
+            });
+        });
+    });
+}
+</script>
