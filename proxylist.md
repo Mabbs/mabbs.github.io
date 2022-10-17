@@ -32,3 +32,4 @@ title: 代理列表
 - <https://mayx.home.blog/>   
 - <https://unmayx.medium.com/>   
 - <https://mayx.cnblogs.com/>   
+- <https://mayx.xlog.app/>   
