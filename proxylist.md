@@ -22,7 +22,8 @@ title: 代理列表
 - <https://mayx.pages.dev/>   
 - <https://mayx.eu.org/>   
 - <https://mayx.vercel.app/>   
-- <https://mayx.4everland.app/>
+- <https://mayx.4everland.app/>   
+- <https://xu4qy-yiaaa-aaaag-aa2iq-cai.raw.ic0.app/>   
 
 # 其他平台博客（备用）
 - <https://unmayx.blogspot.com/>   
