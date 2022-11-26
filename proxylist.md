@@ -22,6 +22,7 @@ title: 代理列表
 - <https://mayx.pages.dev/>   
 - <https://mayx.eu.org/>   
 - <https://mayx.vercel.app/>   
+- <https://mayx.netlify.app/>   
 - <https://mayx.4everland.app/>   
 - <https://xu4qy-yiaaa-aaaag-aa2iq-cai.raw.ic0.app/>   
 
