@@ -10,6 +10,7 @@ title: 代理列表
 （根据可能的可用性排序）   
 - <https://blog.mayx.workers.dev/>   
 - <https://mayx.deno.dev/>   
+- <https://mayx.cyclic.app/>   
 - <https://mayx.glitch.me/>   
 - <https://mayx.mabbs.repl.co/>   
 - <https://blog.mayx.cf/>   
