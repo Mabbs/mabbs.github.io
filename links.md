@@ -17,6 +17,7 @@ tags: [links]
 | [云游君](https://www.yunyoujun.cn/) | 希望能成为一个有趣的人。 |
 | [Kingfish404](https://blog.kingfish404.cn/) | Stay curious,stay naive. WUT. Jin Yu's Blog |
 | [FKUN](https://blog.fkun.tech/) | *No description* |
+| [Sinofine](https://sinofine.me/) | *No description* |
 
 
 ## Links申请
