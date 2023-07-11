@@ -12,11 +12,9 @@ title: 代理列表
 - <https://mayx.deno.dev/>   
 - <https://mayx.cyclic.app/>   
 - <https://mayx.glitch.me/>   
-- <https://mayx.mabbs.repl.co/>   
 - <https://blog.mayx.cf/>   
 - <https://blog.mayx.tk/>   
 - <https://yuki.gear.host/>   
-- <https://mayx.tech/>   
 
 # 镜像列表
 由于[Github已经不再可信](/2022/01/04/banned.html)，所以现在提供以下镜像站：   
