@@ -282,20 +282,20 @@ Db::query("SELECT user.`name`, kit.`status`, user_kit.add_time FROM user_kit INN
   未来，如果有机会，我们可以让这个系统发挥更多的作用，比如在未来的其他疫情中起到重要的作用。我们可以引入更多的功能和技术，以满足未来需求的变化，从而更好地保障公共卫生和社会安全。   
 
 # 参考文献
-<span id="ref1">1. <a href="#al1">^</a></span> 靳英辉,蔡林,程真顺,等. 新型冠状病毒(2019-nCoV)感染的肺炎诊疗快速建议指南(标准版)[J]. 解放军医学杂志,2020,45(01):1-20.   
-<span id="ref2">2. <a href="#al2">^</a></span> 宗晓祥，胡云，马利亚.核酸检测云平台的设计与实现[J].集成电路应用, 2022, 39(10): 47-49.   
-<span id="ref3">3. <a href="#al3">^</a></span> Shaun Griffin. Covid-19: NHS England should manage test and trace system, says Independent SAGE[N]. BMJ,2020,371:m4330   
-<span id="ref4">4. <a href="#al4">^</a></span> Simon Judith,Rieder Gernot. Trusting the Corona-Warn-App? Contemplations on trust and trustworthiness at the intersection of technology, politics and public debate[J]. European Journal of Communication,2021,36(4).   
-<span id="ref5">5. <a href="#al5">^</a></span> 喻健,鲍琪. 基于ThinkPHP的人口信息系统设计[J]. 信息技术与信息化,2022,(02):9-12.   
-<span id="ref6">6. <a href="#al6">^</a></span> 蒋先梅. 基于PHP的学生信息管理系统的设计与实现[J]. 无线互联科技,2023,20(01):45-47.   
-<span id="ref7">7. <a href="#al7">^</a></span> 谷恪忱. 基于ThinkPHP框架的工控品采购平台设计与实现[J]. 软件工程,2020,23(03):53-59.   
-<span id="ref8">8. <a href="#al8">^</a></span> 赵莹,胡畅达,王国宇. 三种关系型空间数据库比较[J]. 科技创新与应用,2021,11(19):62-64.   
-<span id="ref9">9. <a href="#al9">^</a></span> 李琦,姚龙. 基于REST架构的湖泊环境监测物联网平台[J]. 计算机工程,2016,42(11):27-31+37.   
-<span id="ref10">10. <a href="#al10">^</a></span> 卢彦晓. 浅谈前后端分离技术在权限管理系统中的应用[J]. 电脑知识与技术,2021,17(34):68-69.   
-<span id="ref11">11. <a href="#al11">^</a></span> 张然,孙浩,张鑫. 基于JavaWeb的阿尔茨海默症早期康复系统设计[J]. 电子技术与软件工程,2022,(23):259-262.   
-<span id="ref12">12. <a href="#al12">^</a></span> 杨中书,刘臣宇. 基于E-R模型的关系数据库设计方法[J]. 价值工程,2014,33(30):242-243.   
-<span id="ref13">13. <a href="#al13">^</a></span> 黄金春,杜娟娇. 编写web服务器远程查看mysql数据[J]. 信息系统工程,2009,(07):26-29.   
-<span id="ref14">14. <a href="#al14">^</a></span> 陶亮亮. 基于微信公众号的掌上医院的设计与实现[J]. 电脑知识与技术,2022,18(09):46-48.   
-<span id="ref15">15. <a href="#al15">^</a></span> 陈莎莎. 基于JSP网页技术的高校PU系统功能可视化界面设计[J]. 自动化与仪器仪表,2023,(02):146-151.   
-<span id="ref16">16. <a href="#al16">^</a></span> 纪芩. 基于云平台的软件性能测试技术分析[J]. 电子技术与软件工程,2022,(23):74-77.   
-<span id="ref17">17. <a href="#al17">^</a></span> 刘肖. 基于JSP+MySQL的供电管理系统的设计与实现[D].电子科技大学,2021.   
+1. <span id="ref1"><a href="#al1">^</a></span> 靳英辉,蔡林,程真顺,等. 新型冠状病毒(2019-nCoV)感染的肺炎诊疗快速建议指南(标准版)[J]. 解放军医学杂志,2020,45(01):1-20.   
+2. <span id="ref2"><a href="#al2">^</a></span> 宗晓祥，胡云，马利亚.核酸检测云平台的设计与实现[J].集成电路应用, 2022, 39(10): 47-49.   
+3. <span id="ref3"><a href="#al3">^</a></span> Shaun Griffin. Covid-19: NHS England should manage test and trace system, says Independent SAGE[N]. BMJ,2020,371:m4330   
+4. <span id="ref4"><a href="#al4">^</a></span> Simon Judith,Rieder Gernot. Trusting the Corona-Warn-App? Contemplations on trust and trustworthiness at the intersection of technology, politics and public debate[J]. European Journal of Communication,2021,36(4).   
+5. <span id="ref5"><a href="#al5">^</a></span> 喻健,鲍琪. 基于ThinkPHP的人口信息系统设计[J]. 信息技术与信息化,2022,(02):9-12.   
+6. <span id="ref6"><a href="#al6">^</a></span> 蒋先梅. 基于PHP的学生信息管理系统的设计与实现[J]. 无线互联科技,2023,20(01):45-47.   
+7. <span id="ref7"><a href="#al7">^</a></span> 谷恪忱. 基于ThinkPHP框架的工控品采购平台设计与实现[J]. 软件工程,2020,23(03):53-59.   
+8. <span id="ref8"><a href="#al8">^</a></span> 赵莹,胡畅达,王国宇. 三种关系型空间数据库比较[J]. 科技创新与应用,2021,11(19):62-64.   
+9. <span id="ref9"><a href="#al9">^</a></span> 李琦,姚龙. 基于REST架构的湖泊环境监测物联网平台[J]. 计算机工程,2016,42(11):27-31+37.   
+10. <span id="ref10"><a href="#al10">^</a></span> 卢彦晓. 浅谈前后端分离技术在权限管理系统中的应用[J]. 电脑知识与技术,2021,17(34):68-69.   
+11. <span id="ref11"><a href="#al11">^</a></span> 张然,孙浩,张鑫. 基于JavaWeb的阿尔茨海默症早期康复系统设计[J]. 电子技术与软件工程,2022,(23):259-262.   
+12. <span id="ref12"><a href="#al12">^</a></span> 杨中书,刘臣宇. 基于E-R模型的关系数据库设计方法[J]. 价值工程,2014,33(30):242-243.   
+13. <span id="ref13"><a href="#al13">^</a></span> 黄金春,杜娟娇. 编写web服务器远程查看mysql数据[J]. 信息系统工程,2009,(07):26-29.   
+14. <span id="ref14"><a href="#al14">^</a></span> 陶亮亮. 基于微信公众号的掌上医院的设计与实现[J]. 电脑知识与技术,2022,18(09):46-48.   
+15. <span id="ref15"><a href="#al15">^</a></span> 陈莎莎. 基于JSP网页技术的高校PU系统功能可视化界面设计[J]. 自动化与仪器仪表,2023,(02):146-151.   
+16. <span id="ref16"><a href="#al16">^</a></span> 纪芩. 基于云平台的软件性能测试技术分析[J]. 电子技术与软件工程,2022,(23):74-77.   
+17. <span id="ref17"><a href="#al17">^</a></span> 刘肖. 基于JSP+MySQL的供电管理系统的设计与实现[D].电子科技大学,2021.   
