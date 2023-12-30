@@ -287,8 +287,9 @@ if(!norunFlag){
 				showMessage('思考中~', 0);
 				$.ajax({
 					type: 'POST',
-					url: talkAPI,
+					url: "https://www.tuling123.com/openapi/api",
 					data: {
+						"key": "ae8933884bcc4bac96289a43d8a864db",
 						"info":info_,
 						"userid":userid_
 					},
