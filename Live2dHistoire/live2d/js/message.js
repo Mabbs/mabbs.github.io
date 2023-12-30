@@ -287,18 +287,10 @@ if(!norunFlag){
 				showMessage('思考中~', 0);
 				$.ajax({
 					type: 'POST',
-					url: "https://www.tuling123.com/openapi/api",
+					url: "https://turing-api.mayx.eu.org/",
 					data: {
-						"reqType":0,
-						"perception": {
-							"inputText": {
-								"text": info_
-							}
-						},
-						"userInfo": {
-							"apiKey": "ae8933884bcc4bac96289a43d8a864db",
+							"info": info_,
 							"userId": userid_
-						}
 					},
 					success: function(res) {
 						if(res.intent.code !== 0){
