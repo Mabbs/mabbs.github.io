@@ -8,4 +8,6 @@ group :jekyll_plugins do
   gem "jekyll-feed", "~> 0.15.1"
   gem "jekyll-theme-minimal"
   gem "jekyll-paginate", "~> 1.1.0"
+  gem "kramdown-parser-gfm", "~> 1.1.0"
+  gem "kramdown", "~> 2.3.2"
 end
