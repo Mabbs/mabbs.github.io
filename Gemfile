@@ -1,5 +1,5 @@
 source "https://rubygems.org"
-gem "jekyll", "~> 4.1.0"
+gem "jekyll"
 group :jekyll_plugins do
   gem "jekyll-gist"
   gem "jekyll-coffeescript"
