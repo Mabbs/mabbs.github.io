@@ -54,4 +54,4 @@ if (daysold > 90) {
 }
 
 var message_Path = '/Live2dHistoire/live2d/';
-var talkAPI = auxiliaryHost+"/talk.php";
+var talkAPI = "https://turing-api.mayx.eu.org/";

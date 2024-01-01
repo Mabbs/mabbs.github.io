@@ -287,7 +287,7 @@ if(!norunFlag){
 				showMessage('思考中~', 0);
 				$.ajax({
 					type: 'POST',
-					url: "https://turing-api.mayx.eu.org/",
+					url: talkAPI,
 					data: {
 							"info": info_,
 							"userId": userid_
