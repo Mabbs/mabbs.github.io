@@ -35,5 +35,3 @@ title: 代理列表
 - <https://unmayx.medium.com/>   
 - <https://mayx.cnblogs.com/>   
 - <https://mayx.xlog.app/>   
-- <https://mayx.proselog.com/>   
-- <https://mayx.substack.com/>   
