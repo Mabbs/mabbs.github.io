@@ -12,8 +12,6 @@ title: 代理列表
 - <https://mayx.deno.dev/>   
 - <https://mayx.cyclic.app/>   
 - <https://mayx.glitch.me/>   
-- <https://blog.mayx.cf/>   
-- <https://blog.mayx.tk/>   
 - <https://yuki.gear.host/>   
 
 # 镜像列表
@@ -22,6 +20,7 @@ title: 代理列表
 - <https://mayx.pages.dev/>   
 - <https://mayx.eu.org/>   
 - <https://mayx.vercel.app/>   
+- <https://mabbs.gitee.io/>   
 - <https://mayx.netlify.app/>   
 - <https://mayx.4everland.app/>   
 - <https://xu4qy-yiaaa-aaaag-aa2iq-cai.raw.ic0.app/>   
