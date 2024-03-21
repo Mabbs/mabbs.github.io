@@ -3,27 +3,36 @@ layout: default
 title: 代理列表
 ---
 
-  源站：<https://mabbs.github.io>
+<script>
+  function is_offine(this_img){
+    this_img.src = "/images/offline.svg";
+  }
+</script>
+
+  源站：<https://mabbs.github.io> <img src="https://mabbs.github.io/images/online.svg" style="width:22px;vertical-align: bottom" onerror="is_offline(this)"/>   
+
+
 
 # 代理列表
 考虑到中国对于Github Pages在很多地区都有一定程度的解析异常，所以我为我的博客做了很多反向代理。以下代理站均为官方授权：   
 （根据可能的可用性排序）   
-- <https://blog.mayx.workers.dev/>   
-- <https://mayx.deno.dev/>   
-- <https://mayx.cyclic.app/>   
-- <https://mayx.glitch.me/>   
-- <https://yuki.gear.host/>   
+- <https://blog.mayx.workers.dev/> <img src="https://blog.mayx.workers.dev/images/online.svg" style="width:22px;vertical-align: bottom" onerror="is_offline(this)"/>   
+- <https://mayx.deno.dev/> <img src="https://mayx.deno.dev/images/online.svg" style="width:22px;vertical-align: bottom" onerror="is_offline(this)"/>   
+- <https://mayx.cyclic.app/> <img src="https://mayx.cyclic.app/images/online.svg" style="width:22px;vertical-align: bottom" onerror="is_offline(this)"/>   
+- <https://mayx.serv00.net/> <img src="https://mayx.serv00.net/images/online.svg" style="width:22px;vertical-align: bottom" onerror="is_offline(this)"/>   
+- <https://mayx.glitch.me/> <img src="https://mayx.glitch.me/images/online.svg" style="width:22px;vertical-align: bottom" onerror="is_offline(this)"/>   
+- <https://yuki.gear.host/> <img src="https://yuki.gear.host/images/online.svg" style="width:22px;vertical-align: bottom" onerror="is_offline(this)"/>   
 
 # 镜像列表
 由于[Github已经不再可信](/2022/01/04/banned.html)，所以现在提供以下镜像站：   
-- <https://mayx.gitlab.io/>   
-- <https://mayx.pages.dev/>   
-- <https://mayx.eu.org/>   
-- <https://mayx.vercel.app/>   
-- <https://mabbs.gitee.io/>   
-- <https://mayx.netlify.app/>   
-- <https://mayx.4everland.app/>   
-- <https://xu4qy-yiaaa-aaaag-aa2iq-cai.raw.ic0.app/>   
+- <https://mayx.gitlab.io/> <img src="https://mayx.gitlab.io/images/online.svg" style="width:22px;vertical-align: bottom" onerror="is_offline(this)"/>   
+- <https://mayx.pages.dev/> <img src="https://mayx.pages.dev/images/online.svg" style="width:22px;vertical-align: bottom" onerror="is_offline(this)"/>   
+- <https://mayx.eu.org/> <img src="https://mayx.eu.org/images/online.svg" style="width:22px;vertical-align: bottom" onerror="is_offline(this)"/>   
+- <https://mayx.vercel.app/> <img src="https://mayx.vercel.app/images/online.svg" style="width:22px;vertical-align: bottom" onerror="is_offline(this)"/>   
+- <https://mabbs.gitee.io/> <img src="https://mabbs.gitee.io/images/online.svg" style="width:22px;vertical-align: bottom" onerror="is_offline(this)"/>   
+- <https://mayx.netlify.app/> <img src="https://mayx.netlify.app/images/online.svg" style="width:22px;vertical-align: bottom" onerror="is_offline(this)"/>   
+- <https://mayx.4everland.app/> <img src="https://mayx.4everland.app/images/online.svg" style="width:22px;vertical-align: bottom" onerror="is_offline(this)"/>   
+- <https://xu4qy-yiaaa-aaaag-aa2iq-cai.raw.ic0.app/> <img src="https://xu4qy-yiaaa-aaaag-aa2iq-cai.raw.ic0.app/images/online.svg" style="width:22px;vertical-align: bottom" onerror="is_offline(this)"/>   
 
 # 其他平台博客（备用）
 - <https://unmayx.blogspot.com/>   
