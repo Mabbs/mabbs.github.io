@@ -9,7 +9,7 @@
     $(window).bind("scroll", $backToTopFun);
     $(function() { $backToTopFun(); });
 })();
-var auxiliaryHost = "https://counter.mayx.eu.org";
+var auxiliaryHost = "https://mayx.count.linkpc.net";
 $(function(){
   $("div#landlord").mouseenter(function(){
     $("div.live_ico_box").fadeIn();
