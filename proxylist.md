@@ -12,7 +12,6 @@ title: 代理列表
 （根据可能的可用性排序）   
 - <https://blog.mayx.workers.dev/> <img src="https://blog.mayx.workers.dev/images/online.svg" style="width:22px;vertical-align: bottom" onerror="this.src = '/images/offline.svg'"/>   
 - <https://mayx.deno.dev/> <img src="https://mayx.deno.dev/images/online.svg" style="width:22px;vertical-align: bottom" onerror="this.src = '/images/offline.svg'"/>   
-- <https://mayx.cyclic.app/> <img src="https://mayx.cyclic.app/images/online.svg" style="width:22px;vertical-align: bottom" onerror="this.src = '/images/offline.svg'"/>   
 - <https://mayx.serv00.net/> <img src="https://mayx.serv00.net/images/online.svg" style="width:22px;vertical-align: bottom" onerror="this.src = '/images/offline.svg'"/>   
 - <https://mayx.glitch.me/> <img src="https://mayx.glitch.me/images/online.svg" style="width:22px;vertical-align: bottom" onerror="this.src = '/images/offline.svg'"/>   
 - <https://yuki.gear.host/> <img src="https://yuki.gear.host/images/online.svg" style="width:22px;vertical-align: bottom" onerror="this.src = '/images/offline.svg'"/>   
@@ -23,7 +22,6 @@ title: 代理列表
 - <https://mayx.pages.dev/> <img src="https://mayx.pages.dev/images/online.svg" style="width:22px;vertical-align: bottom" onerror="this.src = '/images/offline.svg'"/>   
 - <https://mayx.eu.org/> <img src="https://mayx.eu.org/images/online.svg" style="width:22px;vertical-align: bottom" onerror="this.src = '/images/offline.svg'"/>   
 - <https://mayx.vercel.app/> <img src="https://mayx.vercel.app/images/online.svg" style="width:22px;vertical-align: bottom" onerror="this.src = '/images/offline.svg'"/>   
-- <https://mabbs.gitee.io/> <img src="https://mabbs.gitee.io/images/online.svg" style="width:22px;vertical-align: bottom" onerror="this.src = '/images/offline.svg'"/>   
 - <https://mayx.netlify.app/> <img src="https://mayx.netlify.app/images/online.svg" style="width:22px;vertical-align: bottom" onerror="this.src = '/images/offline.svg'"/>   
 - <https://mayx.4everland.app/> <img src="https://mayx.4everland.app/images/online.svg" style="width:22px;vertical-align: bottom" onerror="this.src = '/images/offline.svg'"/>   
 - <https://xu4qy-yiaaa-aaaag-aa2iq-cai.raw.ic0.app/> <img src="https://xu4qy-yiaaa-aaaag-aa2iq-cai.raw.ic0.app/images/online.svg" style="width:22px;vertical-align: bottom" onerror="this.src = '/images/offline.svg'"/>   
