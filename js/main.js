@@ -9,7 +9,6 @@
     $(window).bind("scroll", $backToTopFun);
     $(function() { $backToTopFun(); });
 })();
-var auxiliaryHost = "https://mayx.count.linkpc.net";
 $(function(){
   $("div#landlord").mouseenter(function(){
     $("div.live_ico_box").fadeIn();
@@ -18,7 +17,7 @@ $(function(){
     $("div.live_ico_box").fadeOut();
   });
 function showHitS(hits){
-    $.get(auxiliaryHost+"/counter.php?action=show&id="+hits.id,function(data){
+    $.get("https://summary.mayx.eu.org/counter?id="+hits.id,function(data){
             hits.innerHTML=Number(data);
         });
 }
@@ -31,7 +30,7 @@ function showHitCount() {
 }
 function addCount() {
 var visitors=$(".visitors");
-    $.get(auxiliaryHost+"/counter.php?action=add&id="+visitors[0].id,function(data){
+    $.get("https://summary.mayx.eu.org/counter_add?id="+visitors[0].id,function(data){
         visitors[0].innerHTML=Number(data);
     });
 }
