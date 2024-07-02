@@ -2,89 +2,129 @@
 layout: default
 ---
 
-<small>{{ page.date | date: "%-d %B %Y" }} - 字数统计：{% if page.layout == "encrypt" %}God Knows {% else %}{{ page.content | strip_html | strip_newlines | remove: " " | size }} - 阅读大约需要{{ page.content | strip_html | strip_newlines | remove: " " | size | divided_by: 350 | plus: 1 }}分钟{% endif %} - Hits: <span id="{{ page.url }}" class="visitors" >Loading...</span>
-</small>
+<small>{{ page.date | date: "%-d %B %Y" }} - 字数统计：{% if page.layout == "encrypt" %}God Knows {% else %}{{ page.content | strip_html | strip_newlines | remove: " " | size }} - 阅读大约需要{{ page.content | strip_html | strip_newlines | remove: "" | size | divided_by: 350 | plus: 1 }}分钟{% endif %} - Hits: <span id="{{ page.url }}" class="visitors">Loading...</span></small>
 <h1>{{ page.title }}</h1>
 
 <p class="view">by <a href="//github.com/{{ page.author | default: "Mabbs" }}">{{ page.author | default: site.author }}</a></p>
 <div id="outdate" style="display:none;">
-<hr />
-这是一篇创建于 <span id="outime"></span> 天前的文章，其中的信息可能已经有所发展或是发生改变。
-<br /><br />
+  <hr />
+  这是一篇创建于 <span id="outime"></span> 天前的文章，其中的信息可能已经有所发展或是发生改变。
+  <br /><br />
 </div>
 <script>
-BirthDay = new Date("{{ page.date | date: "%m/%d/%Y" }} 00:00:00");
-today = new Date();
-timeold = (today.getTime() - BirthDay.getTime());
-secondsold = Math.floor(timeold / 1000);
-e_daysold = timeold / (24 * 60 * 60 * 1000);
-daysold = Math.floor(e_daysold);
-if (daysold > 90) {
+  BirthDay = new Date("{{ page.date | date: "%m/%d/%Y" }} 00:00:00");
+  today = new Date();
+  timeold = (today.getTime() - BirthDay.getTime());
+  secondsold = Math.floor(timeold / 1000);
+  e_daysold = timeold / (24 * 60 * 60 * 1000);
+  daysold = Math.floor(e_daysold);
+  if (daysold > 90) {
     document.getElementById("outdate").style.display = "block";
     document.getElementById("outime").innerHTML = daysold;
-}
+  }
 </script>
 
 <hr />
+{% if page.layout != "encrypt" %}
+<!--[if !IE]> -->
+<b>AI摘要</b>
+<p id="ai-output"></p>
+<script>
+  async function sha(str) {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(str);
+    const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer)); // convert buffer to byte array
+    const hashHex = hashArray
+      .map((b) => b.toString(16).padStart(2, "0"))
+      .join(""); // convert bytes to hex string
+    return hashHex;
+  }
+  var postContent = "文章标题：" + {{ page.content | jsonify }} +"，文章内容：" + {{ page.content | strip_html | strip_newlines | jsonify }};
+  var postContentSign = await sha(postContent);
+  var outputContainer = document.getElementById("ai-output");
+  $.get("https://summary.mayx.eu.org/is_uploaded?id={{ page.url }}&sign=" + postContentSign, function (data) {
+    if (data == "yes") {
+      $.get("https://summary.mayx.eu.org/get_summary?id={{ page.url }}&sign=" + postContentSign, function (data2) {
+        outputContainer.textContent = data2;
+      });
+    } else {
+      $.post("https://summary.mayx.eu.org/upload_blog?id={{ page.url }}", postContent, function (data) {
+        $.get("https://summary.mayx.eu.org/get_summary?id={{ page.url }}&sign=" + postContentSign);
+        const evSource = new EventSource("https://summary.mayx.eu.org/summary?id={{ page.url }}");
+        evSource.onmessage = (event) => {
+          if (event.data == "[DONE]") {
+            evSource.close();
+            return;
+          } else {
+            const data = JSON.parse(event.data);
+            outputContainer.textContent += data.response;
+          }
+        }
+      });
+    }
+  });
+</script>
+<hr />
+<!-- <![endif]-->
+{% endif %}
 
 {% include toc.html html=content sanitize=true h_max=3 %}
 
 {{content}}
 
 {% if page.tags %}
-  <small>tags: <em>{{ page.tags | join: "</em> - <em>" }}</em></small>
+<small>tags: <em>{{ page.tags | join: "</em> - <em>" }}</em></small>
 {% endif %}
 
 <div class="pagination">
-    {% if page.previous.url %}
-      <span class="prev" >
-          <a href="{{ site.baseurl }}{{ page.previous.url }}">
-            上一篇：{{ page.previous.title }}
-          </a>
-      </span>
-    {% endif %}
+  {% if page.previous.url %}
+  <span class="prev">
+    <a href="{{ site.baseurl }}{{ page.previous.url }}">
+      上一篇：{{ page.previous.title }}
+    </a>
+  </span>
+  {% endif %}
   <br />
-    {% if page.next.url %}
-      <span class="next" >
-          <a href="{{ site.baseurl }}{{ page.next.url }}">
-            下一篇：{{ page.next.title }}
-          </a>
-      </span>
-    {% endif %}
-  </div>
+  {% if page.next.url %}
+  <span class="next">
+    <a href="{{ site.baseurl }}{{ page.next.url }}">
+      下一篇：{{ page.next.title }}
+    </a>
+  </span>
+  {% endif %}
+</div>
 
 <!--[if !IE]> -->
-  <link rel="stylesheet" href="/css/gitalk.css">
-  <script src="/js/gitalk.min.js"></script>
+<link rel="stylesheet" href="/css/gitalk.css">
+<script src="/js/gitalk.min.js"></script>
 
 <div id="gitalk-container"></div>
 
 <script>
-if (window.location.host != "mabbs.github.io")
-{
-var gitalk = new Gitalk({
-  clientID: '098934a2556425f19d6e',
-  clientSecret: '0bd44eed8425e5437ce43c4ba9b2791fbc04581d',
-  repo: 'mabbs.github.io',
-  owner: 'Mabbs',
-  admin: ['Mabbs'],
-  id: '{{ page.id }}',      // Ensure uniqueness and length less than 50
-  distractionFreeMode: false  // Facebook-like distraction free mode
-})
-}
-else
-{
-var gitalk = new Gitalk({
-  clientID: '36557aec4c3cb04f7ac6',
-  clientSecret: 'ac32993299751cb5a9ba81cf2b171cca65879cdb',
-  repo: 'mabbs.github.io',
-  owner: 'Mabbs',
-  admin: ['Mabbs'],
-  id: '{{ page.id }}',      // Ensure uniqueness and length less than 50
-  distractionFreeMode: false  // Facebook-like distraction free mode
-})
-}
+  if (window.location.host != "mabbs.github.io") {
+    var gitalk = new Gitalk({
+      clientID: '098934a2556425f19d6e',
+      clientSecret: '0bd44eed8425e5437ce43c4ba9b2791fbc04581d',
+      repo: 'mabbs.github.io',
+      owner: 'Mabbs',
+      admin: ['Mabbs'],
+      id: '{{ page.id }}',      // Ensure uniqueness and length less than 50
+      distractionFreeMode: false  // Facebook-like distraction free mode
+    })
+  }
+  else {
+    var gitalk = new Gitalk({
+      clientID: '36557aec4c3cb04f7ac6',
+      clientSecret: 'ac32993299751cb5a9ba81cf2b171cca65879cdb',
+      repo: 'mabbs.github.io',
+      owner: 'Mabbs',
+      admin: ['Mabbs'],
+      id: '{{ page.id }}',      // Ensure uniqueness and length less than 50
+      distractionFreeMode: false  // Facebook-like distraction free mode
+    })
+  }
 
-gitalk.render('gitalk-container')
+  gitalk.render('gitalk-container')
 </script>
 <!-- <![endif]-->

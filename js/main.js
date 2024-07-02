@@ -17,7 +17,7 @@ $(function(){
     $("div.live_ico_box").fadeOut();
   });
 function showHitS(hits){
-    $.get("https://summary.mayx.eu.org/counter?id="+hits.id,function(data){
+    $.get("https://summary.mayx.eu.org/count_click?id="+hits.id,function(data){
             hits.innerHTML=Number(data);
         });
 }
@@ -30,7 +30,7 @@ function showHitCount() {
 }
 function addCount() {
 var visitors=$(".visitors");
-    $.get("https://summary.mayx.eu.org/counter_add?id="+visitors[0].id,function(data){
+    $.get("https://summary.mayx.eu.org/count_click_add?id="+visitors[0].id,function(data){
         visitors[0].innerHTML=Number(data);
     });
 }
