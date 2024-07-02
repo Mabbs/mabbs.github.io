@@ -28,7 +28,7 @@ layout: default
 {% if page.layout != "encrypt" %}
 <!--[if !IE]> -->
 <b>AI摘要</b>
-<p id="ai-output"></p>
+<p id="ai-output">正在生成中……</p>
 <script>
   async function sha(str) {
     const encoder = new TextEncoder();
@@ -40,7 +40,7 @@ layout: default
       .join(""); // convert bytes to hex string
     return hashHex;
   }
-  var postContent = "文章标题：" + {{ page.content | jsonify }} +"，文章内容：" + {{ page.content | strip_html | strip_newlines | jsonify }};
+  var postContent = "文章标题：" + {{ page.title | jsonify }} +"，文章内容：" + {{ page.content | strip_html | strip_newlines | jsonify }};
   var postContentSign = await sha(postContent);
   var outputContainer = document.getElementById("ai-output");
   $.get("https://summary.mayx.eu.org/is_uploaded?id={{ page.url }}&sign=" + postContentSign, function (data) {
@@ -52,6 +52,7 @@ layout: default
       $.post("https://summary.mayx.eu.org/upload_blog?id={{ page.url }}", postContent, function (data) {
         $.get("https://summary.mayx.eu.org/get_summary?id={{ page.url }}&sign=" + postContentSign);
         const evSource = new EventSource("https://summary.mayx.eu.org/summary?id={{ page.url }}");
+        outputContainer.textContent = "";
         evSource.onmessage = (event) => {
           if (event.data == "[DONE]") {
             evSource.close();
