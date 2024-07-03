@@ -196,7 +196,7 @@ export default {
           ).bind(query).first("content");
         }
         if (result != data) {
-          await db.prepare("UPDATE blog_summary SET content = ?1 WHERE id = ?2")
+          await db.prepare("UPDATE blog_summary SET content = ?1, summary = NULL WHERE id = ?2")
             .bind(data, query).run();
         }
         return new Response("OK", {
