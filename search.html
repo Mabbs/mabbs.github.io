@@ -27,7 +27,7 @@ var status = false;
 if(mykeyword != null && mykeyword.toString().length>1){
      sbox.value = mykeyword;
 }
-$.getJSON("search.json", function(json){
+getSearchJSON(function(json){
   var sjs = SimpleJekyllSearch({
      searchInput: sbox,
      resultsContainer: document.getElementById('results-container'),

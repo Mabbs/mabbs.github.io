@@ -27,6 +27,18 @@
 
   gtag('config', '{{ site.google_analytics }}');
   var lastUpdated = new Date("{{ site.time | date: "%FT%T%z" }}");
+  function getSearchJSON(callback) {
+    var searchData = JSON.parse(localStorage.getItem(lastUpdated));
+    if (!searchData) {
+      localStorage.clear();
+      $.getJSON("search.json", function (data) {
+          localStorage.setItem(lastUpdated, JSON.stringify(data));
+          callback(data);
+      });
+    } else {
+      callback(searchData);
+    }
+  }
   </script>
   {% endif %}
   <style>
