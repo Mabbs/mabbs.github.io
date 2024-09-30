@@ -1,3 +1,4 @@
+var BlogAPI = "https://summary.mayx.eu.org";
 (function () {
     var $backToTopTxt = "返回顶部", $backToTopEle = $('<div class="backToTop"></div>').appendTo($("body"))
         .text($backToTopTxt).attr("title", $backToTopTxt).click(function () {
@@ -16,7 +17,6 @@ $(function () {
     $("div#landlord").mouseleave(function () {
         $("div.live_ico_box").fadeOut();
     });
-    var BlogAPI = "https://summary.mayx.eu.org";
     function showHitS(hits) {
         $.get(BlogAPI + "/count_click?id=" + hits.id, function (data) {
             hits.innerHTML = Number(data);
@@ -46,17 +46,21 @@ function getSuggestBlog(blogurl) {
     var suggest = $("#suggest-container")[0];
     suggest.innerHTML = "Loading...";
     $.get(BlogAPI + "/suggest?id=" + blogurl, function (data) {
-        getSearchJSON(function (search) {
-            suggest.innerHTML = "";
-            const searchMap = new Map(search.map(item => [item.url, item]));
-            const merged = data.map(suggestObj => {
-                const searchObj = searchMap.get(suggestObj.id);
-                return searchObj ? { ...searchObj } : suggestObj;
+        if (!data) {
+            suggest.innerHTML = "暂无推荐文章……";
+        } else {
+            getSearchJSON(function (search) {
+                suggest.innerHTML = "<b>推荐文章</b><hr />";
+                const searchMap = new Map(search.map(item => [item.url, item]));
+                const merged = data.map(suggestObj => {
+                    const searchObj = searchMap.get(suggestObj.id);
+                    return searchObj ? { ...searchObj } : suggestObj;
+                });
+                merged.forEach(element => {
+                    suggest.innerHTML += "<a href=" + element.url + ">" + element.title + "</a> - " + element.date + "<br />";
+                });
             });
-            merged.forEach(element => {
-                suggest.innerHTML += "<a href=" + element.url + ">" + element.title + "</a> - " + element.date + "<br />";
-            });
-        });
+        }
     });
 }
 

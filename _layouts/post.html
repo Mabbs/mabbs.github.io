@@ -80,6 +80,7 @@ layout: default
 {% if page.tags %}
 <small>tags: <em>{{ page.tags | join: "</em> - <em>" }}</em></small>
 {% endif %}
+<br />
 <p id="suggest-container"><button onclick="getSuggestBlog('{{ page.url }}')">查看推荐文章</button></p>
 <div class="pagination">
   {% if page.previous.url %}
