@@ -46,20 +46,22 @@ function getSuggestBlog(blogurl) {
     var suggest = $("#suggest-container")[0];
     suggest.innerHTML = "Loading...";
     $.get(BlogAPI + "/suggest?id=" + blogurl, function (data) {
-        if (!data) {
-            suggest.innerHTML = "暂无推荐文章……";
-        } else {
+        if (data) {
             getSearchJSON(function (search) {
-                suggest.innerHTML = "<b>推荐文章</b><hr />";
+                suggest.innerHTML = '<b>推荐文章</b><hr style="margin: 0 0 5px"/>';
                 const searchMap = new Map(search.map(item => [item.url, item]));
                 const merged = data.map(suggestObj => {
                     const searchObj = searchMap.get(suggestObj.id);
-                    return searchObj ? { ...searchObj } : suggestObj;
+                    return searchObj ? { ...searchObj } : null;
                 });
                 merged.forEach(element => {
-                    suggest.innerHTML += "<a href=" + element.url + ">" + element.title + "</a> - " + element.date + "<br />";
+                    if (element) {
+                        suggest.innerHTML += "<a href=" + element.url + ">" + element.title + "</a> - " + element.date + "<br />";
+                    }
                 });
             });
+        } else {
+            suggest.innerHTML = "暂无推荐文章……";
         }
     });
 }
