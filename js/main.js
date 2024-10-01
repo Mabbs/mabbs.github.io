@@ -46,7 +46,7 @@ function getSuggestBlog(blogurl) {
     var suggest = $("#suggest-container")[0];
     suggest.innerHTML = "Loading...";
     $.get(BlogAPI + "/suggest?id=" + blogurl, function (data) {
-        if (data) {
+        if (data.length) {
             getSearchJSON(function (search) {
                 suggest.innerHTML = '<b>推荐文章</b><hr style="margin: 0 0 5px"/>';
                 const searchMap = new Map(search.map(item => [item.url, item]));
