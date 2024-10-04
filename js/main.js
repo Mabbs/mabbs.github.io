@@ -42,30 +42,6 @@ $(function () {
     }
 });
 
-function getSuggestBlog(blogurl) {
-    var suggest = $("#suggest-container")[0];
-    suggest.innerHTML = "Loading...";
-    $.get(BlogAPI + "/suggest?id=" + blogurl, function (data) {
-        if (data.length) {
-            getSearchJSON(function (search) {
-                suggest.innerHTML = '<b>推荐文章</b><hr style="margin: 0 0 5px"/>';
-                const searchMap = new Map(search.map(item => [item.url, item]));
-                const merged = data.map(suggestObj => {
-                    const searchObj = searchMap.get(suggestObj.id);
-                    return searchObj ? { ...searchObj } : null;
-                });
-                merged.forEach(element => {
-                    if (element) {
-                        suggest.innerHTML += "<a href=" + element.url + ">" + element.title + "</a> - " + element.date + "<br />";
-                    }
-                });
-            });
-        } else {
-            suggest.innerHTML = "暂无推荐文章……";
-        }
-    });
-}
-
 today = new Date();
 timeold = (today.getTime() - lastUpdated.getTime());
 secondsold = Math.floor(timeold / 1000);
