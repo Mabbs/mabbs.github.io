@@ -189,13 +189,17 @@ if(!norunFlag){
 		//console.log('showMessage', text);
 		$('.message').stop();
 		if(text instanceof EventSource){
-			var outputContainer = $('.message')[0]
-			outputContainer.textContent = "";
+			var outputContainer = $('.message')[0];
+			var eventFlag = false;
 			text.onmessage = (event) => {
 				if (event.data == "[DONE]") {
 					text.close();
 				  return;
 				} else {
+				  if(!eventFlag){
+					outputContainer.textContent = "";
+					eventFlag = true;
+				  }
 				  const data = JSON.parse(event.data);
 				  outputContainer.textContent += data.response;
 				}
@@ -290,6 +294,10 @@ if(!norunFlag){
 			$('#talk_send').on('click',function(){
 				var info_ = $('#AIuserText').val();
 				// var userid_ = $('#AIuserName').val();
+				let add_id = "";
+				if($('#load_this').prop("checked")){
+				    add_id = "&id="+encodeURIComponent($('#post_id').val());
+				}
 				if(info_ == "" ){
 					showMessage('写点什么吧！',0);
 					return;
@@ -299,7 +307,7 @@ if(!norunFlag){
 				// 	return;
 				// }
 				showMessage('思考中~', 0);
-				const evSource = new EventSource(talkAPI + "?info=" + encodeURIComponent(info_));
+				const evSource = new EventSource(talkAPI + "?info=" + encodeURIComponent(info_) + add_id);
 				showMessage(evSource);
 				// $.ajax({
 				// 	type: 'POST',
@@ -395,11 +403,11 @@ if(!norunFlag){
 				showMessage('音乐似乎加载不出来了呢！',0);
 			});
 		}
-		//获取用户名
-		var live2dUser = sessionStorage.getItem("live2duser");
-		if(live2dUser !== null){
-			$('#AIuserName').val(live2dUser);
-		}
+		// //获取用户名
+		// var live2dUser = sessionStorage.getItem("live2duser");
+		// if(live2dUser !== null){
+		// 	$('#AIuserName').val(live2dUser);
+		// }
 		//获取位置
 		var landL = sessionStorage.getItem("historywidth");
 		var landB = sessionStorage.getItem("historyheight");

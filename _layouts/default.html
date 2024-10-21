@@ -112,8 +112,12 @@
       <div class="message" style="opacity:0"></div>
       <canvas id="live2d" width="500" height="560" class="live2d"></canvas>
       <div class="live_talk_input_body">
-        <div class="live_talk_input_name_body" style="display:none;">
-          <input name="name" type="hidden" class="live_talk_name white_input" id="AIuserName" value="Mayx_Blog_Talk" />
+        <div class="live_talk_input_name_body" {% unless page.layout == "post" %}style="display:none;"{% endif %}>
+          <input name="name" type="checkbox" id="load_this">
+          <input type="hidden" id="post_id" value="{{ page.url }}">
+          <label for="load_this">
+            <span style="font-size: 11px; color: #fff;">&nbsp;想问这篇文章</span>
+          </label>
         </div>
         <div class="live_talk_input_text_body">
           <input name="talk" type="text" class="live_talk_talk white_input" id="AIuserText" autocomplete="off" placeholder="要和我聊什么呀？"/>
