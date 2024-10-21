@@ -188,7 +188,21 @@ if(!norunFlag){
 		if(Array.isArray(text)) text = text[Math.floor(Math.random() * text.length + 1)-1];
 		//console.log('showMessage', text);
 		$('.message').stop();
-		$('.message').html(text);
+		if(text instanceof EventSource){
+			var outputContainer = $('.message')[0]
+			outputContainer.textContent = "";
+			text.onmessage = (event) => {
+				if (event.data == "[DONE]") {
+					text.close();
+				  return;
+				} else {
+				  const data = JSON.parse(event.data);
+				  outputContainer.textContent += data.response;
+				}
+			}
+		}else{
+			$('.message').html(text);
+		}
 		$('.message').fadeTo(200, 1);
 		//if (timeout === null) timeout = 5000;
 		//hideMessage(timeout);
@@ -275,36 +289,38 @@ if(!norunFlag){
 			});
 			$('#talk_send').on('click',function(){
 				var info_ = $('#AIuserText').val();
-				var userid_ = $('#AIuserName').val();
+				// var userid_ = $('#AIuserName').val();
 				if(info_ == "" ){
 					showMessage('写点什么吧！',0);
 					return;
 				}
-				if(userid_ == ""){
-					showMessage('聊之前请告诉我你的名字吧！',0);
-					return;
-				}
+				// if(userid_ == ""){
+				// 	showMessage('聊之前请告诉我你的名字吧！',0);
+				// 	return;
+				// }
 				showMessage('思考中~', 0);
-				$.ajax({
-					type: 'POST',
-					url: talkAPI,
-					data: {
-							"info": info_,
-							"userId": userid_
-					},
-					success: function(res) {
-						if(res.intent.code !== 0){
-							talkValTimer();
-							showMessage('似乎有什么错误，请和站长联系！',0);
-						}else{
-							talkValTimer();
-							showMessage(res.results[0].values.text,0);
-						}
-						console.log(res);
-						$('#AIuserText').val("");
-						sessionStorage.setItem("live2duser", userid_);
-					}
-				});
+				const evSource = new EventSource(talkAPI + "?info=" + encodeURIComponent(info_));
+				showMessage(evSource);
+				// $.ajax({
+				// 	type: 'POST',
+				// 	url: talkAPI,
+				// 	data: {
+				// 			"info": info_,
+				// 			"userId": userid_
+				// 	},
+				// 	success: function(res) {
+				// 		if(res.intent.code !== 0){
+				// 			talkValTimer();
+				// 			showMessage('似乎有什么错误，请和站长联系！',0);
+				// 		}else{
+				// 			talkValTimer();
+				// 			showMessage(res.results[0].values.text,0);
+				// 		}
+				// 		console.log(res);
+				// 		$('#AIuserText').val("");
+				// 		sessionStorage.setItem("live2duser", userid_);
+				// 	}
+				// });
 			});
 		}else{
 			$('#showInfoBtn').hide();
