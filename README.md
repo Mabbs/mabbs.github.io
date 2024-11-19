@@ -16,13 +16,16 @@ Powered by [Jekyll](https://github.com/jekyll/jekyll)
 [Simple-Jekyll-Search](https://github.com/christian-fei/Simple-Jekyll-Search)   
 
 ## 使用的网络资源
-[Github](https://github.com/) | 包含:
+[Github](https://github.com/) | 包含：
 - Issue
 - Pages
 - Git
- 
+
+[Cloudflare](https://www.cloudflare.com/) | 包含：
+- CDN、规则以及缓存
+- Workers、D1 SQL 数据库、Vectorize 数据库、AI
+
 [网易云音乐](https://music.163.com/)   
-[一言](https://hitokoto.cn/)   
 [CDNJS](https://cdnjs.com/)   
 [unpkg](https://unpkg.com/)   
 

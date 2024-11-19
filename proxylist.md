@@ -12,9 +12,9 @@ title: 代理列表
 （根据可能的可用性排序）   
 - <https://blog.mayx.workers.dev/> <img src="https://blog.mayx.workers.dev/images/online.svg" style="width:22px;vertical-align: bottom" onerror="this.src = '/images/offline.svg'"/>   
 - <https://mayx.deno.dev/> <img src="https://mayx.deno.dev/images/online.svg" style="width:22px;vertical-align: bottom" onerror="this.src = '/images/offline.svg'"/>   
-- <https://mayx.serv00.net/> <img src="https://mayx.serv00.net/images/online.svg" style="width:22px;vertical-align: bottom" onerror="this.src = '/images/offline.svg'"/>   
 - <https://mayx.glitch.me/> <img src="https://mayx.glitch.me/images/online.svg" style="width:22px;vertical-align: bottom" onerror="this.src = '/images/offline.svg'"/>   
 - <https://yuki.gear.host/> <img src="https://yuki.gear.host/images/online.svg" style="width:22px;vertical-align: bottom" onerror="this.src = '/images/offline.svg'"/>   
+- <https://mayx.serv00.net/> <img src="https://mayx.serv00.net/images/online.svg" style="width:22px;vertical-align: bottom" onerror="this.src = '/images/offline.svg'"/>   
 
 # 镜像列表
 由于[Github已经不再可信](/2022/01/04/banned.html)，所以现在提供以下镜像站：   

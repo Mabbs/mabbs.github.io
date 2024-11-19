@@ -197,6 +197,7 @@ if(!norunFlag){
 				  return;
 				} else {
 				  if(!eventFlag){
+					talkValTimer();
 					outputContainer.textContent = "";
 					eventFlag = true;
 				  }
@@ -302,33 +303,9 @@ if(!norunFlag){
 					showMessage('写点什么吧！',0);
 					return;
 				}
-				// if(userid_ == ""){
-				// 	showMessage('聊之前请告诉我你的名字吧！',0);
-				// 	return;
-				// }
 				showMessage('思考中~', 0);
 				const evSource = new EventSource(talkAPI + "?info=" + encodeURIComponent(info_) + add_id);
 				showMessage(evSource);
-				// $.ajax({
-				// 	type: 'POST',
-				// 	url: talkAPI,
-				// 	data: {
-				// 			"info": info_,
-				// 			"userId": userid_
-				// 	},
-				// 	success: function(res) {
-				// 		if(res.intent.code !== 0){
-				// 			talkValTimer();
-				// 			showMessage('似乎有什么错误，请和站长联系！',0);
-				// 		}else{
-				// 			talkValTimer();
-				// 			showMessage(res.results[0].values.text,0);
-				// 		}
-				// 		console.log(res);
-				// 		$('#AIuserText').val("");
-				// 		sessionStorage.setItem("live2duser", userid_);
-				// 	}
-				// });
 			});
 		}else{
 			$('#showInfoBtn').hide();
