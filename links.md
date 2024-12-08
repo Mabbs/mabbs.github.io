@@ -8,7 +8,7 @@ tags: [links]
 
 | Links | Introduce |
 | - | - |
-| [花火学园](https://www.sayhuahuo.net/) | 和谐融洽的ACG交流以及资源聚集地 |
+| [花火学园](https://www.sayhanabi.net/) | 和谐融洽的ACG交流以及资源聚集地 |
 | [资源统筹局](https://gkdworld.com/) | 统筹保管用户分享的资源 |
 | [贫困的蚊子](https://mozz.ie/) | *No description* |
 | [极客兔兔](https://geektutu.com/) | 致力于分享有趣的技术实践 |
