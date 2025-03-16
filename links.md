@@ -18,6 +18,7 @@ tags: [links]
 | [Kingfish404](https://blog.kingfish404.cn/) | Stay curious,stay naive. WUT. Jin Yu's Blog |
 | [FKUN](https://blog.fkun.tech/) | *No description* |
 | [Sinofine](https://sinofine.me/) | *No description* |
+| [JiaoYuan's blog](https://yuanj.top/) | 思绪来得快去得也快，偶尔会在这里停留 |
 
 
 ## Links申请
