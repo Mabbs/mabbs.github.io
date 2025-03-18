@@ -19,6 +19,8 @@ tags: [links]
 | [FKUN](https://blog.fkun.tech/) | *No description* |
 | [Sinofine](https://sinofine.me/) | *No description* |
 | [JiaoYuan's blog](https://yuanj.top/) | 思绪来得快去得也快，偶尔会在这里停留 |
+| [花生莲子粥](https://blog.hslzz.cn/) | 与世无争，不染于泥 |
+| [南蛮子懋和](https://www.dao.js.cn/) | 李懋和，俗名李栋梁。书法、国画爱好者，互联网安全与前端建设者。 |
 
 
 ## Links申请
