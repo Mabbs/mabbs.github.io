@@ -31,7 +31,12 @@
   function getSearchJSON(callback) {
     var searchData = JSON.parse(localStorage.getItem("blog_" + lastUpdated.valueOf()));
     if (!searchData) {
-      localStorage.clear();
+      for (var i = 0; i < localStorage.length; i++) {
+          var key = localStorage.key(i);
+          if (key.startsWith('blog_')) {
+              localStorage.removeItem(key);
+          }
+      }
       $.getJSON("/search.json", function (data) {
           localStorage.setItem("blog_" + lastUpdated.valueOf(), JSON.stringify(data));
           callback(data);
