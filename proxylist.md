@@ -25,6 +25,7 @@ title: 代理列表
 - <https://mayx.netlify.app/> <img src="https://mayx.netlify.app/images/online.svg" style="width:22px;vertical-align: bottom" onerror="this.src = '/images/offline.svg'"/>   
 - <https://mayx.4everland.app/> <img src="https://mayx.4everland.app/images/online.svg" style="width:22px;vertical-align: bottom" onerror="this.src = '/images/offline.svg'"/>   
 - <https://mayx.dappling.network/> <img src="https://mayx.dappling.network/images/online.svg" style="width:22px;vertical-align: bottom" onerror="this.src = '/images/offline.svg'"/>   
+- <https://mayx-blog.statichost.eu/> <img src="https://mayx-blog.statichost.eu/images/online.svg" style="width:22px;vertical-align: bottom" onerror="this.src = '/images/offline.svg'"/>   
 
 # 其他平台博客（备用）
 - <https://unmayx.blogspot.com/>   
