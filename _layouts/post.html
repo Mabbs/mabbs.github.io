@@ -78,7 +78,7 @@ layout: default
 {{content}}
 
 {% if page.tags %}
-<small>tags: {% for tag in page.tags %}<a href="/search.html?keyword={{ tag | url_encode }}"><em>{{ tag }}</em></a>{% unless forloop.last %} - {% endunless %}{% endfor %}</small>
+<small style="display: block">tags: {% for tag in page.tags %}<a href="/search.html?keyword={{ tag | url_encode }}"><em>{{ tag }}</em></a>{% unless forloop.last %} - {% endunless %}{% endfor %} <span style="float: right;"><a href="https://github.com/Mabbs/mabbs.github.io/{{ page.path }}">查看原始文件</a></span></small>
 {% endif %}
 <br />
 <br />
