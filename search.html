@@ -8,8 +8,7 @@ title: 搜索
 <ul id="results-container"></ul>
 <script src="/js/simple-jekyll-search.min.js"></script>
 <script>
-function getQueryVariable(variable)
-{
+function getQueryVariable(variable){
        var query = window.location.search.substring(1);
        var vars = query.split("&");
        for (var i=0;i<vars.length;i++) {
@@ -29,7 +28,7 @@ getSearchJSON(function(json){
      searchInput: sbox,
      resultsContainer: document.getElementById('results-container'),
      json: json,
-     searchResultTemplate: '<p><li>{date} - <a href="{url}">{title}</a></li></p>',
+     searchResultTemplate: '<p><li>{date} - <a href="{url}?kw={query}">{title}</a></li></p>',
      limit: 20
   });
   sjs.search(mykeyword);

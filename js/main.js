@@ -41,6 +41,50 @@ $(function () {
     }
 });
 
+$(function() {
+    function getQueryVariable(variable){
+           var query = window.location.search.substring(1);
+           var vars = query.split("&");
+           for (var i=0;i<vars.length;i++) {
+                   var pair = vars[i].split("=");
+                   if(pair[0] == variable){return pair[1];}
+           }
+           return(false);
+    }
+    var keyword = decodeURI(getQueryVariable("kw"));
+
+    if (!keyword) return;
+
+    // 转义正则表达式特殊字符，避免安全问题
+    const escapedKeyword = keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    // 创建不区分大小写的正则表达式（全局匹配）
+    const regex = new RegExp(`(${escapedKeyword})`, 'gi');
+
+    // 递归遍历并高亮文本节点
+    function highlightTextNodes(element) {
+        $(element).contents().each(function() {
+            if (this.nodeType === Node.TEXT_NODE) {
+                const $this = $(this);
+                const text = $this.text();
+                // 使用正则替换并保留原始大小写
+                if (regex.test(text)) {
+                    const replaced = text.replace(regex, '<mark>$1</mark>');
+                    $this.replaceWith(replaced);
+                }
+            } else if (
+                this.nodeType === Node.ELEMENT_NODE &&
+                !$(this).is('script, style, noscript, textarea')
+            ) {
+                highlightTextNodes(this);
+            }
+        });
+    }
+
+    $('section').each(function() {
+        highlightTextNodes(this);
+    });
+});
+
 today = new Date();
 timeold = (today.getTime() - lastUpdated.getTime());
 secondsold = Math.floor(timeold / 1000);
