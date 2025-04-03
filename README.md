@@ -14,6 +14,7 @@ Powered by [Jekyll](https://github.com/jekyll/jekyll)
 [jekyll-toc](https://github.com/allejo/jekyll-toc)   
 [Live2dHistoire](https://github.com/eeg1412/Live2dHistoire)   
 [Simple-Jekyll-Search](https://github.com/christian-fei/Simple-Jekyll-Search)   
+[jekyll-anchor-headings](https://github.com/allejo/jekyll-anchor-headings)   
 
 ## 使用的网络资源
 [Github](https://github.com/) | 包含：

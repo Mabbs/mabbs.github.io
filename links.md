@@ -6,22 +6,11 @@ id: links
 tags: [links]
 ---
 
-| Links | Introduce |
+| Link | Description |
 | - | - |
-| [花火学园](https://www.sayhanabi.net/) | 和谐融洽的ACG交流以及资源聚集地 |
-| [资源统筹局](https://gkdworld.com/) | 统筹保管用户分享的资源 |
-| [贫困的蚊子](https://mozz.ie/) | *No description* |
-| [极客兔兔](https://geektutu.com/) | 致力于分享有趣的技术实践 |
-| [维基萌](https://www.wikimoe.com/) | 萌即是正义！一名热爱acg的前端设计师的小站！ |
-| [7gugu's blog](https://www.7gugu.com/) | 一个用来存放我爱好的地方,编程,摄影之类的空间 |
-| [云游君](https://www.yunyoujun.cn/) | 希望能成为一个有趣的人。 |
-| [Kingfish404](https://blog.kingfish404.cn/) | Stay curious,stay naive. WUT. Jin Yu's Blog |
-| [FKUN](https://blog.fkun.tech/) | *No description* |
-| [Sinofine](https://sinofine.me/) | *No description* |
-| [JiaoYuan's blog](https://yuanj.top/) | 思绪来得快去得也快，偶尔会在这里停留 |
-| [花生莲子粥](https://blog.hslzz.cn/) | 与世无争，不染于泥 |
-| [南蛮子懋和](https://www.dao.js.cn/) | 李懋和，俗名李栋梁。书法、国画爱好者，互联网安全与前端建设者。 |
-
+{%- for item in site.data.links -%}
+| [{{ item.title }}]({{ item.link }}) | {{ item.description }} |
+{% endfor %}
 
 ## Links申请
 请在下面留言或者直接发起[Pull request](https://github.com/Mabbs/mabbs.github.io/pull/new/master)   
