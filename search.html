@@ -8,20 +8,11 @@ title: 搜索
 <ul id="results-container"></ul>
 <script src="/js/simple-jekyll-search.min.js"></script>
 <script>
-function getQueryVariable(variable){
-       var query = window.location.search.substring(1);
-       var vars = query.split("&");
-       for (var i=0;i<vars.length;i++) {
-               var pair = vars[i].split("=");
-               if(pair[0] == variable){return pair[1];}
-       }
-       return(false);
-}
-var mykeyword = decodeURI(getQueryVariable("keyword"));
-var sbox = document.getElementById('search-input');
-var status = false;
-if(mykeyword != null && mykeyword.toString().length>1){
-     sbox.value = mykeyword;
+const urlParams = new URLSearchParams(window.location.search);
+const mykeyword = urlParams.get('keyword')?.trim();
+const sbox = document.getElementById('search-input');
+if (mykeyword) {
+  sbox.value = mykeyword;
 }
 getSearchJSON(function(json){
   var sjs = SimpleJekyllSearch({
