@@ -7,8 +7,7 @@ tags: [links]
 ---
 
 | Link | Description |
-| - | - |
-{%- for item in site.data.links -%}
+| - | - |{% for item in site.data.links %}
 | [{{ item.title }}]({{ item.link }}) | {{ item.description }} |
 {% endfor %}
 
