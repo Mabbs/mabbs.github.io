@@ -7,12 +7,12 @@ tags: [links]
 ---
 
 | Link | Description |
-| - | - |{% for item in site.data.links %}
-| [{{ item.title }}]({{ item.link }}) | {{ item.description }} |
+| - | - |
+{% for item in site.data.links %}| [{{ item.title }}]({{ item.link }}) | {{ item.description }} |
 {% endfor %}
 
 ## Links申请
-请在下面留言或者直接发起[Pull request](https://github.com/Mabbs/mabbs.github.io/pull/new/master)   
+请在下面留言或者直接[修改Links](https://github.com/Mabbs/mabbs.github.io/edit/master/_data/links.csv)并发起PR   
 请在申请之前加上本站友链   
 要求：
 1. 全站HTTPS
