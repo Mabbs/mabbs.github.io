@@ -10,15 +10,15 @@ title: 代理列表
 # 代理列表
 考虑到中国对于Github Pages在很多地区都有一定程度的解析异常，所以我为我的博客做了很多反向代理。以下代理站均为官方授权：   
 （根据可能的可用性排序）   
-{% for item in site.data.proxylist.proxies %}- <{{ item.url }}> <img src="{{ item.url }}images/online.svg" style="width:22px;vertical-align: bottom" onerror="this.src = '/images/offline.svg'"/>   
+{% for item in site.data.proxylist.proxies %}- <{{ item }}> <img src="{{ item }}images/online.svg" style="width:22px;vertical-align: bottom" onerror="this.src = '/images/offline.svg'"/>   
 {% endfor %}
 
 # 镜像列表
 由于[Github已经不再可信](/2022/01/04/banned.html)，所以现在提供以下镜像站：   
-{% for item in site.data.proxylist.mirrors %}- <{{ item.url }}> <img src="{{ item.url }}images/online.svg" style="width:22px;vertical-align: bottom" onerror="this.src = '/images/offline.svg'"/>   
+{% for item in site.data.proxylist.mirrors %}- <{{ item }}> <img src="{{ item }}images/online.svg" style="width:22px;vertical-align: bottom" onerror="this.src = '/images/offline.svg'"/>   
 {% endfor %}
 
-# 网站结构
+# 服务架构
 ```mermaid
 graph LR;
     GH@{ shape: bow-rect, label: "GitHub" }
@@ -34,7 +34,6 @@ graph LR;
     Netlify@{ shape: docs, label: "Netlify" }
     SH@{ shape: docs, label: "statichost.eu" }
     DA@{ shape: docs, label: "dAppling" }
-    EOP@{ shape: docs, label: "EdgeOne Pages" }
     CFW@{ shape: curv-trap, label: "CloudFlare Workers" }
     Deno@{ shape: curv-trap, label: "Deno" }
     Glitch@{ shape: curv-trap, label: "Glitch" }
@@ -54,7 +53,6 @@ graph LR;
     DA
     Vercel
     Netlify
-    EOP
     end
     
     subgraph Proxies
@@ -73,7 +71,6 @@ graph LR;
     GH -- Sync --> GE
     GH --> GHP & SH & FELH & DA & Netlify
     GL --> CFP & Vercel & GLP
-    GE --> EOP
     
     CFW --> GHP
     Deno --> GHP
@@ -93,5 +90,5 @@ graph LR;
 </script>
 
 # 其他平台博客（备用）
-{% for item in site.data.proxylist.others %}- <{{ item.url }}>    
+{% for item in site.data.proxylist.others %}- <{{ item }}>    
 {% endfor %}
