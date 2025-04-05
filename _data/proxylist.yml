@@ -1,0 +1,24 @@
+proxies:
+- https://blog.mayx.workers.dev/
+- https://mayx.deno.dev/
+- https://mayx.glitch.me/
+- https://yuki.gear.host/
+- https://mayx.serv00.net/
+mirrors:
+- https://mayx.gitlab.io/
+- https://mayx.pages.dev/
+- https://mayx.eu.org/
+- https://mayx.vercel.app/
+- https://mayx.netlify.app/
+- https://mayx.4everland.app/
+- https://mayx.dappling.network/
+- https://mayx-blog.statichost.eu/
+others:
+- https://unmayx.blogspot.com/
+- https://unmayx.blog.fc2blog.us/
+- https://unmayx.wordpress.com/
+- https://mayx.code.blog/
+- https://mayx.home.blog/
+- https://unmayx.medium.com/
+- https://mayx.cnblogs.com/
+- https://mayx.xlog.app/
