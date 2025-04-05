@@ -21,6 +21,7 @@ title: 代理列表
 # 服务架构
 ```mermaid
 graph LR;
+    Users@{ shape: stadium, label: "Users" }
     GH@{ shape: bow-rect, label: "GitHub" }
     GL@{ shape: bow-rect, label: "GitLab" }
     GE@{ shape: bow-rect, label: "Gitee" }
@@ -34,7 +35,10 @@ graph LR;
     Netlify@{ shape: docs, label: "Netlify" }
     SH@{ shape: docs, label: "statichost.eu" }
     DA@{ shape: docs, label: "dAppling" }
-    CFW@{ shape: curv-trap, label: "CloudFlare Workers" }
+    EOP@{ shape: docs, label: "EdgeOne Pages" }
+    CFW@{ label: "CloudFlare Workers" }
+    CFAI@{ shape: procs, label: "CloudFlare AI" }
+    CFD@{ shape: lin-cyl, label: "CloudFlare D1" }
     Deno@{ shape: curv-trap, label: "Deno" }
     Glitch@{ shape: curv-trap, label: "Glitch" }
     Other@{ shape: curv-trap, label: "Other..." }
@@ -53,10 +57,16 @@ graph LR;
     DA
     Vercel
     Netlify
+    EOP
+    end
+
+    subgraph API[API Service]
+    CFAI
+    CFD
+    CFW
     end
     
     subgraph Proxies
-    CFW
     Deno
     Glitch
     Other
@@ -69,14 +79,18 @@ graph LR;
     
     GH <--Sync--> GL
     GH -- Sync --> GE
-    GH --> GHP & SH & FELH & DA & Netlify
+    GH -- Deploy --> GHP & SH & FELH & DA & Netlify
     GL --> CFP & Vercel & GLP
-    
-    CFW --> GHP
-    Deno --> GHP
-    Glitch --> GHP
-    Other --> GHP
-    
+    CFW -- Reverse Proxy --> GHP
+    Deno -- Reverse Proxy --> GHP
+    Glitch -- Reverse Proxy --> GHP
+    Other -- Reverse Proxy --> GHP
+    CFD <--> CFW
+    CFAI <--> CFW
+    GE -- Deploy --> EOP
+    API -- API/Proxy Service <--> Users
+    Pages -- Serviced --> Users
+    Proxies -- Serviced --> Users
     FELH --> IPFS & GF
     DA --> IPFS
 ```

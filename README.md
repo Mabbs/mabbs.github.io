@@ -28,6 +28,7 @@ Powered by [Jekyll](https://github.com/jekyll/jekyll)
 
 [网易云音乐](https://music.163.com/)   
 [CDNJS](https://cdnjs.com/)   
+[jsDelivr](https://www.jsdelivr.com/)   
 
 ## 版权声明
 未经作者同意，请勿转载   
