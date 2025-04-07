@@ -8,7 +8,7 @@ tags: [links]
 
 | Link | Description |
 | - | - |
-{% for item in site.data.links %}| [{{ item.title }}]({{ item.link }}) | {{ item.description }} |
+{% for item in site.data.links %}| <a href="{{ item.link }}" data-feed="{{ item.feed_url }}">{{ item.title }}</a> | {{ item.description }} |
 {% endfor %}
 
 ## Links申请
@@ -25,3 +25,5 @@ tags: [links]
 链接：<https://mabbs.github.io>   
 头像：<https://avatars0.githubusercontent.com/u/17966333>   
 Logo：<https://mabbs.github.io/favicon.ico>
+
+<script src="/js/rss-feed-preview.js"></script>
