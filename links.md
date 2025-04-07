@@ -8,7 +8,7 @@ tags: [links]
 
 | Link | Description |
 | - | - |
-{% for item in site.data.links %}| <a href="{{ item.link }}" data-feed="{{ item.feed_url }}">{{ item.title }}</a> | {{ item.description }} |
+{% for item in site.data.links %}| <a href="{{ item.link }}" target="_blank" data-feed="{{ item.feed_url }}">{{ item.title }}</a> | {{ item.description }} |
 {% endfor %}
 
 ## Links申请
