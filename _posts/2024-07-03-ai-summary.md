@@ -235,8 +235,8 @@ export default {
 }
 ```
   另外也写了配套的前端代码（用的jQuery，其实应该用Fetch的😂）：   
-```html
 {% raw %}
+```html
 <b>AI摘要</b>
 <p id="ai-output">正在生成中……</p>
 <script>
@@ -279,8 +279,8 @@ export default {
   }
   ai_gen();
 </script>
-{% endraw %} 
 ```
+{% endraw %} 
   本来文章内容应该从html里读更好一些，但是标签啥的还得用正则去掉，感觉不如Liquid方便😂。另外博客计数器不应该用MD5的，但懒得改之前的数据了，还好Cloudflare Workers为了兼容是支持MD5的，免得我还得想办法改数据库里的数据。   
 
 # 使用方法

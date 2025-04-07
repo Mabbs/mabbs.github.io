@@ -26,46 +26,31 @@
   gtag('js', new Date());
 
   gtag('config', '{{ site.google_analytics }}');
-  var lastUpdated = new Date("{{ site.time | date: "%FT%T%z" }}");
-  var BlogAPI = "https://summary.mayx.eu.org";
-  function getSearchJSON(callback) {
-    var searchData = JSON.parse(localStorage.getItem("blog_" + lastUpdated.valueOf()));
-    if (!searchData) {
-      for (var i = 0; i < localStorage.length; i++) {
-          var key = localStorage.key(i);
-          if (key.startsWith('blog_')) {
-              localStorage.removeItem(key);
-          }
-      }
-      $.getJSON("/search.json", function (data) {
-          localStorage.setItem("blog_" + lastUpdated.valueOf(), JSON.stringify(data));
-          callback(data);
-      });
-    } else {
-      callback(searchData);
-    }
-  }
   </script>
   {% endif %}
-  <style>
-    .backToTop {
-      display: none;
-      width: 18px;
-      line-height: 1.2;
-      padding: 5px 0;
-      background-color: #000;
-      color: #fff;
-      font-size: 12px;
-      text-align: center;
-      position: fixed;
-      _position: absolute;
-      right: 10px;
-      bottom: 100px;
-      _bottom: "auto";
-      cursor: pointer;
-      opacity: .6;
-      filter: Alpha(opacity=60);
+  <script>
+    var lastUpdated = new Date("{{ site.time | date: "%FT%T%z" }}");
+    var BlogAPI = "https://summary.mayx.eu.org";
+    function getSearchJSON(callback) {
+      var searchData = JSON.parse(localStorage.getItem("blog_" + lastUpdated.valueOf()));
+      if (!searchData) {
+        for (var i = 0; i < localStorage.length; i++) {
+            var key = localStorage.key(i);
+            if (key.startsWith('blog_')) {
+                localStorage.removeItem(key);
+            }
+        }
+        $.getJSON("/search.json", function (data) {
+            localStorage.setItem("blog_" + lastUpdated.valueOf(), JSON.stringify(data));
+            callback(data);
+        });
+      } else {
+        callback(searchData);
+      }
     }
+  </script>
+  <style>
+    .backToTop{display:none;width:18px;line-height:1.2;padding:5px 0;background-color:#000;color:#fff;font-size:12px;text-align:center;position:fixed;_position:absolute;right:10px;bottom:100px;_bottom:"auto";cursor:pointer;opacity:.6;filter:Alpha(opacity=60);}
   </style>
 </head>
 
@@ -145,7 +130,7 @@
     <!-- <![endif]-->
     <footer>
       <p>
-        <small>Made with ❤ by Mayx<br />Last updated at <script>document.write(lastUpdated.toLocaleString());</script><br /> 总字数：{% assign count = 0 %}{% for post in site.posts %}{% assign single_count = post.content | strip_html | strip_newlines | remove: " " | size %}{% assign count = count | plus: single_count %}{% endfor %}{% if count > 10000 %}{{ count | divided_by: 10000 }} 万 {{ count | modulo: 10000 }}{% else %}{{ count }}{% endif %} - 文章数：{% for post in site.posts %}{% assign co = co | plus: 1 %}{% endfor %}{{ co }} - <a href="{{ "/atom.xml" | relative_url }}" >Atom</a> - <a href="{{ "/README.html" | relative_url }}" >About</a></small>
+        <small>Made with ❤ by Mayx<br />Last updated at <script>document.write(lastUpdated.toLocaleString());</script><br /> 总字数：{% assign count = 0 %}{% for post in site.posts %}{% assign single_count = post.content | strip_html | strip_newlines | remove: " " | size %}{% assign count = count | plus: single_count %}{% endfor %}{{ count }} - 文章数：{{ site.posts.size }} - <a href="{{ site.feed.path | relative_url }}" >Atom</a> - <a href="{{ "/README.html" | relative_url }}" >About</a></small>
       </p>
     </footer>
   </div>

@@ -75,7 +75,7 @@ graph LR;
     GF
     end
     
-    GH <--Sync--> GL
+    GH <-- Sync --> GL
     GH -- Sync --> GE
     GH -- Deploy --> GHP & SH & Netlify & FELH & DA
     GL -- Deploy --> CFP & Vercel & GLP
