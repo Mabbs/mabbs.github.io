@@ -10,6 +10,7 @@ paginate: 7
 plugins:
   - jekyll-sitemap
   - jekyll-feed
+  - jekyll-include-cache
 feed:
   path: atom.xml
 google_analytics: UA-137710294-1

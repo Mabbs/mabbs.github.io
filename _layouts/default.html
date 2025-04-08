@@ -131,7 +131,7 @@
     <!-- <![endif]-->
     <footer>
       <p>
-        <small>Made with ❤ by Mayx<br />Last updated at <script>document.write(lastUpdated.toLocaleString());</script><br /> 总字数：{% assign count = 0 %}{% for post in site.posts %}{% assign single_count = post.content | strip_html | strip_newlines | remove: " " | size %}{% assign count = count | plus: single_count %}{% endfor %}{{ count }} - 文章数：{{ site.posts.size }} - <a href="{{ site.feed.path | relative_url }}" >Atom</a> - <a href="{{ "/README.html" | relative_url }}" >About</a></small>
+        <small>Made with ❤ by Mayx<br />Last updated at <script>document.write(lastUpdated.toLocaleString());</script><br /> 总字数：{{ include_cached word_count.html }} - 文章数：{{ site.posts.size }} - <a href="{{ site.feed.path | relative_url }}" >Atom</a> - <a href="{{ "/README.html" | relative_url }}" >About</a></small>
       </p>
     </footer>
   </div>

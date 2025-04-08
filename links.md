@@ -8,7 +8,7 @@ tags: [links]
 
 | Link | Description |
 | - | - |
-{% for item in site.data.links %}| <a href="{{ item.link }}" target="_blank" data-feed="{{ item.feed_url }}">{{ item.title }}</a> | {{ item.description }} |
+{% for item in site.data.links %}| <a href="{{ item.link }}" target="_blank" rel="noopener" data-feed="{{ item.feed_url }}">{{ item.title }}</a> | {{ item.description }} |
 {% endfor %}
 
 ## Links申请
@@ -23,6 +23,7 @@ tags: [links]
 名称：Mayx的博客   
 简介：Mayx's Home Page   
 链接：<https://mabbs.github.io>   
+订阅：<https://mabbs.github.io/atom.xml>   
 头像：<https://avatars0.githubusercontent.com/u/17966333>   
 Logo：<https://mabbs.github.io/favicon.ico>
 

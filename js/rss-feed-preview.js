@@ -90,6 +90,17 @@
       return null;
     };
   
+    const escapeHTML = (str) => {
+      return String(str).replace(/[&<>"'/]/g, (c) => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;',
+        '/': '&#x2F;'
+      }[c]));
+    };
+
     const renderFeedItems = (previewEl, items, siteName) => {
       if (!items || items.length === 0) {
         previewEl.innerHTML = '<p>No feed items found.</p>';
@@ -99,13 +110,15 @@
       let html = `<h3>Latest from ${siteName}</h3><ul style="list-style: none; padding: 0; margin: 0;">`;
   
       items.forEach(item => {
+        const safeTitle = escapeHTML(item.title);
+        const safeDate = escapeHTML(new Date(item.date).toLocaleDateString());
         html += `
           <li style="margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #eee;">
             <div style="color: #24292e; font-weight: bold;">
-              ${item.title}
+              ${safeTitle}
             </div>
             <div style="color: #586069; font-size: 12px; margin: 3px 0;">
-              ${new Date(item.date).toLocaleDateString()}
+              ${safeDate}
             </div>
           </li>
         `;
