@@ -1,0 +1,79 @@
+---
+---
+
+@import "{{ site.theme }}";
+
+.backToTop {
+    display: none;
+    width: 18px;
+    line-height: 1.2;
+    padding: 5px 0;
+    background-color: #000;
+    color: #fff;
+    font-size: 12px;
+    text-align: center;
+    position: fixed;
+    _position: absolute;
+    right: 10px;
+    bottom: 100px;
+    _bottom: "auto";
+    cursor: pointer;
+    opacity: .6;
+    filter: Alpha(opacity=60);
+}
+
+.post-content {
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+.post-content h1 {
+    text-indent: -8px;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.post-content h2 {
+    text-indent: -6px;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.post-content h3 {
+    text-indent: -5px;
+}
+
+.post-content h4 {
+    text-indent: -4px;
+}
+
+.post-content h5 {
+    text-indent: -3px;
+}
+
+.post-content h6 {
+    text-indent: -2px;
+}
+
+h1 .octicon,
+h2 .octicon,
+h3 .octicon,
+h4 .octicon,
+h5 .octicon,
+h6 .octicon {
+    visibility: hidden;
+}
+
+h1:hover .octicon,
+h2:hover .octicon,
+h3:hover .octicon,
+h4:hover .octicon,
+h5:hover .octicon,
+h6:hover .octicon {
+    visibility: visible;
+}
+
+.octicon {
+    fill: currentColor;
+    padding: 0;
+    margin-left: -16px;
+    vertical-align: middle;
+}

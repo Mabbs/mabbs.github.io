@@ -875,6 +875,33 @@
 .gt-container .gt-btn-login {
   margin-right: 0;
 }
+.gt-btn-login::after {
+  content: "如果不想登录，请点击上方评论数跳转至对应ISSUE进行评论";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #333;
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s, visibility 0.2s;
+  z-index: 10;
+}
+.gt-btn-login:hover::after {
+  opacity: 1;
+  visibility: visible;
+}
+.gt-btn-login::after {
+  margin-top: 8px;
+}
+.gt-btn-login::after {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
 .gt-container .gt-btn-preview {
   background-color: #fff;
   color: #6190e8;
