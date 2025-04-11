@@ -11,7 +11,7 @@ tags: [links]
 {% for item in site.data.links %}| <a href="{{ item.link }}" target="_blank" rel="noopener" {% if item.feed_url %}data-feed="{{ item.feed_url }}"{% endif %}>{{ item.title }}</a> | {{ item.description }} |
 {% endfor %}
 
-[订阅链接](/blogroll.opml)   
+订阅以上链接：[点击订阅](/blogroll.opml)   
 
 ## Links申请
 请在下面留言或者直接[修改Links](https://github.com/Mabbs/mabbs.github.io/edit/master/_data/links.csv)并发起PR   
