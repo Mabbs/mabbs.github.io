@@ -6,6 +6,6 @@
         <title>Mayx Blogroll</title>
     </head>
     <body>{% for item in site.data.links %}
-        <outline text="{{ item.description | xml_escape }}" title="{{ item.title | xml_escape }}" {% if item.feed_url %}xmlUrl="{{ item.feed_url }}" {% endif %}htmlUrl="{{ item.link }}" />{% endfor %}
+        <outline text="{{ item.title | xml_escape }}" title="{{ item.title | xml_escape }}" description="{{ item.description | xml_escape }}" {% if item.feed_url %}xmlUrl="{{ item.feed_url }}" {% endif %}htmlUrl="{{ item.link }}" />{% endfor %}
     </body>
 </opml>
