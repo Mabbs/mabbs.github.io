@@ -6,7 +6,7 @@ title: 搜索
 <h1>搜索</h1>
 <p>Keyword: <input type="text" id="search-input" placeholder="Search blog posts.."> <img src="/images/loading.svg" id="search-loading" style="width:22px;vertical-align: bottom"></p>
 <ul id="results-container"></ul>
-<script src="/js/simple-jekyll-search.min.js"></script>
+<script src="/assets/js/simple-jekyll-search.min.js"></script>
 <script>
 const urlParams = new URLSearchParams(window.location.search);
 const mykeyword = urlParams.get('keyword')?.trim();

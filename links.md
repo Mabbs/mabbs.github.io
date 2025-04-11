@@ -8,8 +8,10 @@ tags: [links]
 
 | Link | Description |
 | - | - |
-{% for item in site.data.links %}| <a href="{{ item.link }}" target="_blank" rel="noopener" data-feed="{{ item.feed_url }}">{{ item.title }}</a> | {{ item.description }} |
+{% for item in site.data.links %}| <a href="{{ item.link }}" target="_blank" rel="noopener" {% if item.feed_url %}data-feed="{{ item.feed_url }}"{% endif %}>{{ item.title }}</a> | {{ item.description }} |
 {% endfor %}
+
+[订阅链接](/blogroll.opml)   
 
 ## Links申请
 请在下面留言或者直接[修改Links](https://github.com/Mabbs/mabbs.github.io/edit/master/_data/links.csv)并发起PR   
@@ -27,4 +29,4 @@ tags: [links]
 头像：<https://avatars0.githubusercontent.com/u/17966333>   
 Logo：<https://mabbs.github.io/favicon.ico>
 
-<script src="/js/rss-feed-preview.js"></script>
+<script src="/assets/js/rss-feed-preview.js"></script>
