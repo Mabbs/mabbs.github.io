@@ -41,7 +41,7 @@ $(function () {
     }
 });
 
-$(function() {
+$(function () {
     const urlParams = new URLSearchParams(window.location.search);
     const keyword = urlParams.get('kw')?.trim();
 
@@ -54,7 +54,7 @@ $(function() {
 
     // 递归遍历并高亮文本节点
     function highlightTextNodes(element) {
-        $(element).contents().each(function() {
+        $(element).contents().each(function () {
             if (this.nodeType === Node.TEXT_NODE) {
                 const $this = $(this);
                 const text = $this.text();
@@ -72,8 +72,35 @@ $(function() {
         });
     }
 
-    $('section').each(function() {
+    $('section').each(function () {
         highlightTextNodes(this);
+    });
+});
+
+var codeBlocks = document.querySelectorAll('div.highlight');
+
+codeBlocks.forEach(function (codeBlock) {
+    var copyButton = document.createElement('button');
+    copyButton.className = 'copy';
+    copyButton.type = 'button';
+    copyButton.innerText = '📋';
+
+    codeBlock.append(copyButton);
+
+    copyButton.addEventListener('click', function () {
+        var code = codeBlock.querySelector('pre code').innerText.trim();
+        window.navigator.clipboard.writeText(code)
+            .then(() => {
+                copyButton.innerText = '✅';
+            })
+            .catch(err => {
+                copyButton.innerText = '❌';
+                console.error('Failed to copy:', err);
+            });
+
+        setTimeout(function () {
+            copyButton.innerText = '📋';
+        }, 1500);
     });
 });
 
