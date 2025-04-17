@@ -88,7 +88,7 @@ codeBlocks.forEach(function (codeBlock) {
     codeBlock.append(copyButton);
 
     copyButton.addEventListener('click', function () {
-        var code = codeBlock.querySelector('pre code').innerText.trim();
+        var code = codeBlock.querySelector('.rouge-code pre').innerText.trim();
         window.navigator.clipboard.writeText(code)
             .then(() => {
                 copyButton.innerText = '✅';

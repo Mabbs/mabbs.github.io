@@ -26,7 +26,6 @@ layout: default
 
 <hr />
 {% if page.layout != "encrypt" %}
-<!--[if !IE]> -->
 <b>AI摘要</b>
 <p id="ai-output">{% assign ai_cache = site.data.ai-cache[page.url] %}{% if ai_cache %}{{ ai_cache }}{% else %}正在生成中……{% endif %}</p>
 {% unless ai_cache %}
@@ -72,7 +71,6 @@ layout: default
 </script>
 {% endunless %}
 <hr />
-<!-- <![endif]-->
 {% endif %}
 
 {% include toc.html html=content sanitize=true h_max=3 %}
