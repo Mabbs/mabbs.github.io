@@ -7,13 +7,6 @@ description: Mayx's Home Page
 timezone: Asia/Shanghai
 excerpt_separator: <!--more-->
 paginate: 7
-kramdown:
-  syntax_highlighter_opts:
-    span:
-      line_numbers: false
-    block:
-      line_numbers: true
-      start_line: 1
 plugins:
   - jekyll-sitemap
   - jekyll-feed

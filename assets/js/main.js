@@ -76,31 +76,32 @@ $(function () {
         highlightTextNodes(this);
     });
 });
+$(function () {
+    var codeBlocks = document.querySelectorAll('div.highlight');
 
-var codeBlocks = document.querySelectorAll('div.highlight');
+    codeBlocks.forEach(function (codeBlock) {
+        var copyButton = document.createElement('button');
+        copyButton.className = 'copy';
+        copyButton.type = 'button';
+        copyButton.innerText = '📋';
 
-codeBlocks.forEach(function (codeBlock) {
-    var copyButton = document.createElement('button');
-    copyButton.className = 'copy';
-    copyButton.type = 'button';
-    copyButton.innerText = '📋';
+        codeBlock.append(copyButton);
 
-    codeBlock.append(copyButton);
+        copyButton.addEventListener('click', function () {
+            var code = codeBlock.querySelector('pre code').innerText.trim();
+            window.navigator.clipboard.writeText(code)
+                .then(() => {
+                    copyButton.innerText = '✅';
+                })
+                .catch(err => {
+                    copyButton.innerText = '❌';
+                    console.error('Failed to copy:', err);
+                });
 
-    copyButton.addEventListener('click', function () {
-        var code = codeBlock.querySelector('.rouge-code pre').innerText.trim();
-        window.navigator.clipboard.writeText(code)
-            .then(() => {
-                copyButton.innerText = '✅';
-            })
-            .catch(err => {
-                copyButton.innerText = '❌';
-                console.error('Failed to copy:', err);
-            });
-
-        setTimeout(function () {
-            copyButton.innerText = '📋';
-        }, 1500);
+            setTimeout(function () {
+                copyButton.innerText = '📋';
+            }, 1500);
+        });
     });
 });
 
