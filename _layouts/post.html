@@ -82,12 +82,12 @@ layout: default
 {% endif %}
 <br />
 <br />
+<!--[if !IE]> -->
 <p id="suggest-container"></p>
 <script>
-var blogurl = "{{ page.url }}";
 var suggest = $("#suggest-container")[0];
 suggest.innerHTML = "Loading...";
-$.get(BlogAPI + "/suggest?id=" + blogurl + "&update=" + lastUpdated.valueOf(), function (data) {
+$.get(BlogAPI + "/suggest?id={{ page.url }}&update=" + lastUpdated.valueOf(), function (data) {
     if (data.length) {
         getSearchJSON(function (search) {
             suggest.innerHTML = '<b>推荐文章</b><hr style="margin: 0 0 5px"/>';
@@ -107,6 +107,7 @@ $.get(BlogAPI + "/suggest?id=" + blogurl + "&update=" + lastUpdated.valueOf(), f
     }
 });
 </script>
+<!-- <![endif]-->
 <div class="pagination">
   {% if page.previous.url %}
   <span class="prev">
