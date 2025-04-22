@@ -2,22 +2,21 @@
 layout: default
 title: 首页 - 我的文章
 ---
-
-<h1 style="display:inline"> 首页 - 我的文章 </h1><small><a href="/archives.html">Archives</a> | <a href="javascript:getSearchJSON(function(data){window.location = data[Math.floor(Math.random()*data.length)].url})">Random</a></small><br /><br />
+{% if paginator.page == 1 %}<div class="hslice" id="LatestPost">{% endif %}
+<h1 class="entry-title" style="display:inline"> 首页 - 我的文章 </h1><small><a href="/archives.html">Archives</a> | <a href="javascript:getSearchJSON(function(data){window.location = data[Math.floor(Math.random()*data.length)].url})">Random</a></small><br /><br />
 
 <hr />
 
 <!-- 遍历分页后的文章 -->
-{% if paginator.page == 1 %}<div class="hslice">{% endif %}
-<table>
+<table class="entry-content">
 {% for post in paginator.posts %}
   <tr><td onclick="location='{{ post.url }}'">
-    <h2 class="entry-title"><a class="post-link" href="{{ post.url }}">{{ post.title }}{% if post.layout == "encrypt" %} [加密] {% endif %}</a></h2>
+    <h2><a class="post-link" href="{{ post.url }}">{{ post.title }}{% if post.layout == "encrypt" %} [加密] {% endif %}</a></h2>
   <p class="author">
     <span class="date">{{ post.date | date: "%-d %B %Y" }}</span>
     | Hits: <span id="{{ post.url }}" class="visitors-index" >Loading...</span>
   </p>
-  <div class="content entry-content">
+  <div class="content">
     {{ post.excerpt | strip_html | strip_newlines }} 
   </div>
   {% if post.tags %}
