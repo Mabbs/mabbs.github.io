@@ -8,7 +8,8 @@ title: 首页 - 我的文章
 <hr />
 
 <!-- 遍历分页后的文章 -->
-<table{% if paginator.page == 1 %} class="hslice"{% endif %}>
+{% if paginator.page == 1 %}<div class="hslice">{% endif %}
+<table>
 {% for post in paginator.posts %}
   <tr><td onclick="location='{{ post.url }}'">
     <h2 class="entry-title"><a class="post-link" href="{{ post.url }}">{{ post.title }}{% if post.layout == "encrypt" %} [加密] {% endif %}</a></h2>
@@ -29,6 +30,7 @@ title: 首页 - 我的文章
   </td></tr>
 {% endfor %}
 </table>
+{% if paginator.page == 1 %}</div>{% endif %}
 {% if paginator.total_pages > 1 %}
 <div class="pagination">
   {% if paginator.previous_page %}
