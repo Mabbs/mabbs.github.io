@@ -1,3 +1,6 @@
+var message_Path = '/Live2dHistoire/live2d/';
+var talkAPI = BlogAPI + "/ai_chat";
+
 (function () {
     var $backToTopTxt = "返回顶部", $backToTopEle = $('<div class="backToTop"></div>').appendTo($("body"))
         .text($backToTopTxt).attr("title", $backToTopTxt).click(function () {
@@ -115,6 +118,3 @@ if (daysold > 90) {
     $("html")[0].innerHTML = $("html")[0].innerHTML.replace(/Mayx/g, "Ghost");
     console.warn("Mayx may already be Dead");
 }
-
-var message_Path = '/Live2dHistoire/live2d/';
-var talkAPI = BlogAPI + "/ai_chat";

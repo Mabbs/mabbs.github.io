@@ -1,11 +1,13 @@
 ---
 ---
 
+<?xml version="1.0" encoding="utf-8"?>
 <opml version="2.0">
     <head>
         <title>Mayx Blogroll</title>
+        <ownerName>Mayx</ownerName>
     </head>
     <body>{% for item in site.data.links %}
-        <outline text="{{ item.title | xml_escape }}" title="{{ item.title | xml_escape }}" {% if item.description %}description="{{ item.description | xml_escape }}" {% endif %}{% if item.feed_url %}xmlUrl="{{ item.feed_url }}" {% endif %}htmlUrl="{{ item.link }}" />{% endfor %}
+        <outline text="{{ item.title | xml_escape }}" title="{{ item.title | xml_escape }}" {% if item.description %}description="{{ item.description | xml_escape }}" {% endif %}{% if item.feed_url %}xmlUrl="{{ item.feed_url }}" type="rss" {% else %}type="link" {% endif %}htmlUrl="{{ item.link }}" />{% endfor %}
     </body>
 </opml>
