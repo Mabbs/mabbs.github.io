@@ -4,6 +4,10 @@ title: 搜索
 ---
 
 <h1>搜索</h1>
+<!--[if IE]>
+  <p>很遗憾，IE搜不了捏～</p>
+<![endif]-->
+<!--[if !IE]> -->
 <p>Keyword: <input type="text" id="search-input" placeholder="Search blog posts.."> <img src="/images/loading.svg" id="search-loading" style="width:22px;vertical-align: bottom"></p>
 <ul id="results-container"></ul>
 <script src="/assets/js/simple-jekyll-search.min.js"></script>
@@ -26,3 +30,4 @@ getSearchJSON(function(json){
   document.getElementById('search-loading').style.display = "none";
 });
 </script>
+<!-- <![endif]-->

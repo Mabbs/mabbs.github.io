@@ -11,15 +11,12 @@
   <link rel="stylesheet" href="{{ "/assets/css/style.css?v=" | append: site.github.build_revision | relative_url }}">
   <link rel="stylesheet" href="/Live2dHistoire/live2d/css/live2d.css" />
   <link rel="blogroll" type="text/xml" href="/blogroll.opml" />
-  <script src="/assets/js/jquery.min.js"></script>
   <!--[if lt IE 9]>
     <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
   <![endif]-->
-  <!--[if IE]>
-    <script src="//cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?version=4.8.0"></script>
-  <![endif]-->
 
   <!--[if !IE]> -->
+  <script src="/assets/js/jquery.min.js"></script>
   {% if site.google_analytics %}
   <!-- Global site tag (gtag.js) - Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id={{ site.google_analytics }}"></script>
@@ -99,6 +96,7 @@
       {{ content }}
 
     </section>
+    <!--[if !IE]> -->
     <div id="landlord" style="left:5px;bottom:0px;">
       <div class="message" style="opacity:0"></div>
       <canvas id="live2d" width="500" height="560" class="live2d"></canvas>
@@ -128,6 +126,7 @@
       </div>
     </div>
     <div id="open_live2d">召唤伊斯特瓦尔</div>
+    <!-- <![endif]-->
     <footer>
       <p>
         <small>Made with ❤ by Mayx<br />Last updated at {{ site.time | date: "%F %T" }}<br /> 总字数：{% include_cached word_count.html %} - 文章数：{{ site.posts.size }} - <a href="{{ site.feed.path | relative_url }}" >Atom</a> - <a href="{{ "/README.html" | relative_url }}" >About</a></small>
@@ -135,10 +134,11 @@
     </footer>
   </div>
   <script src="{{ "/assets/js/scale.fix.js" | relative_url }}"></script>
-
+  <!--[if !IE]> -->
   <script src="/assets/js/main.js"></script>
   <script src="/Live2dHistoire/live2d/js/live2d.js"></script>
   <script src="/Live2dHistoire/live2d/js/message.js"></script>
+  <!-- <![endif]-->
 </body>
 
 </html>

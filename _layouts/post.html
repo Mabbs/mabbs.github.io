@@ -2,7 +2,7 @@
 layout: default
 ---
 
-<small>{{ page.date | date: "%-d %B %Y" }} - 字数统计：{% if page.layout == "encrypt" %}God Knows {% else %}{{ page.content | strip_html | strip_newlines | remove: " " | size }} - 阅读大约需要{{ page.content | strip_html | strip_newlines | remove: "" | size | divided_by: 350 | plus: 1 }}分钟{% endif %} - Hits: <span id="{{ page.url }}" class="visitors">Loading...</span></small>
+<small>{{ page.date | date: "%-d %B %Y" }} - 字数统计：{% if page.layout == "encrypt" %}God Knows {% else %}{{ page.content | strip_html | strip_newlines | remove: " " | size }} - 阅读大约需要{{ page.content | strip_html | strip_newlines | remove: "" | size | divided_by: 350 | plus: 1 }}分钟{% endif %} <!--[if !IE]> --> - Hits: <span id="{{ page.url }}" class="visitors">Loading...</span> <!-- <![endif]--> </small>
 <h1>{{ page.title }}</h1>
 
 <p class="view">by <a href="//github.com/{{ page.author | default: "Mabbs" }}">{{ page.author | default: site.author }}</a></p>
@@ -29,6 +29,10 @@ layout: default
 <b>AI摘要</b>
 <p id="ai-output">{% assign ai_cache = site.data.ai-cache[page.url] %}{% if ai_cache %}{{ ai_cache }}{% else %}正在生成中……{% endif %}</p>
 {% unless ai_cache %}
+<!--[if IE]>
+  <script>document.getElementById("ai-output").innerHTML="这个文章的AI摘要还没有缓存……IE看不了哦～";</script>
+<![endif]-->
+<!--[if !IE]> -->
 <script>
   async function sha(str) {
     const encoder = new TextEncoder();
@@ -69,6 +73,7 @@ layout: default
   }
   ai_gen();
 </script>
+<!-- <![endif]-->
 {% endunless %}
 <hr />
 {% endif %}
