@@ -54,6 +54,8 @@
 </head>
 
 <body>
+  <!--[if !IE]> --><noscript><marquee style="top: -15px; position: relative;"><small>发现当前浏览器没有启用JavaScript，这不影响你的浏览，但可能会有一些功能无法使用……</small></marquee></noscript><!-- <![endif]-->
+  <!--[if IE]><marquee style="top: -15px; position: relative;"><small>发现当前浏览器为Internet Explorer，这不影响你的浏览，但可能会有一些功能无法使用……</small></marquee><![endif]-->
   <div class="wrapper">
     <header>
       <h1><a href="{{ "/" | relative_url }}">{{ site.title | default: site.github.repository_name }}</a></h1>
