@@ -3,6 +3,11 @@
 
 @import "{{ site.theme }}";
 
+a:hover {
+    font-weight: inherit;
+    text-decoration: underline;
+}
+
 .backToTop {
     display: none;
     width: 18px;

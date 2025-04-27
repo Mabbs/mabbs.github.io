@@ -29,7 +29,7 @@
   </script>
   {% endif %}
   <script>
-    var lastUpdated = new Date("{{ site.time | date: "%FT%T%z" }}");
+    var lastUpdated = new Date("{{ site.time | date_to_xmlschema }}");
     var BlogAPI = "https://summary.mayx.eu.org";
     function getSearchJSON(callback) {
       var searchData = JSON.parse(localStorage.getItem("blog_" + lastUpdated.valueOf()));
