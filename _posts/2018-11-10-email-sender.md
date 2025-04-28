@@ -13,7 +13,7 @@ tags: [免费, 邮件, 日报, 心得]
 到我的邮箱了……
 
 # 代码
-``` PHP
+```php
 <?php
 function curl_post_https($url,$data){ // 模拟提交数据函数
     $curl = curl_init(); // 启动一个CURL会话

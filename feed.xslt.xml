@@ -59,7 +59,7 @@ https://nicolas-hoizey.com/feeds/all.xml
             </h1>
             <h2><xsl:value-of select="atom:feed/atom:title"/><xsl:value-of select="/rss/channel/title"/></h2>
             <p><xsl:value-of select="atom:feed/atom:subtitle"/><xsl:value-of select="/rss/channel/description"/></p>
-            <p>This preview only shows titles and summaries, but the actual feed(Atom) contains the full content.</p>
+            <p>This preview only shows titles and summaries<xsl:if test="atom:feed">, but the actual feed contains the full content</xsl:if>.</p>
             <a href="/">
               Visit Website &#x2192;
             </a>
