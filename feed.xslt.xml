@@ -58,7 +58,7 @@ https://nicolas-hoizey.com/feeds/all.xml
               Web Feed Preview
             </h1>
             <h2><xsl:value-of select="atom:feed/atom:title"/><xsl:value-of select="/rss/channel/title"/></h2>
-            <p><xsl:value-of select="atom:feed/atom:description"/><xsl:value-of select="/rss/channel/description"/></p>
+            <p><xsl:value-of select="atom:feed/atom:subtitle"/><xsl:value-of select="/rss/channel/description"/></p>
             <p>This preview only shows titles and summaries, but the actual feed(Atom) contains the full content.</p>
             <a href="/">
               Visit Website &#x2192;
@@ -101,7 +101,7 @@ https://nicolas-hoizey.com/feeds/all.xml
         </a>
       </h3>
       <small class="gray">
-        Published at <xsl:value-of select="pubDate" />
+        Published: <xsl:value-of select="pubDate" />
       </small>
       <p><xsl:value-of select="description"/></p>
     </div>
