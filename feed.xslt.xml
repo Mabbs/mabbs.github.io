@@ -30,7 +30,7 @@ https://nicolas-hoizey.com/feeds/all.xml
       <body>
         <nav class="container">
           <p class="about">
-            <strong>This is a web feed,</strong> also known as an Atom feed.<br /><strong>Subscribe</strong> by copying the URL from the address bar into your newsreader.
+            <strong>This is a web feed,</strong> also known as an RSS or Atom feed.<br /><strong>Subscribe</strong> by copying the URL from the address bar into your newsreader.
           </p>
           <p class="gray">
             Visit <a href="https://aboutfeeds.com">About Feeds</a> to get started with newsreaders and subscribing. It’s free.
