@@ -56,11 +56,20 @@ $(function () {
     const regex = new RegExp(`(${escapedKeyword})`, 'gi');
 
     // 递归遍历并高亮文本节点
+    const escapeHTML = str => str.replace(/[&<>"']/g, 
+        tag => ({
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#39;'
+        }[tag] || tag));
     function highlightTextNodes(element) {
         $(element).contents().each(function () {
             if (this.nodeType === Node.TEXT_NODE) {
                 const $this = $(this);
-                const text = $this.text();
+                const text = escapeHTML($this.text());
+
                 // 使用正则替换并保留原始大小写
                 if (regex.test(text)) {
                     const replaced = text.replace(regex, '<mark>$1</mark>');
