@@ -59,7 +59,7 @@ https://nicolas-hoizey.com/feeds/all.xml
             </h1>
             <h2><xsl:value-of select="atom:feed/atom:title"/></h2>
             <p><xsl:value-of select="atom:feed/atom:description"/></p>
-            <p>This preview only shows titles, but the actual feed contains the full content.</p>
+            <p>This preview only shows titles and summaries, but the actual feed(Atom) contains the full content.</p>
             <a>
               <xsl:attribute name="href">
                 <xsl:value-of select="/atom:feed/atom:link[2]/@href"/>
@@ -69,6 +69,7 @@ https://nicolas-hoizey.com/feeds/all.xml
           </header>
           <h2>Recent Items</h2>
           <xsl:apply-templates select="atom:feed/atom:entry" />
+          <xsl:apply-templates select="/rss/channel/item" />
           <footer>
               <small><p>Made with ❤ by Mayx</p></small>
           </footer>
@@ -90,6 +91,22 @@ https://nicolas-hoizey.com/feeds/all.xml
         Published at <xsl:value-of select="substring(atom:published, 0, 11)" />
       </small>
       <p><xsl:value-of select="atom:summary"/></p>
+    </div>
+  </xsl:template>
+  <xsl:template match="/rss/channel/item">
+    <div class="item">
+      <h3>
+        <a>
+          <xsl:attribute name="href">
+            <xsl:value-of select="link"/>
+          </xsl:attribute>
+          <xsl:value-of select="title"/>
+        </a>
+      </h3>
+      <small class="gray">
+        Published at <xsl:value-of select="pubDate" />
+      </small>
+      <p><xsl:value-of select="description"/></p>
     </div>
   </xsl:template>
 </xsl:stylesheet>

@@ -1,0 +1,106 @@
+---
+layout: null
+---
+{% capture cache %}
+  {% assign feed = site.data.json_feed | default: site.json_feed %}
+  {% assign title = site.title | smartify | jsonify %}
+  {% assign home_page_url = "/" | absolute_url %}
+  {% assign feed_url = "/feed.json" | absolute_url %}
+  {% assign description = site.description | smartify | jsonify %}
+  {% assign author_name = feed.author.name | default: site.author | default: "" %}
+  {% assign local_avatar_url = feed.author.avatar.local_path | absolute_url %}
+  {% assign avatar_url = feed.author.avatar.external_url | default: local_avatar_url %}
+  {% assign hubs = feed.hubs %}
+  {% assign post_limit = feed.post_limit | default: 20 %}
+{% endcapture %}{% assign cache = nil %}
+{
+  "version": "https://jsonfeed.org/version/1",
+  "title": {{ title }},
+  "home_page_url": "{{ home_page_url }}",
+  "feed_url": "{{ feed_url }}",
+  "description": {{ description }},{% if feed.icon %}
+  "icon": "{{ "/" | append: feed.icon | absolute_url }}",{% endif %}{% if feed.favicon %}
+  "favicon": "{{ "/" | append: feed.favicon | absolute_url }}",{% endif %}{% if feed.user_comment %}
+  "user_comment": "{{ feed.user_comment }}",{% endif %}{% if feed.author %}
+  "author": {
+    "name": "{{ author_name }}"{% if feed.author.url %},
+    "url": "{{ feed.author.url }}"{% endif %}{% if avatar_url %},
+    "avatar": "{{ avatar_url }}"{% endif %}
+  }{% endif %}{% if feed.expired %},
+  "expired": {{ feed.expired }}{% endif %}, {% if hubs %}
+  "hubs": [{% for hub in hubs %}{
+     "url": "{{ hub.url }}",
+     "type": "{{ hub.type }}"
+  }{% unless forloop.last %},{% endunless %}{% endfor %}],{% endif %}
+  "items": [
+    {% for post in site.posts limit: post_limit %}{
+      {% capture cache %}
+      {% assign post_json_feed = post.json_feed  %}
+      {% assign title = post.title | smartify | jsonify %}
+      {% assign unique_url = site.url | append: post.id %}
+      {% assign external_url = post.external_url  %}
+      {% assign date_published = post.date | date_to_xmlschema %}
+      {% if post_json_feed.date_modified %}
+        {% assign date_modified = post_json_feed.date_modified | date_to_xmlschema %}
+      {% endif %}
+
+      {% assign publish_as_text = post_json_feed.publish_as_text %}
+
+      {% if publish_as_text %}
+        {% assign content_key = "content_text" %}
+        {% assign content = post.content | expand_urls: site.url | strip_html | jsonify %}
+      {% else %}
+        {% assign content_key = "content_html" %}
+        {% assign content = post.content | expand_urls: site.url | jsonify %}
+      {% endif %}
+
+      {% assign summary =  post_json_feed.summary | default: post.summary | default: post.excerpt |  default: post.description %}
+
+      {% assign local_image_url = post_json_feed.image.local_path | absolute_url %}
+      {% assign image_url = post_json_feed.image.external_url | default: local_image_url | default: post.thumbnail | default: post.image %}
+
+      {% assign local_banner_image_url = post_json_feed.banner_image.local_path | absolute_url %}
+      {% assign banner_image_url = post_json_feed.banner_image.external_url | default: local_banner_image_url | default: post.banner_image %}
+
+      {% assign post_author = post_json_feed.author  %}
+      {% assign post_author_name = post_author.name %}
+      {% assign post_author_url = post_author.url %}
+      {% assign post_local_avatar_url = post_author.avatar.local_path | absolute_url %}
+      {% assign post_avatar_url = post_author.avatar.external_url | default: post_local_avatar_url %}
+
+      {% if feed.use_category_as_tag %}
+        {% assign tags = post.category | jsonify %}
+      {% else %}
+        {% assign tags = post.tags | jsonify %}
+      {% endif %}
+
+      {% assign attachments = post_json_feed.attachments %}
+
+      {% endcapture %}{% assign cache = nil %}
+      "id": "{{ unique_url }}",
+      "url": "{{ unique_url }}",{% if external_url %}
+      "external_url": {{ external_url }},{% endif %}{% if title %}
+      "title": {{ title }},{% endif %}
+      "date_published": "{{ date_published }}",{% if date_modified %}
+      "date_modified": "{{ date_modified }}",{% endif %}{% if summary %}
+      "summary": "{{ summary }}",{% endif %}{% if image_url %}
+      "image": "{{ image_url }}",{% endif %}{% if banner_image_url %}
+      "banner_image": "{{ banner_image_url }}",{% endif %}{% if post_author %}
+      "author": {
+        "name": "{{ post_author_name }}"{% if post_author_url %},
+        "url": "{{ post_author_url }}"{% endif %}{% if post_avatar_url %},
+        "avatar": "{{ post_avatar_url }}"{% endif %}
+      },{% endif %} {% if tags %}
+      "tags": {{ tags }},{% endif %} {% if attachments %}
+      "attachments": [{% for attachment in attachments %}{
+        "url": "{{ attachment.url }}",{% if attachment.title %}
+        "title": "{{ attachment.title }}",{% endif %} {% if attachment.size_in_bytes %}
+        "size_in_bytes": "{{ attachment.size_in_bytes }}",{% endif %} {% if attachment.duration_in_seconds %}
+        "duration_in_seconds": "{{ attachment.duration_in_seconds }}",{% endif %}
+        "mime_type": "{{ attachment.mime_type }}"
+      }{% unless forloop.last %},{% endunless %}{% endfor %}],{% endif %}
+      "{{ content_key }}": {{ content }}
+    }{% unless forloop.last %},{% endunless %}
+    {% endfor %}
+  ]
+}

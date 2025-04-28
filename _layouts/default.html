@@ -8,7 +8,9 @@
 
   {% seo %}
   {% feed_meta %}
-  <link rel="stylesheet" href="{{ "/assets/css/style.css?v=" | append: site.github.build_revision | relative_url }}">
+  <link rel="alternate" type="application/rss+xml" title="{{ site.title }}" href="{{ "/rss.xml" | absolute_url }}" />
+  <link rel="alternate" type="application/json" title="{{ site.title }}" href="{{ "/feed.json" | absolute_url }}" />
+  <link rel="stylesheet" href="{{ "/assets/css/style.css?v=" | append: site.github.build_revision | relative_url }}" />
   <link rel="stylesheet" href="/Live2dHistoire/live2d/css/live2d.css" />
   <link rel="blogroll" type="text/xml" href="/blogroll.opml" />
   <!--[if lt IE 9]>
