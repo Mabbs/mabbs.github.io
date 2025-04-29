@@ -6,6 +6,15 @@ layout: default
 Mayx's Home Page   
 Powered by [Jekyll](https://github.com/jekyll/jekyll)
 
+[![GitHub deployments](https://img.shields.io/github/deployments/Mabbs/mabbs.github.io/github-pages)](https://github.com/Mabbs/mabbs.github.io/deployments/github-pages)
+[![Website](https://img.shields.io/website?url=https%3A%2F%2Fmabbs.github.io)](https://mabbs.github.io)
+[![Commits](https://img.shields.io/github/commit-activity/t/Mabbs/mabbs.github.io?label=Commits)](https://github.com/Mabbs/mabbs.github.io/commits/master/)
+[![Gitalk](https://img.shields.io/github/issues-raw/Mabbs/mabbs.github.io/Gitalk?label=Gitalk&color=blue)](https://github.com/Mabbs/mabbs.github.io/issues?q=is%3Aissue%20state%3Aopen%20label%3AGitalk)   
+[![Github Stars](https://img.shields.io/github/stars/Mabbs/mabbs.github.io)](https://github.com/Mabbs/mabbs.github.io/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/Mabbs/mabbs.github.io)](https://github.com/Mabbs/mabbs.github.io/forks)
+[![GitLab Stars](https://img.shields.io/gitlab/stars/mayx%2Fmayx.gitlab.io)](https://gitlab.com/mayx/mayx.gitlab.io/-/starrers)
+[![Folo](https://badge.follow.is/feed/41798923170845763?style=social)](https://app.follow.is/share/feeds/41798923170845763)
+
 ## 使用的开源项目
 [Jekyll](https://github.com/jekyll/jekyll)   
 [jQuery](https://github.com/jquery/jquery)   
@@ -26,9 +35,11 @@ Powered by [Jekyll](https://github.com/jekyll/jekyll)
 - CDN、规则以及缓存
 - Workers、D1 SQL 数据库、Vectorize 数据库、AI
 
+[GitLab](https://gitlab.com/)   
 [网易云音乐](https://music.163.com/)   
 [CDNJS](https://cdnjs.com/)   
 [jsDelivr](https://www.jsdelivr.com/)   
+……
 
 ## 版权声明
 未经作者同意，请勿转载   
