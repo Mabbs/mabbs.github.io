@@ -24,7 +24,7 @@ title: 首页 - 我的文章
   {% if post.tags %}
   <span>
     {% for tag in post.tags %}
-      <a href="/search.html?keyword={{ tag | url_encode }}"><code class="highligher-rouge"><nobr>#{{ tag }}</nobr></code></a>
+      <a href="/search.html?keyword={{ tag | url_encode }}"><nobr><code>#{{ tag }}</code></nobr></a>
     {% endfor %}
   </span>
   {% endif %}
@@ -62,22 +62,16 @@ title: 首页 - 我的文章
 </div>
 {% endif %}
 <hr />
-<input name="live2dBGM" value="https://music.163.com/song/media/outer/url?id=523658881.mp3" type="hidden">
-<p>
+
 <h2>其他页面</h2>
- 
- <a href="/service.html">Mayx的公开服务</a><br>
-
- 凯露&危险生存（ <a href="{% unless site.github %}https://mabbs.github.io{% endunless %}/karyl-yabaival/?cn">CHS</a> | <a href="{% unless site.github %}https://mabbs.github.io{% endunless %}/karyl-yabaival/">JA</a> | <a href="{% unless site.github %}https://mabbs.github.io{% endunless %}/karyl-yabaival/?kr">KO</a> ）<br>
-
- <a href="/message.html">留言板</a><br>
-
- <a href="/links.html">Links</a><br>
-
- <a href="/proxylist.html">代理列表</a><br>
-
+<p>
+ <a href="/service.html">Mayx的公开服务</a><br />
+ 凯露&危险生存（ <a href="{% unless site.github %}https://mabbs.github.io{% endunless %}/karyl-yabaival/?cn">CHS</a> | <a href="{% unless site.github %}https://mabbs.github.io{% endunless %}/karyl-yabaival/">JA</a> | <a href="{% unless site.github %}https://mabbs.github.io{% endunless %}/karyl-yabaival/?kr">KO</a> ）<br />
+ <a href="/message.html">留言板</a><br />
+ <a href="/links.html">Links</a><br />
+ <a href="/proxylist.html">代理列表</a><br />
  <!-- <a href="https://mabbs.github.io/MayxDaily/">Mayx日报</a><br> -->
-
-<br>
 </p>
+<br />
 <small><a href="https://icp.gov.moe/?keyword=20218888" target="_blank">萌ICP备 20218888号</a></small>
+<input name="live2dBGM" value="https://music.163.com/song/media/outer/url?id=523658881.mp3" type="hidden" />

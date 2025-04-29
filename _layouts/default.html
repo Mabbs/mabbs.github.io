@@ -68,11 +68,11 @@
 
       <p>{{ site.description | default: site.github.project_tagline }}</p>
 
-      <p>
-      <form action="/search.html"><input type="text" name="keyword" id="search-input-all" placeholder="Search blog posts.." />
+      <form action="/search.html">
+        <input type="text" name="keyword" id="search-input-all" placeholder="Search blog posts.." />
         <input type="submit" />
       </form>
-      </p>
+      <br />
 
       {% if site.github.is_project_page %}
       <p class="view"><a href="{{ site.github.repository_url }}">View the Project on GitHub
