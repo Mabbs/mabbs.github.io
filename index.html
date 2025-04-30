@@ -24,7 +24,7 @@ title: 首页 - 我的文章
   {% if post.tags %}
   <span>
     {% for tag in post.tags %}
-    <a href="/search.html?keyword={{ tag | url_encode }}"><code>#{{ tag }}</code></a>
+    <a href="/search.html?keyword={{ tag | url_encode }}"><code style="white-space: nowrap">#{{ tag }}</code></a>
     {% endfor %}
   </span>
   {% endif %}
