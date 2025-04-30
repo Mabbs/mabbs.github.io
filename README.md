@@ -7,7 +7,7 @@ Mayx's Home Page
 Powered by [Jekyll](https://github.com/jekyll/jekyll)
 
 [![pages-build-deployment](https://github.com/Mabbs/mabbs.github.io/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/Mabbs/mabbs.github.io/actions/workflows/pages/pages-build-deployment)
-[![GitHub deployments](https://gitlab.com/mayx/mayx.gitlab.io/badges/master/pipeline.svg)](https://github.com/Mabbs/mabbs.github.io/deployments/github-pages)   
+[![GitLab deployments](https://gitlab.com/mayx/mayx.gitlab.io/badges/master/pipeline.svg)](https://gitlab.com/mayx/mayx.gitlab.io/-/pipelines)   
 [![Website](https://img.shields.io/website?url=https%3A%2F%2Fmabbs.github.io)](https://mabbs.github.io)
 [![GitHub repo size](https://img.shields.io/github/repo-size/Mabbs/mabbs.github.io)](https://github.com/Mabbs/mabbs.github.io)
 [![Commits](https://img.shields.io/github/commit-activity/t/Mabbs/mabbs.github.io?label=Commits)](https://github.com/Mabbs/mabbs.github.io/commits/master/)
