@@ -6,8 +6,10 @@ layout: default
 Mayx's Home Page   
 Powered by [Jekyll](https://github.com/jekyll/jekyll)
 
-[![GitHub deployments](https://img.shields.io/github/deployments/Mabbs/mabbs.github.io/github-pages)](https://github.com/Mabbs/mabbs.github.io/deployments/github-pages)
+[![pages-build-deployment](https://github.com/Mabbs/mabbs.github.io/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/Mabbs/mabbs.github.io/actions/workflows/pages/pages-build-deployment)
+[![GitHub deployments](https://gitlab.com/mayx/mayx.gitlab.io/badges/master/pipeline.svg)](https://github.com/Mabbs/mabbs.github.io/deployments/github-pages)   
 [![Website](https://img.shields.io/website?url=https%3A%2F%2Fmabbs.github.io)](https://mabbs.github.io)
+[![GitHub repo size](https://img.shields.io/github/repo-size/Mabbs/mabbs.github.io)](https://github.com/Mabbs/mabbs.github.io)
 [![Commits](https://img.shields.io/github/commit-activity/t/Mabbs/mabbs.github.io?label=Commits)](https://github.com/Mabbs/mabbs.github.io/commits/master/)
 [![Gitalk](https://img.shields.io/github/issues-raw/Mabbs/mabbs.github.io/Gitalk?label=Gitalk&color=blue)](https://github.com/Mabbs/mabbs.github.io/issues?q=is%3Aissue%20state%3Aopen%20label%3AGitalk)   
 [![Github Stars](https://img.shields.io/github/stars/Mabbs/mabbs.github.io)](https://github.com/Mabbs/mabbs.github.io/stargazers)
