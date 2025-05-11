@@ -14,9 +14,7 @@ title: 首页 - 我的文章
     <h2><a class="post-link" href="{{ post.url }}">{{ post.title }}{% if post.layout == "encrypt" %} [加密] {% endif %}</a></h2>
   <p class="author">
     <span class="date">{{ post.date | date: "%-d %B %Y" }}</span>
-    <!--[if !IE]> -->
     | Hits: <span id="{{ post.url }}" class="visitors-index" >Loading...</span>
-    <!-- <![endif]-->
   </p>
   <div class="content">
     {{ post.excerpt | strip_html | strip_newlines }} 

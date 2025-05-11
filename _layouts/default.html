@@ -21,6 +21,11 @@
   <![endif]-->
 
   <script src="/assets/js/jquery.min.js"></script>
+  <script>
+    var lastUpdated = new Date("{{ site.time | date_to_xmlschema }}");
+    var BlogAPI = "https://summary.mayx.eu.org";
+  </script>
+  <script src="/assets/js/main.js"></script>
   <!--[if !IE]> -->
   {% if site.google_analytics %}
   <!-- Global site tag (gtag.js) - Google Analytics -->
@@ -33,27 +38,6 @@
   gtag('config', '{{ site.google_analytics }}');
   </script>
   {% endif %}
-  <script>
-    var lastUpdated = new Date("{{ site.time | date_to_xmlschema }}");
-    var BlogAPI = "https://summary.mayx.eu.org";
-    function getSearchJSON(callback) {
-      var searchData = JSON.parse(localStorage.getItem("blog_" + lastUpdated.valueOf()));
-      if (!searchData) {
-        for (var i = 0; i < localStorage.length; i++) {
-            var key = localStorage.key(i);
-            if (key.startsWith('blog_')) {
-                localStorage.removeItem(key);
-            }
-        }
-        $.getJSON("/search.json", function (data) {
-            localStorage.setItem("blog_" + lastUpdated.valueOf(), JSON.stringify(data));
-            callback(data);
-        });
-      } else {
-        callback(searchData);
-      }
-    }
-  </script>
   <script src="/assets/js/instant.page.js" type="module"></script>
   <!-- <![endif]-->
 </head>
@@ -141,7 +125,6 @@
     </footer>
   </div>
   <script src="{{ "/assets/js/scale.fix.js" | relative_url }}"></script>
-  <script src="/assets/js/main.js"></script>
   <!--[if !IE]> -->
   <script src="/assets/js/main_new.js"></script>
   <script src="/Live2dHistoire/live2d/js/live2d.js"></script>

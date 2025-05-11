@@ -2,7 +2,7 @@
 layout: default
 ---
 
-<small>{{ page.date | date: "%-d %B %Y" }} - 字数统计：{% if page.layout == "encrypt" %}God Knows {% else %}{{ page.content | strip_html | strip_newlines | remove: " " | size }} - 阅读大约需要{{ page.content | strip_html | strip_newlines | remove: "" | size | divided_by: 350 | plus: 1 }}分钟{% endif %} <!--[if !IE]> --> - Hits: <span id="{{ page.url }}" class="visitors">Loading...</span> <!-- <![endif]--> </small>
+<small>{{ page.date | date: "%-d %B %Y" }} - 字数统计：{% if page.layout == "encrypt" %}God Knows {% else %}{{ page.content | strip_html | strip_newlines | remove: " " | size }} - 阅读大约需要{{ page.content | strip_html | strip_newlines | remove: "" | size | divided_by: 350 | plus: 1 }}分钟{% endif %} - Hits: <span id="{{ page.url }}" class="visitors">Loading...</span></small>
 <h1>{{ page.title }}</h1>
 
 <p class="view">by <a href="//github.com/{{ page.author | default: "Mabbs" }}">{{ page.author | default: site.author }}</a></p>

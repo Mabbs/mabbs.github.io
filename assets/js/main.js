@@ -14,17 +14,17 @@ var talkAPI = BlogAPI + "/ai_chat";
 })();
 $(function () {
     function showHitCount() {
-        $(".visitors-index").each(function() {
+        $(".visitors-index").each(function () {
             var $elem = $(this);
-            $.get(BlogAPI + "/count_click?id=" + $elem.attr('id'), function(data) {
+            $.get(BlogAPI + "/count_click?id=" + $elem.attr('id'), function (data) {
                 $elem.text(Number(data));
             });
         });
     }
-    
+
     function addCount() {
         var $visitor = $(".visitors:first");
-        $.get(BlogAPI + "/count_click_add?id=" + $visitor.attr('id'), function(data) {
+        $.get(BlogAPI + "/count_click_add?id=" + $visitor.attr('id'), function (data) {
             $visitor.text(Number(data));
         });
     }
@@ -33,15 +33,33 @@ $(function () {
     } else if ($('.visitors-index').length > 0) {
         showHitCount();
     }
+
+    today = new Date();
+    timeold = (today.getTime() - lastUpdated.getTime());
+    secondsold = Math.floor(timeold / 1000);
+    e_daysold = timeold / (24 * 60 * 60 * 1000);
+    daysold = Math.floor(e_daysold);
+    if (daysold > 90) {
+        $("html")[0].style = "-webkit-filter: grayscale(100%);filter:progid:DXImageTransform.Microsoft.BasicImage(graysale=1);";
+        $("html")[0].innerHTML = $("html")[0].innerHTML.replace(/Mayx/g, "Ghost");
+        console.warn("Mayx may already be Dead");
+    }
 });
 
-today = new Date();
-timeold = (today.getTime() - lastUpdated.getTime());
-secondsold = Math.floor(timeold / 1000);
-e_daysold = timeold / (24 * 60 * 60 * 1000);
-daysold = Math.floor(e_daysold);
-if (daysold > 90) {
-    $("html")[0].style = "-webkit-filter: grayscale(100%);filter:progid:DXImageTransform.Microsoft.BasicImage(graysale=1);";
-    $("html")[0].innerHTML = $("html")[0].innerHTML.replace(/Mayx/g, "Ghost");
-    console.warn("Mayx may already be Dead");
+function getSearchJSON(callback) {
+    var searchData = JSON.parse(localStorage.getItem("blog_" + lastUpdated.valueOf()));
+    if (!searchData) {
+        for (var i = 0; i < localStorage.length; i++) {
+            var key = localStorage.key(i);
+            if (key.startsWith('blog_')) {
+                localStorage.removeItem(key);
+            }
+        }
+        $.getJSON("/search.json", function (data) {
+            localStorage.setItem("blog_" + lastUpdated.valueOf(), JSON.stringify(data));
+            callback(data);
+        });
+    } else {
+        callback(searchData);
+    }
 }
