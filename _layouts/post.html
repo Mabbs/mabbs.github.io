@@ -12,12 +12,7 @@ layout: default
   <br /><br />
 </div>
 <script>
-  BirthDay = new Date("{{ page.date | date_to_xmlschema }}");
-  today = new Date();
-  timeold = (today.getTime() - BirthDay.getTime());
-  secondsold = Math.floor(timeold / 1000);
-  e_daysold = timeold / (24 * 60 * 60 * 1000);
-  daysold = Math.floor(e_daysold);
+  daysold = Math.floor((new Date().getTime() - new Date("{{ page.date | date_to_rfc822 }}").getTime()) / (24 * 60 * 60 * 1000));
   if (daysold > 90) {
     document.getElementById("outdate").style.display = "block";
     document.getElementById("outime").innerHTML = daysold;

@@ -22,7 +22,7 @@
 
   <script src="/assets/js/jquery.min.js"></script>
   <script>
-    var lastUpdated = new Date("{{ site.time | date_to_xmlschema }}");
+    var lastUpdated = new Date("{{ site.time | date_to_rfc822 }}");
     var BlogAPI = "https://summary.mayx.eu.org";
   </script>
   <script src="/assets/js/main.js"></script>
