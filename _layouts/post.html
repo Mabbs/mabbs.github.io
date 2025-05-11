@@ -111,7 +111,7 @@ $.get(BlogAPI + "/suggest?id={{ page.url }}&update=" + lastUpdated.valueOf(), fu
 <div class="pagination">
   {% if page.previous.url %}
   <span class="prev">
-    <a href="{{ site.baseurl }}{{ page.previous.url }}">
+    <a href="{{ page.previous.url | relative_url }}">
       上一篇：{{ page.previous.title }}
     </a>
   </span>
@@ -119,7 +119,7 @@ $.get(BlogAPI + "/suggest?id={{ page.url }}&update=" + lastUpdated.valueOf(), fu
   <br />
   {% if page.next.url %}
   <span class="next">
-    <a href="{{ site.baseurl }}{{ page.next.url }}">
+    <a href="{{ page.next.url | relative_url }}">
       下一篇：{{ page.next.title }}
     </a>
   </span>

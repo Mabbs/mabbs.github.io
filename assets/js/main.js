@@ -35,7 +35,10 @@ $(function () {
     }
 
     if (Math.floor((new Date().getTime() - lastUpdated.getTime()) / (24 * 60 * 60 * 1000)) > 90) {
-        $("html")[0].style = "-webkit-filter: grayscale(100%);filter:progid:DXImageTransform.Microsoft.BasicImage(graysale=1);";
+        $("html").css({
+            "-webkit-filter": "grayscale(100%)",
+            "filter": "progid:DXImageTransform.Microsoft.BasicImage(grayscale=1)"
+        })
         $("html")[0].innerHTML = $("html")[0].innerHTML.replace(/Mayx/g, "Ghost");
         console.warn("Mayx may already be Dead");
     }
