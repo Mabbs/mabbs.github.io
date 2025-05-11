@@ -39,7 +39,9 @@ $(function () {
             "-webkit-filter": "grayscale(100%)",
             "filter": "progid:DXImageTransform.Microsoft.BasicImage(grayscale=1)"
         })
-        $("html")[0].innerHTML = $("html")[0].innerHTML.replace(/Mayx/g, "Ghost");
+        $('body').html(function(_, oldHTML) {
+            return oldHTML.replace(/Mayx/g, 'Ghost');
+        });
         console.warn("Mayx may already be Dead");
     }
 });
