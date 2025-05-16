@@ -132,3 +132,20 @@ footer{
 section{
     width: 65%;
 }
+@media print, screen and (max-width: 960px) {
+    .wrapper {
+        width: auto;
+    }
+    
+    header {
+        width: auto;
+    }
+    
+    footer {
+        width: auto;
+    }
+    
+    section {
+        width: auto;
+    }
+}
