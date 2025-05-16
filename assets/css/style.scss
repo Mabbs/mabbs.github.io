@@ -58,6 +58,11 @@ a:hover {
     text-indent: -2px;
 }
 
+.post-content p {
+    text-indent: 2em;
+    margin-bottom: 5px;
+}
+
 h1 .octicon,
 h2 .octicon,
 h3 .octicon,
@@ -94,8 +99,8 @@ div.highlight:hover button {
 div.highlight button {
     opacity: 0;
     position: absolute;
-    top: 0.5rem;
-    right: 1rem;
+    top: 0.5em;
+    right: 1em;
     height: 2em;
     transition: all 0.2s ease-out
 }

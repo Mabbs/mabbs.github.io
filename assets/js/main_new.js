@@ -48,7 +48,9 @@ $(function () {
     $('section').each(function () {
         highlightTextNodes(this);
     });
+});
 
+$(function () {
     var codeBlocks = document.querySelectorAll('div.highlight');
 
     codeBlocks.forEach(function (codeBlock) {
