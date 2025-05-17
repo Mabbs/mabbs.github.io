@@ -34,31 +34,38 @@ a:hover {
 
 .post-content h1 {
     text-indent: -8px;
+    margin:20px 0 10px;
     border-bottom: 1px solid #e5e5e5;
 }
 
 .post-content h2 {
     text-indent: -6px;
+    margin:20px 0 10px;
     border-bottom: 1px solid #e5e5e5;
 }
 
 .post-content h3 {
+    margin:20px 0 10px;
     text-indent: -5px;
 }
 
 .post-content h4 {
+    margin:20px 0 10px;
     text-indent: -4px;
 }
 
 .post-content h5 {
+    margin:20px 0 10px;
     text-indent: -3px;
 }
 
 .post-content h6 {
+    margin:20px 0 10px;
     text-indent: -2px;
 }
 
 .post-content p {
+    margin:20px 0 10px;
     text-indent: 2em;
     margin-bottom: 5px;
 }
@@ -93,7 +100,7 @@ div.highlight {
 }
 
 div.highlight:hover button {
-    opacity: 1
+    opacity: 1;
 }
 
 div.highlight button {
@@ -102,13 +109,13 @@ div.highlight button {
     top: 0.5em;
     right: 1em;
     height: 2em;
-    transition: all 0.2s ease-out
+    transition: all 0.2s ease-out;
 }
 
 div.highlight button:active,
 div.highlight button:focus,
 div.highlight button:hover {
-    opacity: 1
+    opacity: 1;
 }
 
 .footnotes {
