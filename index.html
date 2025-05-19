@@ -13,7 +13,7 @@ title: 首页 - 我的文章
   <tr><td class="h-entry" onclick="location='{{ post.url }}'">
     <h2 class="p-name"><a class="post-link u-url" href="{{ post.url }}">{{ post.title }}{% if post.layout == "encrypt" %} [加密] {% endif %}</a></h2>
   <p>
-    <time class="date dt-published" datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%-d %B %Y" }}</span>
+    <time class="date dt-published" datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%-d %B %Y" }}</time>
     | Hits: <span id="{{ post.url }}" class="visitors-index" >Loading...</span>
   </p>
   <div class="content p-summary">
