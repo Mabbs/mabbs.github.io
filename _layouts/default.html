@@ -47,7 +47,7 @@
   <!--[if IE]><marquee style="top: -15px; position: relative;"><small>发现当前浏览器为Internet Explorer，这不影响你的浏览，但可能会有一些功能无法使用……</small></marquee><![endif]-->
   <div class="wrapper">
     <header class="h-card">
-      <h1><a href="{{ "/" | relative_url }}">{{ site.title | default: site.github.repository_name }}</a></h1>
+      <h1><a class="u-url u-uid p-name" rel="me" href="{{ "/" | relative_url }}">{{ site.title | default: site.github.repository_name }}</a></h1>
 
       {% if site.logo %}
       <img src="{{ site.logo }}" class="u-photo" alt="Logo" style="width: 90%;" />
@@ -62,15 +62,15 @@
       <br />
 
       {% if site.github.is_project_page %}
-      <p class="view"><a href="{{ site.github.repository_url }}">View the Project on GitHub
+      <p class="view"><a class="u-url" href="{{ site.github.repository_url }}">View the Project on GitHub
           <small>{{ site.github.repository_nwo }}</small></a></p>
       {% endif %}
 
       {% if site.github.is_user_page %}
-      <p class="view"><a href="{{ site.github.owner_url }}" rel="me">View My GitHub Profile</a></p>
+      <p class="view"><a class="u-url" href="{{ site.github.owner_url }}" rel="me">View My GitHub Profile</a></p>
       {% endif %}
 
-      <p class="view"><a class="u-url" href="/Mabbs/">About <span class="p-name">Mayx</span></a></p>
+      <p class="view"><a class="u-url" href="/Mabbs/">About me</a></p>
 
       <ul class="downloads">
         {% if site.github %}
