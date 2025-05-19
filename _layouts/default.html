@@ -46,14 +46,14 @@
   <!--[if !IE]> --><noscript><marquee style="top: -15px; position: relative;"><small>发现当前浏览器没有启用JavaScript，这不影响你的浏览，但可能会有一些功能无法使用……</small></marquee></noscript><!-- <![endif]-->
   <!--[if IE]><marquee style="top: -15px; position: relative;"><small>发现当前浏览器为Internet Explorer，这不影响你的浏览，但可能会有一些功能无法使用……</small></marquee><![endif]-->
   <div class="wrapper">
-    <header>
+    <header class="h-card">
       <h1><a href="{{ "/" | relative_url }}">{{ site.title | default: site.github.repository_name }}</a></h1>
 
       {% if site.logo %}
-      <img src="{{ site.logo }}" alt="Logo" style="width: 90%;" />
+      <img src="{{ site.logo }}" class="u-photo" alt="Logo" style="width: 90%;" />
         {% endif %}
 
-      <p>{{ site.description | default: site.github.project_tagline }}</p>
+      <p class="p-note">{{ site.description | default: site.github.project_tagline }}</p>
 
       <form action="/search.html">
         <input type="text" name="keyword" id="search-input-all" placeholder="Search blog posts.." />
@@ -70,7 +70,7 @@
       <p class="view"><a href="{{ site.github.owner_url }}" rel="me">View My GitHub Profile</a></p>
       {% endif %}
 
-      <p class="view"><a class="h-card" href="/Mabbs/">About Me</a></p>
+      <p class="view"><a class="u-url" href="/Mabbs/">About <span class="p-name">Mayx</span></a></p>
 
       <ul class="downloads">
         {% if site.github %}
