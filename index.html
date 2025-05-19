@@ -8,21 +8,21 @@ title: 首页 - 我的文章
 <hr />
 
 <!-- 遍历分页后的文章 -->
-<table class="entry-content">
+<table class="entry-content h-feed">
 {% for post in paginator.posts %}
-  <tr><td onclick="location='{{ post.url }}'">
-    <h2><a class="post-link" href="{{ post.url }}">{{ post.title }}{% if post.layout == "encrypt" %} [加密] {% endif %}</a></h2>
-  <p class="author">
-    <span class="date">{{ post.date | date: "%-d %B %Y" }}</span>
+  <tr><td class="h-entry" onclick="location='{{ post.url }}'">
+    <h2 class="p-name"><a class="post-link u-url" href="{{ post.url }}">{{ post.title }}{% if post.layout == "encrypt" %} [加密] {% endif %}</a></h2>
+  <p>
+    <time class="date dt-published" datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%-d %B %Y" }}</span>
     | Hits: <span id="{{ post.url }}" class="visitors-index" >Loading...</span>
   </p>
-  <div class="content">
+  <div class="content p-summary">
     {{ post.excerpt | strip_html | strip_newlines }} 
   </div>
   {% if post.tags %}
   <span>
     {% for tag in post.tags %}
-    <a href="/search.html?keyword={{ tag | url_encode }}"><code style="white-space: nowrap">#{{ tag }}</code></a>
+    <a rel="category tag" class="p-category" href="/search.html?keyword={{ tag | url_encode }}"><code style="white-space: nowrap">#{{ tag }}</code></a>
     {% endfor %}
   </span>
   {% endif %}

@@ -82,7 +82,7 @@
         {% endif %}
       </ul>
     </header>
-    <section>
+    <section{% unless page.layout == "default" %} class="h-entry"{% endunless %}>
 
       {{ content }}
 
