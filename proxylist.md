@@ -18,6 +18,10 @@ title: 代理列表
 {% for item in site.data.proxylist.mirrors %}- <{{ item }}> <img src="{{ item }}images/online.svg" style="width:22px;vertical-align: bottom" onerror="this.src = '/images/offline.svg'"/>   
 {% endfor %}
 
+# Git列表 
+{% for item in site.data.proxylist.gits %}- <{{ item }}>    
+{% endfor %}
+
 # 服务架构
 ```mermaid
 graph LR;
@@ -25,6 +29,8 @@ graph LR;
     GH@{ shape: bow-rect, label: "GitHub" }
     GL@{ shape: bow-rect, label: "GitLab" }
     GE@{ shape: bow-rect, label: "Gitee" }
+    GEA@{ shape: bow-rect, label: "Gitea" }
+    CB@{ shape: bow-rect, label: "Codeberg" }
     CFP@{ shape: docs, label: "CloudFlare Pages" }
     GHP@{ shape: docs, label: "GitHub Pages" }
     GLP@{ shape: docs, label: "GitLab Pages" }
@@ -45,6 +51,8 @@ graph LR;
     GH
     GL
     GE
+    GEA
+    CB
     end
     
     subgraph Pages
@@ -77,6 +85,8 @@ graph LR;
     
     GH <-- Sync --> GL
     GH -- Sync --> GE
+    GH -- Sync --> GEA
+    GH -- Sync --> CB
     GH -- Deploy --> GHP & SH & Netlify & FELH & DA
     GL -- Deploy --> CFP & Vercel & GLP
     CFW -- Reverse Proxy --> GHP
@@ -99,6 +109,10 @@ graph LR;
      querySelector: '.language-mermaid',
    });
 </script>
+
+# 其他不能CI/CD的静态托管（备用）
+{% for item in site.data.proxylist.static %}- <{{ item }}>    
+{% endfor %}
 
 # 其他平台博客（备用）
 {% for item in site.data.proxylist.others %}- <{{ item }}>    
