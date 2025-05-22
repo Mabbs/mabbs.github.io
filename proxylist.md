@@ -29,8 +29,7 @@ graph LR;
     GH@{ shape: bow-rect, label: "GitHub" }
     GL@{ shape: bow-rect, label: "GitLab" }
     GE@{ shape: bow-rect, label: "Gitee" }
-    GEA@{ shape: bow-rect, label: "Gitea" }
-    CB@{ shape: bow-rect, label: "Codeberg" }
+    OG@{ shape: bow-rect, label: "Other..." }
     CFP@{ shape: docs, label: "CloudFlare Pages" }
     GHP@{ shape: docs, label: "GitHub Pages" }
     GLP@{ shape: docs, label: "GitLab Pages" }
@@ -51,8 +50,7 @@ graph LR;
     GH
     GL
     GE
-    GEA
-    CB
+    OG
     end
     
     subgraph Pages
@@ -85,8 +83,7 @@ graph LR;
     
     GH <-- Sync --> GL
     GH -- Sync --> GE
-    GH -- Sync --> GEA
-    GH -- Sync --> CB
+    GH -. Sync .-> OG
     GH -- Deploy --> GHP & SH & Netlify & FELH & DA
     GL -- Deploy --> CFP & Vercel & GLP
     CFW -- Reverse Proxy --> GHP
