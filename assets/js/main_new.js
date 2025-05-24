@@ -1,11 +1,4 @@
 $(function () {
-    $("div#landlord").mouseenter(function () {
-        $("div.live_ico_box").fadeIn();
-    });
-    $("div#landlord").mouseleave(function () {
-        $("div.live_ico_box").fadeOut();
-    });
-    
     const urlParams = new URLSearchParams(window.location.search);
     const keyword = urlParams.get('kw')?.trim();
 
