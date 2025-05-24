@@ -8,6 +8,7 @@ mirrors:
 - https://mayx.gitlab.io/
 - https://mayx.pages.dev/
 - https://mayx.eu.org/
+- https://mayx.frama.io/
 - https://mayx.vercel.app/
 - https://mayx.netlify.app/
 - https://mayx.4everland.app/
@@ -16,6 +17,7 @@ mirrors:
 gits:
 - https://github.com/Mabbs/mabbs.github.io
 - https://gitlab.com/mayx/mayx.gitlab.io
+- https://framagit.org/mayx/mayx.frama.io
 - https://codeberg.org/mayx/blog
 - https://git.gay/mayx/mayx
 - https://gitea.com/mayx/mayx
