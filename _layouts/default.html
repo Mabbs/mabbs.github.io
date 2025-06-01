@@ -14,6 +14,8 @@
   <link rel="stylesheet" href="/Live2dHistoire/live2d/css/live2d.css" />
   <link rel="webmention" href="https://webmention.io/mabbs.github.io/webmention" />
   <link rel="pingback" href="https://webmention.io/mabbs.github.io/xmlrpc" />
+  <link rel="preconnect" href="https://summary.mayx.eu.org" crossorigin="anonymous" />
+  <link rel="prefetch" href="https://www.blogsclub.org/badge/mabbs.github.io" as="image" />
   <link rel="blogroll" type="text/xml" href="/blogroll.opml" />
   <link rel="me" href="https://github.com/Mabbs" />
   <script src="/assets/js/jquery.min.js"></script>
@@ -50,8 +52,8 @@
       <h1><a class="u-url u-uid p-name" rel="me" href="{{ "/" | relative_url }}">{{ site.title | default: site.github.repository_name }}</a></h1>
 
       {% if site.logo %}
-      <img src="{{ site.logo }}" class="u-photo" alt="Logo" style="width: 90%;" />
-        {% endif %}
+      <img src="{{ site.logo }}" class="u-photo" alt="Logo" style="width: 90%; max-width: 300px;" />
+      {% endif %}
 
       <p class="p-note">{{ site.description | default: site.github.project_tagline }}</p>
 
