@@ -9,15 +9,25 @@ title: 搜索
 <p><center><input name="q" type="text" id="search-input" placeholder="Search blog posts.." /> <!--[if !IE]> --><img src="/images/loading.svg" alt="Loading..." id="search-loading" style="width:22px;vertical-align: bottom" /><!-- <![endif]--> <input type="submit" value="谷歌搜索" style="margin-left: 5px;" /></center></p>
 </form>
 <ul id="results-container"></ul>
-<!--[if !IE]> -->
-<script src="/assets/js/simple-jekyll-search.min.js"></script>
 <script>
-const urlParams = new URLSearchParams(window.location.search);
-const mykeyword = urlParams.get('keyword')?.trim();
-const sbox = document.getElementById('search-input');
+function getQueryVariable(variable){
+    var query = window.location.search.substring(1);
+    var vars = query.split("&");
+    for (var i=0;i<vars.length;i++) {
+        var pair = vars[i].split("=");
+        if(pair[0] == variable){return pair[1];}
+    }
+    return('');
+}
+var mykeyword = decodeURI(getQueryVariable("keyword"));
+var sbox = document.getElementById('search-input');
 if (mykeyword) {
   sbox.value = mykeyword;
 }
+</script>
+<!--[if !IE]> -->
+<script src="/assets/js/simple-jekyll-search.min.js"></script>
+<script>
 getSearchJSON(function(json){
   var sjs = SimpleJekyllSearch({
      searchInput: sbox,
