@@ -47,6 +47,10 @@ $(function () {
 });
 
 function getSearchJSON(callback) {
+    if (typeof Storage == 'undefined') {
+        $.getJSON("/search.json", callback);
+        return;
+    }
     var searchData = JSON.parse(localStorage.getItem("blog_" + lastUpdated.valueOf()));
     if (!searchData) {
         for (var i = 0; i < localStorage.length; i++) {
