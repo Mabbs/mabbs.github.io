@@ -53,9 +53,9 @@ function getSearchJSON(callback) {
     }
     var searchData = JSON.parse(localStorage.getItem("blog_" + lastUpdated.valueOf()));
     if (!searchData) {
-        for (var i = 0; i < localStorage.length; i++) {
+        for (var i = localStorage.length - 1; i >= 0; i--) {
             var key = localStorage.key(i);
-            if (key.startsWith('blog_')) {
+            if (key.indexOf('blog_') === 0) {
                 localStorage.removeItem(key);
             }
         }

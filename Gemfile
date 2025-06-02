@@ -7,6 +7,7 @@ group :jekyll_plugins do
   gem "jekyll-sitemap", "~> 1.4.0"
   gem "jekyll-feed", "~> 0.15.1"
   gem "jekyll-include-cache", "~> 0.2.1"
+  gem "jekyll-readme-index", "~> 0.3.0"
   gem "jekyll-theme-minimal"
   gem "jekyll-paginate", "~> 1.1.0"
   gem "kramdown-parser-gfm", "~> 1.1.0"
