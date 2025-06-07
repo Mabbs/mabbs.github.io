@@ -29,7 +29,7 @@ if (!norunFlag) {
 			var tokenReg = /(\\)?\{([^\{\}\\]+)(\\)?\}/g;
 			return template.replace(tokenReg, function (word, slash1, token, slash2) {
 				if (slash1 || slash2) {
-					return word.replace('\\', '');
+					return word.replace(/\\/g, '');
 				}
 				var variables = token.replace(/\s/g, '').split('.');
 				var currentObject = context;
