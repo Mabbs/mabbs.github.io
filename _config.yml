@@ -13,4 +13,8 @@ plugins:
   - jekyll-include-cache
 feed:
   path: atom.xml
+webmaster_verifications:
+  google: huTYdEesm8NaFymixMNqflyCp6Jfvd615j5Wq1i2PHc
+  yandex: fc0e535abed800be
+  bing: 0ADFCE64B3557DC4DC5F2DC224C5FDDD
 google_analytics: UA-137710294-1
