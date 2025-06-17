@@ -6,7 +6,7 @@ title: 搜索
 <h1>搜索</h1>
 <form action="https://www.google.com/search">
 <input type="hidden" name="as_sitesearch" value="mabbs.github.io" />
-<p><center><input name="q" type="text" id="search-input" placeholder="Search blog posts.." /> <!--[if !IE]> --><img src="/images/loading.svg" alt="Loading..." id="search-loading" style="width:22px;vertical-align: bottom" /><!-- <![endif]--> <input type="submit" value="谷歌搜索" style="margin-left: 5px;" /></center></p>
+<p><center><input name="q" type="text" id="search-input" placeholder="Search blog posts.." /> <img src="/images/loading.svg" alt="Loading..." id="search-loading" style="width:22px;vertical-align: bottom" /> <input type="submit" value="谷歌搜索" style="margin-left: 5px;" /></center></p>
 </form>
 <ul id="results-container"></ul>
 <script>
@@ -25,7 +25,6 @@ if (mykeyword) {
   sbox.value = mykeyword;
 }
 </script>
-<!--[if !IE]> -->
 <script src="/assets/js/simple-jekyll-search.min.js"></script>
 <script>
 getSearchJSON(function(json){
@@ -40,4 +39,3 @@ getSearchJSON(function(json){
   document.getElementById('search-loading').style.display = "none";
 });
 </script>
-<!-- <![endif]-->
