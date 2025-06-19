@@ -43,31 +43,35 @@ $(function () {
     });
 });
 
-$(function () {
-    var codeBlocks = document.querySelectorAll('div.highlight');
+$(function() {
+    var $codeBlocks = $('div.highlight');
 
-    codeBlocks.forEach(function (codeBlock) {
-        var copyButton = document.createElement('button');
-        copyButton.className = 'copy';
-        copyButton.type = 'button';
-        copyButton.innerText = '📋';
+    $codeBlocks.each(function() {
+        var $copyButton = $('<button>', {
+            class: 'copy',
+            type: 'button',
+            text: '📋'
+        });
 
-        codeBlock.append(copyButton);
+        $(this).append($copyButton);
 
-        copyButton.addEventListener('click', function () {
-            var code = codeBlock.querySelector('pre code').innerText.trim();
-            window.navigator.clipboard.writeText(code)
-                .then(() => {
-                    copyButton.innerText = '✅';
+        $copyButton.on('click', function() {
+            var code = $(this).siblings('pre').find('code').text().trim();
+            var $button = $(this);
+            
+            navigator.clipboard.writeText(code)
+                .then(function() {
+                    $button.text('✅');
                 })
-                .catch(err => {
-                    copyButton.innerText = '❌';
-                    console.error('Failed to copy:', err);
+                .catch(function(err) {
+                    $button.text('❌');
+                    console.error('复制失败:', err);
+                })
+                .finally(function() {
+                    setTimeout(function() {
+                        $button.text('📋');
+                    }, 1500);
                 });
-
-            setTimeout(function () {
-                copyButton.innerText = '📋';
-            }, 1500);
         });
     });
 });

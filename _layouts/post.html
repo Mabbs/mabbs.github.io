@@ -102,7 +102,7 @@ $.get(BlogAPI + "/suggest?id={{ page.url }}&update=" + lastUpdated.valueOf(), fu
         var item = searchMap[data[j].id];
         if (item) {
           var link = $('<a href="' + item.url + '">' + item.title + '</a>');
-          var contentPreview = item.content.replace(/<[^>]+>/g, "").substring(0, 100);
+          var contentPreview = item.content.substring(0, 100);
           if (item.content.length > 100) {
                 contentPreview += "……";
           }
