@@ -189,7 +189,7 @@ if (!norunFlag) {
 		if (Array.isArray(text)) text = text[Math.floor(Math.random() * text.length + 1) - 1];
 		//console.log('showMessage', text);
 		$('.message').stop();
-		if (text instanceof EventSource) {
+		if (typeof EventSource !== 'undefined' && text instanceof EventSource) {
 			var outputContainer = $('.message')[0];
 			var eventFlag = false;
 			text.onmessage = function(event) {
