@@ -89,48 +89,50 @@ layout: default
 <script>
 var suggest = $("#suggest-container");
 $.get(BlogAPI + "/suggest?id={{ page.url }}&update=" + lastUpdated.valueOf(), function (data) {
-    if (data.length) {
-        getSearchJSON(function (search) {
-            suggest.empty();
-            var searchMap = {};
-            for (var i = 0; i < search.length; i++) {
-                searchMap[search[i].url] = search[i];
+  if (data.length) {
+    getSearchJSON(function (search) {
+      suggest.empty();
+      var searchMap = {};
+      for (var i = 0; i < search.length; i++) {
+        searchMap[search[i].url] = search[i];
+      }
+      
+      var tooltip = $('<div class="content-tooltip"></div>').appendTo('body').hide();
+      for (var j = 0; j < data.length; j++) {
+        var item = searchMap[data[j].id];
+        if (item) {
+          var link = $('<a href="' + item.url + '">' + item.title + '</a>');
+          var contentPreview = item.content.replace(/<[^>]+>/g, "").substring(0, 100);
+          if (item.content.length > 100) {
+                contentPreview += "……";
+          }
+          link.hover(
+            function(e) {
+              tooltip.text($(this).data('content'))
+                .css({
+                  top: e.pageY + 10,
+                  left: e.pageX + 10
+                })
+                .show();
+            },
+            function() {
+              tooltip.hide();
             }
-            
-            var tooltip = $('<div class="content-tooltip"></div>').appendTo('body').hide();
-            for (var j = 0; j < data.length; j++) {
-                var item = searchMap[data[j].id];
-                if (item) {
-                    var link = $('<a href="' + item.url + '">' + item.title + '</a>');
-                    var contentPreview = item.content.replace(/<[^>]+>/g, "").substring(0, 100);
-                    
-                    link.hover(
-                        function(e) {
-                            tooltip.text($(this).data('content'))
-                                .css({
-                                    top: e.pageY + 10,
-                                    left: e.pageX + 10
-                                })
-                                .show();
-                        },
-                        function() {
-                            tooltip.hide();
-                        }
-                    ).mousemove(function(e) {
-                        tooltip.css({
-                            top: e.pageY + 10,
-                            left: e.pageX + 10
-                        });
-                    }).data('content', contentPreview); 
-                    
-                    suggest.append(link);
-                    suggest.append(' - ' + item.date + '<br />');
-                }
-            }
-        });
-    } else {
-        suggest.html("暂无推荐文章……");
-    }
+          ).mousemove(function(e) {
+            tooltip.css({
+              top: e.pageY + 10,
+              left: e.pageX + 10
+            });
+          }).data('content', contentPreview); 
+          
+          suggest.append(link);
+          suggest.append(' - ' + item.date + '<br />');
+        }
+      }
+    });
+  } else {
+    suggest.html("暂无推荐文章……");
+  }
 });
 </script>
 {% endif %}
