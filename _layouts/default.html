@@ -96,17 +96,19 @@
       <div class="message" style="opacity:0"></div>
       <canvas id="live2d" width="500" height="560" class="live2d"></canvas>
       <div class="live_talk_input_body">
-        <div class="live_talk_input_name_body" {% unless page.layout == "post" %}style="display:none;"{% endunless %}>
-          <input type="checkbox" id="load_this" />
-          <input type="hidden" id="post_id" value="{{ page.url }}" />
-          <label for="load_this">
-            <span style="font-size: 11px; color: #fff;">&nbsp;想问这篇文章</span>
-          </label>
-        </div>
-        <div class="live_talk_input_text_body">
-          <input name="talk" type="text" class="live_talk_talk white_input" id="AIuserText" autocomplete="off" placeholder="要和我聊什么呀？" />
-          <button type="button" class="live_talk_send_btn" id="talk_send">发送</button>
-        </div>
+        <form id="live_talk_input_form">
+          <div class="live_talk_input_name_body" {% unless page.layout == "post" %}style="display:none;"{% endunless %}>
+            <input type="checkbox" id="load_this" />
+            <input type="hidden" id="post_id" value="{{ page.url }}" />
+            <label for="load_this">
+              <span style="font-size: 11px; color: #fff;">&nbsp;想问这篇文章</span>
+            </label>
+          </div>
+          <div class="live_talk_input_text_body">
+            <input name="talk" type="text" class="live_talk_talk white_input" id="AIuserText" autocomplete="off" placeholder="要和我聊什么呀？" />
+            <button type="submit" class="live_talk_send_btn" id="talk_send">发送</button>
+          </div>
+        </form>
       </div>
       <input name="live_talk" id="live_talk" value="1" type="hidden" />
       <div class="live_ico_box" style="display:none;">

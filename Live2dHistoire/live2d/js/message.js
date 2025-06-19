@@ -192,7 +192,7 @@ if (!norunFlag) {
 		if (text instanceof EventSource) {
 			var outputContainer = $('.message')[0];
 			var eventFlag = false;
-			text.onmessage = (event) => {
+			text.onmessage = function(event) {
 				if (event.data == "[DONE]") {
 					text.close();
 					return;
@@ -202,7 +202,7 @@ if (!norunFlag) {
 						outputContainer.textContent = "";
 						eventFlag = true;
 					}
-					const data = JSON.parse(event.data);
+					var data = JSON.parse(event.data);
 					outputContainer.textContent += data.response;
 				}
 			}
@@ -272,7 +272,7 @@ if (!norunFlag) {
 				$('body').addClass(dataType);
 			}
 		});
-		if (talkAPI !== "") {
+		if (talkAPI !== "" && typeof EventSource !== 'undefined') {
 			$('#showInfoBtn').on('click', function () {
 				var live_statu = $('#live_statu_val').val();
 				if (live_statu == "0") {
@@ -299,7 +299,8 @@ if (!norunFlag) {
 
 				}
 			});
-			$('#talk_send').on('click', function () {
+			$('#live_talk_input_form').on('submit', function (e) {
+				e.preventDefault();
 				var info_ = $('#AIuserText').val();
 				// var userid_ = $('#AIuserName').val();
 				let add_id = "";
@@ -311,8 +312,7 @@ if (!norunFlag) {
 					return;
 				}
 				showMessage('思考中~', 0);
-				const evSource = new EventSource(talkAPI + "?info=" + encodeURIComponent(info_) + add_id);
-				showMessage(evSource);
+				showMessage(new EventSource(talkAPI + "?info=" + encodeURIComponent(info_) + add_id));
 			});
 		} else {
 			$('#showInfoBtn').hide();
