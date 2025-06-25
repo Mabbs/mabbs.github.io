@@ -5,9 +5,7 @@
     xmlns:atom="http://www.w3.org/2005/Atom">
   <xsl:output method="html" version="4.0" encoding="UTF-8" indent="yes"/>
   <xsl:template match="/">
-    <html xmlns="http://www.w3.org/1999/xhtml" lang="{{ site.lang | default: "zh-CN" }}">
       {{ content }}
-    </html>
   </xsl:template>
   <xsl:template match="atom:feed/atom:entry">
     <div class="item">
@@ -44,9 +42,6 @@
     </div>
   </xsl:template>
 </xsl:stylesheet>
-{% else %}
-<!DOCTYPE html>
-<html lang="{{ site.lang | default: "zh-CN" }}">
-  {{ content }}
-</html>
+{% else %}<!DOCTYPE html>
+{{ content }}
 {% endif %}

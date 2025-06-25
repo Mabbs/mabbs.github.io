@@ -1,7 +1,7 @@
 ---
 layout: xslt_container
 ---
-
+<html lang="{{ site.lang | default: "zh-CN" }}">
 <head>
   <meta charset="UTF-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -61,8 +61,7 @@ layout: xslt_container
       <p class="p-note">{{ site.description | default: site.github.project_tagline }}</p>
 
       <form action="/search.html">
-        <input type="text" name="keyword" id="search-input-all" placeholder="Search blog posts.." />
-        <input type="submit" />
+        <input type="text" name="keyword" id="search-input-all" placeholder="Search blog posts.." />&#160;<input type="submit" value="搜索" />
       </form>
       <br />
 
@@ -138,3 +137,4 @@ layout: xslt_container
   <script src="/Live2dHistoire/live2d/js/message.js"></script>
   <!-- <![endif]-->
 </body>
+</html>
