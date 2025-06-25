@@ -2,6 +2,18 @@
 layout: default
 ---
 
-{{ content }}
-<xsl:apply-templates select="atom:feed/atom:entry" />
-<xsl:apply-templates select="/rss/channel/item" />
+<xsl:choose>
+    <xsl:when test="xsl:stylesheet">
+        这是订阅预览的样式文件，你可以通过以下链接订阅该博客：<br />
+        <ul>
+            <li><a href="{{ site.feed.path | relative_url }}">Atom</a></li>
+            <li><a href="/rss.xml">RSS</a></li>
+            <li><a href="/feed.json">JSON Feed</a></li>
+        </ul>
+    </xsl:when>
+    <xsl:otherwise>
+        {{ content }}
+        <xsl:apply-templates select="atom:feed/atom:entry" />
+        <xsl:apply-templates select="/rss/channel/item" />
+    </xsl:otherwise>
+</xsl:choose>
