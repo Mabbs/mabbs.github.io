@@ -1,0 +1,7 @@
+---
+layout: default
+---
+
+{{ content }}
+<xsl:apply-templates select="atom:feed/atom:entry" />
+<xsl:apply-templates select="/rss/channel/item" />

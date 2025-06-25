@@ -1,0 +1,53 @@
+{% if page.layout == "xslt" %}
+<?xml version="1.0" encoding="utf-8"?>
+<xsl:stylesheet
+    version="3.0"
+    xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    xmlns:atom="http://www.w3.org/2005/Atom">
+  <xsl:output method="html" version="4.0" encoding="UTF-8" indent="yes"/>
+  <xsl:template match="/">
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="{{ site.lang | default: "zh-CN" }}">
+      {{ content }}
+    </html>
+  </xsl:template>
+  <xsl:template match="atom:feed/atom:entry">
+    <div class="item">
+      <h2>
+        <a>
+          <xsl:attribute name="href">
+            <xsl:value-of select="atom:link/@href"/>
+          </xsl:attribute>
+          <xsl:value-of select="atom:title"/>
+        </a>
+      </h2>
+      <small class="gray">
+        Published at <xsl:value-of select="substring(atom:published, 0, 11)" />
+      </small>
+      <p><xsl:value-of select="atom:summary"/></p>
+      <hr />
+    </div>
+  </xsl:template>
+  <xsl:template match="/rss/channel/item">
+    <div class="item">
+      <h2>
+        <a>
+          <xsl:attribute name="href">
+            <xsl:value-of select="link"/>
+          </xsl:attribute>
+          <xsl:value-of select="title"/>
+        </a>
+      </h2>
+      <small class="gray">
+        Published at <xsl:value-of select="substring(pubDate, 0, 17)" />
+      </small>
+      <p><xsl:value-of select="description"/></p>
+      <hr />
+    </div>
+  </xsl:template>
+</xsl:stylesheet>
+{% else %}
+<!DOCTYPE html>
+<html lang="{{ site.lang | default: "zh-CN" }}">
+  {{ content }}
+</html>
+{% endif %}

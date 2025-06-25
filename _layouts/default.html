@@ -1,5 +1,6 @@
-<!DOCTYPE html>
-<html lang="{{ site.lang | default: "zh-CN" }}">
+---
+layout: xslt_container
+---
 
 <head>
   <meta charset="UTF-8" />
@@ -34,7 +35,7 @@
   <!--[if !IE]> -->
   {% if site.google_analytics %}
   <!-- Global site tag (gtag.js) - Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id={{ site.google_analytics }}"></script>
+  <script async="async" src="https://www.googletagmanager.com/gtag/js?id={{ site.google_analytics }}"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
@@ -101,7 +102,7 @@
             <input type="checkbox" id="load_this" />
             <input type="hidden" id="post_id" value="{{ page.url }}" />
             <label for="load_this">
-              <span style="font-size: 11px; color: #fff;">&nbsp;想问这篇文章</span>
+              <span style="font-size: 11px; color: #fff;">&#160;想问这篇文章</span>
             </label>
           </div>
           <div class="live_talk_input_text_body">
@@ -137,5 +138,3 @@
   <script src="/Live2dHistoire/live2d/js/message.js"></script>
   <!-- <![endif]-->
 </body>
-
-</html>
