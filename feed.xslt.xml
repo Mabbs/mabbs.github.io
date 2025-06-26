@@ -8,3 +8,5 @@ title: 订阅预览
 <br />
 以下为其内容预览：</p>
 <hr />
+<xsl:apply-templates select="atom:feed/atom:entry" />
+<xsl:apply-templates select="/rss/channel/item" />
