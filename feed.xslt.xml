@@ -6,7 +6,39 @@ title: 订阅预览
 <h1>订阅预览</h1>
 <p>这是一个订阅源（Feed）。 复制当前URL到任何支持 Atom/RSS 的阅读器，即可订阅本博客的最新文章。
 <br />
-以下为其内容预览：</p>
+以下展示了此订阅源包含的最新文章：</p>
 <hr />
-<xsl:apply-templates select="atom:feed/atom:entry" />
-<xsl:apply-templates select="/rss/channel/item" />
+<xsl:for-each select="atom:feed/atom:entry">
+  <div class="item">
+    <h2>
+      <a>
+        <xsl:attribute name="href">
+          <xsl:value-of select="atom:link/@href"/>
+        </xsl:attribute>
+        <xsl:value-of select="atom:title"/>
+      </a>
+    </h2>
+    <small>
+      Published at <xsl:value-of select="substring(atom:published, 0, 11)" />
+    </small>
+    <p><xsl:value-of select="atom:summary"/></p>
+    <hr />
+  </div>
+</xsl:for-each>
+<xsl:for-each select="/rss/channel/item">
+  <div class="item">
+    <h2>
+      <a>
+        <xsl:attribute name="href">
+          <xsl:value-of select="link"/>
+        </xsl:attribute>
+        <xsl:value-of select="title"/>
+      </a>
+    </h2>
+    <small>
+      Published at <xsl:value-of select="substring(pubDate, 0, 17)" />
+    </small>
+    <p><xsl:value-of select="description"/></p>
+    <hr />
+  </div>
+</xsl:for-each>
