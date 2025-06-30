@@ -16,6 +16,7 @@ layout: xslt_container
   <!--[if !IE]> -->
   <link rel="stylesheet" href="/Live2dHistoire/live2d/css/live2d.css" />
   <!-- <![endif]-->
+  <link rel="search" type="application/opensearchdescription+xml" href="/opensearch.xml" title="{{ site.title }}" />
   <link rel="webmention" href="https://webmention.io/mabbs.github.io/webmention" />
   <link rel="pingback" href="https://webmention.io/mabbs.github.io/xmlrpc" />
   <link rel="preconnect" href="https://summary.mayx.eu.org" crossorigin="anonymous" />
@@ -92,39 +93,7 @@ layout: xslt_container
       {{ content }}
 
     </section>
-    <!--[if !IE]> -->
-    <div id="landlord" style="left:5px;bottom:0px;">
-      <div class="message" style="opacity:0"></div>
-      <canvas id="live2d" width="500" height="560" class="live2d"></canvas>
-      <div class="live_talk_input_body">
-        <form id="live_talk_input_form">
-          <div class="live_talk_input_name_body" {% unless page.layout == "post" %}style="display:none;"{% endunless %}>
-            <input type="checkbox" id="load_this" />
-            <input type="hidden" id="post_id" value="{{ page.url }}" />
-            <label for="load_this">
-              <span style="font-size: 11px; color: #fff;">&#160;想问这篇文章</span>
-            </label>
-          </div>
-          <div class="live_talk_input_text_body">
-            <input name="talk" type="text" class="live_talk_talk white_input" id="AIuserText" autocomplete="off" placeholder="要和我聊什么呀？" />
-            <button type="submit" class="live_talk_send_btn" id="talk_send">发送</button>
-          </div>
-        </form>
-      </div>
-      <input name="live_talk" id="live_talk" value="1" type="hidden" />
-      <div class="live_ico_box" style="display:none;">
-        <div class="live_ico_item type_info" id="showInfoBtn"></div>
-        <div class="live_ico_item type_talk" id="showTalkBtn"></div>
-        <div class="live_ico_item type_music" id="musicButton"></div>
-        <div class="live_ico_item type_youdu" id="youduButton"></div>
-        <div class="live_ico_item type_quit" id="hideButton"></div>
-        <input name="live_statu_val" id="live_statu_val" value="0" type="hidden" />
-        <audio src="" style="display:none;" id="live2d_bgm" data-bgm="0" preload="none"></audio>
-        <input id="duType" value="douqilai" type="hidden" />
-      </div>
-    </div>
-    <div id="open_live2d">召唤伊斯特瓦尔</div>
-    <!-- <![endif]-->
+    {% include live2d.html %}
     <footer>
       <p>
         <small>Made with ❤ by Mayx<br />Last updated at {{ site.time | date: "%F %T" }}<br /> 总字数：{% include_cached word_count.html %} - 文章数：{{ site.posts.size }} - <a href="{{ site.feed.path | relative_url }}" >Atom</a> - <a href="{{ "/README.html" | relative_url }}" >About</a></small>
