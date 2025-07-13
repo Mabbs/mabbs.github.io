@@ -14,7 +14,7 @@ tags: [links]
 订阅以上链接：[OPML](/blogroll.opml)   
 
 ## Links申请
-请在下面留言或者直接[修改Links](https://github.com/Mabbs/mabbs.github.io/edit/master/_data/links.csv)并发起PR   
+请直接[修改Links](https://github.com/Mabbs/mabbs.github.io/edit/master/_data/links.csv)并发起PR或者在下面留言   
 请在申请之前加上本站友链   
 要求：
 1. 全站HTTPS
