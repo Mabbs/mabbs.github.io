@@ -11,7 +11,7 @@ title: Sitemap
       <li>
         <a>
           <xsl:attribute name="href"><xsl:value-of select="sm:loc" /></xsl:attribute>
-            <xsl:value-of select="sm:loc" />
+          <xsl:value-of select="sm:loc" />
         </a>
       </li>
     </xsl:for-each>

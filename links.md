@@ -29,6 +29,4 @@ tags: [links]
 头像：<https://avatars0.githubusercontent.com/u/17966333>   
 Logo：<https://mabbs.github.io/favicon.ico>
 
-<!--[if !IE]> -->
 <script src="/assets/js/rss-feed-preview.js"></script>
-<!-- <![endif]-->
