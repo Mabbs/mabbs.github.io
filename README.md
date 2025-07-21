@@ -4,7 +4,8 @@ layout: default
 
 # Mayx的博客
 Mayx's Home Page   
-Powered by [Jekyll](https://github.com/jekyll/jekyll)
+Powered by [Jekyll](https://github.com/jekyll/jekyll)   
+![ScreenShot](https://screenshot.mayx.eu.org)
 
 [![pages-build-deployment](https://github.com/Mabbs/mabbs.github.io/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/Mabbs/mabbs.github.io/actions/workflows/pages/pages-build-deployment) [![Jekyll](https://img.shields.io/badge/Powered%20by-Jekyll-red?logo=jekyll)](https://github.com/jekyll/jekyll)   
 [![Website](https://img.shields.io/website?url=https%3A%2F%2Fmabbs.github.io)](https://mabbs.github.io)
