@@ -3,19 +3,19 @@ layout: default
 title: 代理列表
 ---
 
-  源站：<https://mabbs.github.io> <img src="https://mabbs.github.io/images/online.svg" style="width:22px;vertical-align: bottom" onerror="this.src = '/images/offline.svg'"/>   
+  源站：<https://mabbs.github.io> <img src="https://mabbs.github.io/images/online.svg" style="width:22px;vertical-align: bottom" onerror="$(this).replaceWith('ⓧ')"/>   
 
 
 
 # 代理列表
 考虑到中国对于Github Pages在很多地区都有一定程度的解析异常，所以我为我的博客做了很多反向代理。以下代理站均为官方授权：   
 （根据可能的可用性排序）   
-{% for item in site.data.proxylist.proxies %}- <{{ item }}> <img src="{{ item }}images/online.svg" style="width:22px;vertical-align: bottom" onerror="this.src = '/images/offline.svg'"/>   
+{% for item in site.data.proxylist.proxies %}- <{{ item }}> <img src="{{ item }}images/online.svg" style="width:22px;vertical-align: bottom" onerror="$(this).replaceWith('ⓧ')"/>   
 {% endfor %}
 
 # 镜像列表
 由于[Github已经不再可信](/2022/01/04/banned.html)，所以现在提供以下镜像站：   
-{% for item in site.data.proxylist.mirrors %}- <{{ item }}> <img src="{{ item }}images/online.svg" style="width:22px;vertical-align: bottom" onerror="this.src = '/images/offline.svg'"/>   
+{% for item in site.data.proxylist.mirrors %}- <{{ item }}> <img src="{{ item }}images/online.svg" style="width:22px;vertical-align: bottom" onerror="$(this).replaceWith('ⓧ')"/>   
 {% endfor %}
 
 # Git列表 
