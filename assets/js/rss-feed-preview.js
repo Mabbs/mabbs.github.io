@@ -66,17 +66,17 @@
     return result;
   }
 
-  function checkFeed(url, callback) {
-    $.ajax({
+  function checkFeed(url, onSuccess, onError) {
+    return $.ajax({
       url: CORS_PROXY + url,
       type: 'GET',
       dataType: 'text',
       success: function (data) {
         var items = parseRSS(data);
-        callback(items);
+        onSuccess(items);
       },
       error: function () {
-        callback(null);
+        onError();
       }
     });
   }
@@ -130,16 +130,19 @@
     var cache = {};
     var currentLink = null;
     var timeout = null;
+    var currentRequest = null;
+    var currentRequestId = 0;
+    $('main table tbody').on('mouseenter mousemove mouseleave', 'tr td a', function (e) {
 
-    $('main table tbody tr td a').each(function () {
-      var $link = $(this);
-
-      $link.on('mouseenter', function (e) {
-        currentLink = this;
+      if (e.type === 'mouseenter') {
+        var $link = $(this);
         var siteName = $link.text();
         var url = $link.attr('data-feed');
         if (!url)
           return;
+
+        currentLink = $link[0];
+        var requestId = ++currentRequestId;
 
         $previewEl.html('<p>Checking for RSS/Atom feed...</p>').show();
         positionPreview(e);
@@ -148,38 +151,51 @@
           clearTimeout(timeout);
         timeout = setTimeout(function () {
           if (cache[url]) {
-            renderFeedItems(cache[url], siteName);
-            positionPreview(e);
+            if (currentLink === $link[0] && requestId === currentRequestId) {
+              renderFeedItems(cache[url], siteName);
+              positionPreview(e);
+            }
             return;
           }
 
-          if (url) {
-            checkFeed(url, function (items) {
-              if (currentLink === $link[0] && items) {
+          currentRequest = checkFeed(
+            url,
+            function (items) {
+              if (requestId !== currentRequestId || currentLink !== $link[0])
+                return;
+
+              if (items && items.length) {
                 cache[url] = items;
                 renderFeedItems(items, siteName);
-                positionPreview(e);
               } else {
-                $previewEl.hide();
+                $previewEl.html('<p>No feed items found.</p>');
               }
-            });
-          } else {
-            $previewEl.hide();
-          }
-        }, 300);
-      });
 
-      $link.on('mousemove', function (e) {
+              positionPreview(e);
+            },
+            function () {
+              if (requestId !== currentRequestId || currentLink !== $link[0])
+                return;
+              $previewEl.html('<p>Failed to load feed.</p>');
+              positionPreview(e);
+            }
+          );
+        }, 300);
+      } else if (e.type === 'mousemove') {
         if ($previewEl.is(':visible'))
           positionPreview(e);
-      });
-
-      $link.on('mouseleave', function () {
+      } else if (e.type === 'mouseleave') {
         clearTimeout(timeout);
         timeout = null;
         currentLink = null;
+
+        if (currentRequest) {
+          currentRequest.abort();
+          currentRequest = null;
+        }
+
         $previewEl.hide();
-      });
+      }
     });
 
     $(document).on('click', function (e) {
@@ -188,6 +204,7 @@
       }
     });
   }
+
 
   if (document.readyState === 'complete' || document.readyState === 'interactive') {
     init();
