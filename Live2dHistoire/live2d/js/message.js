@@ -1,5 +1,3 @@
-var home_Path = document.location.protocol + '//' + window.document.location.hostname + '/';
-
 var userAgent = window.navigator.userAgent.toLowerCase();
 console.log(userAgent);
 var norunAI = ["android", "iphone", "ipod", "ipad", "windows phone"];
@@ -124,7 +122,7 @@ if (!norunFlag) {
 				text = '嗨！ 来自 谷歌搜索 的朋友！<br>欢迎访问<span style="color:#0099cc;">「 ' + document.title.split(' | ')[0] + ' 」</span>';
 			}
 		} else {
-			if (window.location.href == home_Path) { //主页URL判断，需要斜杠结尾
+			if (window.location.pathname == "/") { //主页URL判断，需要斜杠结尾
 				var now = (new Date()).getHours();
 				if (now > 23 || now <= 5) {
 					text = '你是夜猫子呀？这么晚还不睡觉，明天起的来嘛？';
@@ -454,16 +452,10 @@ if (!norunFlag) {
 	}
 	$(document).ready(function () {
 		var AIimgSrc = [
-			home_Path + message_Path + "model/histoire/histoire.1024/texture_00.png",
-			home_Path + message_Path + "model/histoire/histoire.1024/texture_01.png",
-			home_Path + message_Path + "model/histoire/histoire.1024/texture_02.png",
-			home_Path + message_Path + "model/histoire/histoire.1024/texture_03.png",
-			home_Path + message_Path + "images/info.png",
-			home_Path + message_Path + "images/music.png",
-			home_Path + message_Path + "images/pasue.png",
-			home_Path + message_Path + "images/quite.png",
-			home_Path + message_Path + "images/talk.png",
-			home_Path + message_Path + "images/youdu.png"
+			message_Path + "model/histoire/histoire.1024/texture_00.png",
+			message_Path + "model/histoire/histoire.1024/texture_01.png",
+			message_Path + "model/histoire/histoire.1024/texture_02.png",
+			message_Path + "model/histoire/histoire.1024/texture_03.png"
 		]
 		var images = [];
 		var imgLength = AIimgSrc.length;
