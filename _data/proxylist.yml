@@ -10,6 +10,7 @@ mirrors:
 - https://mayx.envs.sh/
 - https://mayx.envs.net/
 - https://mayx.frama.io/
+- https://mayx.surge.sh/
 - https://mayx.pages.gay/
 - https://mayx.vercel.app/
 - https://mayx.netlify.app/
@@ -33,6 +34,7 @@ gits:
 - https://git.launchpad.net/mayx
 - https://git.tilde.town/mayx/blog
 - https://cgit.tilde.town/~mayx/blog
+- https://bitbucket.org/unmayx/mayx
 - https://git.disroot.org/mayx/mayx
 - https://gitee.com/mabbs/mabbs
 - https://sourceforge.net/projects/mayx/
