@@ -3,6 +3,7 @@ proxies:
 - https://mayx.deno.dev/
 - https://yuki.gear.host/
 - https://mayx.serv00.net/
+- https://mayx.global.ssl.fastly.net/
 mirrors:
 - https://mayx.gitlab.io/
 - https://mayx.pages.dev/
@@ -16,6 +17,7 @@ mirrors:
 - https://mayx.netlify.app/
 - https://mayx.codeberg.page/
 - https://mayx.4everland.app/
+- https://unmayx.bitbucket.io/
 - https://mayx.pages.debian.net/
 - https://mayx.dappling.network/
 - https://mayx-blog.statichost.eu/
