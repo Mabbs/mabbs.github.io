@@ -190,7 +190,7 @@ if (!norunFlag) {
 		if (typeof EventSource !== 'undefined' && text instanceof EventSource) {
 			var outputContainer = $('.message')[0];
 			var eventFlag = false;
-			text.onmessage = function(event) {
+			text.onmessage = function (event) {
 				if (event.data == "[DONE]") {
 					text.close();
 					return;
@@ -317,6 +317,70 @@ if (!norunFlag) {
 			$('#showTalkBtn').hide();
 
 		}
+		// //获取用户名
+		// var live2dUser = sessionStorage.getItem("live2duser");
+		// if(live2dUser !== null){
+		// 	$('#AIuserName').val(live2dUser);
+		// }
+		//获取位置
+		var landL = sessionStorage.getItem("historywidth");
+		var landB = sessionStorage.getItem("historyheight");
+		if (landL == null || landB == null) {
+			landL = '5px'
+			landB = '0px'
+		}
+		$('#landlord').css('left', landL + 'px');
+		$('#landlord').css('bottom', landB + 'px');
+		//移动
+		function getEvent() {
+			return window.event || arguments.callee.caller.arguments[0];
+		}
+		var smcc = document.getElementById("landlord");
+		var moveX = 0;
+		var moveY = 0;
+		var moveBottom = 0;
+		var moveLeft = 0;
+		var moveable = false;
+		var docMouseMoveEvent = document.onmousemove;
+		var docMouseUpEvent = document.onmouseup;
+		smcc.onmousedown = function () {
+			var ent = getEvent();
+			moveable = true;
+			moveX = ent.clientX;
+			moveY = ent.clientY;
+			var obj = smcc;
+			moveBottom = parseInt(obj.style.bottom);
+			moveLeft = parseInt(obj.style.left);
+			if (isFirefox = navigator.userAgent.indexOf("Firefox") > 0) {
+				window.getSelection().removeAllRanges();
+			}
+			document.onmousemove = function () {
+				if (moveable) {
+					var ent = getEvent();
+					var x = moveLeft + ent.clientX - moveX;
+					var y = moveBottom + (moveY - ent.clientY);
+					obj.style.left = x + "px";
+					obj.style.bottom = y + "px";
+				}
+			};
+			document.onmouseup = function () {
+				if (moveable) {
+					var historywidth = obj.style.left;
+					var historyheight = obj.style.bottom;
+					historywidth = historywidth.replace('px', '');
+					historyheight = historyheight.replace('px', '');
+					sessionStorage.setItem("historywidth", historywidth);
+					sessionStorage.setItem("historyheight", historyheight);
+					document.onmousemove = docMouseMoveEvent;
+					document.onmouseup = docMouseUpEvent;
+					moveable = false;
+					moveX = 0;
+					moveY = 0;
+					moveBottom = 0;
+					moveLeft = 0;
+				}
+			};
+		};
 		//获取音乐信息初始化
 		var bgmListInfo = $('input[name=live2dBGM]');
 		if (bgmListInfo.length == 0) {
@@ -385,70 +449,6 @@ if (!norunFlag) {
 				showMessage('音乐似乎加载不出来了呢！', 0);
 			});
 		}
-		// //获取用户名
-		// var live2dUser = sessionStorage.getItem("live2duser");
-		// if(live2dUser !== null){
-		// 	$('#AIuserName').val(live2dUser);
-		// }
-		//获取位置
-		var landL = sessionStorage.getItem("historywidth");
-		var landB = sessionStorage.getItem("historyheight");
-		if (landL == null || landB == null) {
-			landL = '5px'
-			landB = '0px'
-		}
-		$('#landlord').css('left', landL + 'px');
-		$('#landlord').css('bottom', landB + 'px');
-		//移动
-		function getEvent() {
-			return window.event || arguments.callee.caller.arguments[0];
-		}
-		var smcc = document.getElementById("landlord");
-		var moveX = 0;
-		var moveY = 0;
-		var moveBottom = 0;
-		var moveLeft = 0;
-		var moveable = false;
-		var docMouseMoveEvent = document.onmousemove;
-		var docMouseUpEvent = document.onmouseup;
-		smcc.onmousedown = function () {
-			var ent = getEvent();
-			moveable = true;
-			moveX = ent.clientX;
-			moveY = ent.clientY;
-			var obj = smcc;
-			moveBottom = parseInt(obj.style.bottom);
-			moveLeft = parseInt(obj.style.left);
-			if (isFirefox = navigator.userAgent.indexOf("Firefox") > 0) {
-				window.getSelection().removeAllRanges();
-			}
-			document.onmousemove = function () {
-				if (moveable) {
-					var ent = getEvent();
-					var x = moveLeft + ent.clientX - moveX;
-					var y = moveBottom + (moveY - ent.clientY);
-					obj.style.left = x + "px";
-					obj.style.bottom = y + "px";
-				}
-			};
-			document.onmouseup = function () {
-				if (moveable) {
-					var historywidth = obj.style.left;
-					var historyheight = obj.style.bottom;
-					historywidth = historywidth.replace('px', '');
-					historyheight = historyheight.replace('px', '');
-					sessionStorage.setItem("historywidth", historywidth);
-					sessionStorage.setItem("historyheight", historyheight);
-					document.onmousemove = docMouseMoveEvent;
-					document.onmouseup = docMouseUpEvent;
-					moveable = false;
-					moveX = 0;
-					moveY = 0;
-					moveBottom = 0;
-					moveLeft = 0;
-				}
-			};
-		};
 	}
 	$(document).ready(function () {
 		var AIimgSrc = [
