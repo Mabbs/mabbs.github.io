@@ -24,7 +24,7 @@ image: https://screenshot.mayx.eu.org/
   {% if post.tags %}
   <span>
     {% for tag in post.tags %}
-    <a rel="category tag" class="p-category" href="/search.html?keyword={{ tag | url_encode }}"><code style="white-space: nowrap">#{{ tag }}</code></a>
+    <a rel="category tag" class="p-category" href="/search.html?keyword={{ tag | url_encode | replace: '+', '%20' }}"><code style="white-space: nowrap">#{{ tag }}</code></a>
     {% endfor %}
   </span>
   {% endif %}
