@@ -2,7 +2,6 @@ proxies:
 - https://blog.mayx.workers.dev/
 - https://mayx.deno.dev/
 - https://yuki.gear.host/
-- https://mayx.serv00.net/
 - https://mayx.global.ssl.fastly.net/
 mirrors:
 - https://mayx.gitlab.io/
@@ -13,6 +12,7 @@ mirrors:
 - https://mayx.frama.io/
 - https://mayx.surge.sh/
 - https://mayx.pages.gay/
+- https://mayx.serv00.net/
 - https://mayx.vercel.app/
 - https://mayx.netlify.app/
 - https://mabbs.kinsta.page/
@@ -42,6 +42,7 @@ gits:
 - https://bitbucket.org/unmayx/mayx
 - https://git.disroot.org/mayx/mayx
 - https://gitlab.haskell.org/mayx/mayx
+- https://repo2.serv00.com/git/pub/Mayx/mayx/
 - https://gitee.com/mabbs/mabbs
 - https://sourceforge.net/projects/mayx/
 static:
