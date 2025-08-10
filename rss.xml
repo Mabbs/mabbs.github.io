@@ -15,7 +15,10 @@
 		{% for post in site.posts limit:10 %}
 			<item>
 				<title>{{ post.title | xml_escape }}</title>
-				{% if post.excerpt %}
+				{% assign ai_cache = site.data.ai-cache[post.url] %}
+				{% if ai_cache %}
+					<description>{{ ai_cache | xml_escape }}</description>
+				{% elsif post.excerpt %}
 					<description>{{ post.excerpt | strip_html | xml_escape }}</description>
 				{% else %}
 					<description>{{ post.content | xml_escape }}</description>
