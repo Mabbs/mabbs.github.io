@@ -18,6 +18,7 @@ mirrors:
 - https://mabbs.kinsta.page/
 - https://mayx.codeberg.page/
 - https://mayx.4everland.app/
+- https://mayx.sourceforge.io/
 - https://unmayx.bitbucket.io/
 - https://mayx.pages.debian.net/
 - https://mayx.dappling.network/
@@ -44,6 +45,7 @@ gits:
 - https://gitlab.haskell.org/mayx/mayx
 - https://repo2.serv00.com/git/pub/Mayx/mayx/
 - https://gitee.com/mabbs/mabbs
+- https://cnb.cool/unmayx/mayx
 - https://sourceforge.net/projects/mayx/
 static:
 - https://mayx.nekoweb.org/
