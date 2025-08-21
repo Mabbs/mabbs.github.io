@@ -38,13 +38,13 @@ image: https://screenshot.mayx.eu.org/
     {% if paginator.previous_page == 1 %}
       <a href="/index.html">&laquo; Prev</a>
     {% else %}
-      <a href="{{ paginator.previous_page_path }}/">&laquo; Prev</a>
+      <a href="{{ paginator.previous_page_path }}/index.html">&laquo; Prev</a>
     {% endif %}
   {% else %}
     <span>&laquo; Prev</span>
   {% endif %}
 
-<select onchange="window.location = this.value == 1 ? '/index.html' : '/page' + this.value + '/'">
+<select onchange="window.location = this.value == 1 ? '/index.html' : '/page' + this.value + '/index.html'">
   {% for page in (1..paginator.total_pages) %}
     {% if page == paginator.page %}
       <option value="{{ page }}" selected>{{ page }}</option>
@@ -55,7 +55,7 @@ image: https://screenshot.mayx.eu.org/
 </select>
 
   {% if paginator.next_page %}
-    <a href="{{ paginator.next_page_path }}/">Next &raquo;</a>
+    <a href="{{ paginator.next_page_path }}/index.html">Next &raquo;</a>
   {% else %}
     <span>Next &raquo;</span>
   {% endif %}
