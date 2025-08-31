@@ -1,0 +1,36 @@
+#!/bin/bash
+cd /home/Mayx/
+rm -rf domains/mayx.serv00.net/public_html/
+git --work-tree=/home/Mayx/blog --git-dir=/home/Mayx/repo/git/pub/mayx checkout -f
+cd blog
+mkdir Mabbs
+curl -L -o Mabbs/README.md https://github.com/Mabbs/Mabbs/raw/main/README.md
+bundle exec jekyll build -d ../domains/mayx.serv00.net/public_html/
+tar czvf MayxBlog.tgz --exclude-vcs -C ../domains/mayx.serv00.net public_html/
+mv MayxBlog.tgz ../domains/mayx.serv00.net/public_html/
+rsync -avz --delete ../domains/mayx.serv00.net/public_html/ mayx@web.sourceforge.net:/home/project-web/mayx/htdocs/
+cd ../domains/mayx.serv00.net/public_html/
+unset GIT_DIR
+git init
+git lfs install
+git lfs track "*.png"
+git lfs track "*.moc"
+git lfs track "*.tgz"
+git lfs track "*.jpg"
+git lfs track "*.zip"
+git branch -m main
+echo "---
+title: Mayx
+emoji: 🏢
+colorFrom: green
+colorTo: blue
+sdk: static
+pinned: false
+short_description: Mayx's Home Page
+---
+
+">README.md
+git add .
+git commit -m "update"
+git remote add hf git@hf.co:spaces/Mabbs/blog
+git push -f hf main

@@ -1,0 +1,21 @@
+#!/bin/bash
+cd /home/mayx/
+rm -rf public_html
+git --work-tree=/home/mayx/blog --git-dir=/home/mayx/blog.git checkout -f
+cd blog
+mkdir Mabbs
+curl -L -o Mabbs/README.md https://github.com/Mabbs/Mabbs/raw/main/README.md
+bundle2.7 exec jekyll build -d ../public_html
+tar czvf MayxBlog.tgz --exclude-vcs ../public_html/
+mv MayxBlog.tgz ../public_html/
+cd ../public_html/
+unset GIT_DIR
+git init
+git branch -m main
+git add .
+git commit -m "update"
+git remote add codeberg ssh://git@codeberg.org/mayx/pages.git
+git remote add bitbucket ssh://git@bitbucket.org/unmayx/unmayx.bitbucket.io.git
+git push -f codeberg main
+git push -f bitbucket main
+/home/mayx/blog-env/node_modules/surge/bin/surge /home/mayx/public_html/ mayx.surge.sh
