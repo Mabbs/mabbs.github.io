@@ -9,6 +9,7 @@ layout: xslt_container
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   {% seo %}
+  {% unless site.github %}<link rel="canonical" href="https://mabbs.github.io{{ page.url }}"/>{% endunless %}
   {% feed_meta %}
   <link rel="alternate" type="application/rss+xml" title="{{ site.title }}(RSS)" href="{{ "/rss.xml" | absolute_url }}" />
   <link rel="alternate" type="application/json" title="{{ site.title }}(JSON Feed)" href="{{ "/feed.json" | absolute_url }}" />
