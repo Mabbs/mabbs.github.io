@@ -27,7 +27,7 @@ mirrors:
 - https://mayx.dappling.network/
 - https://mayx-blog.statichost.eu/
 - https://mabbs-blog.static.hf.space/
-gits:
+repos:
 - https://github.com/Mabbs/mabbs.github.io
 - https://gitlab.com/mayx/mayx.gitlab.io
 - https://framagit.org/mayx/mayx.frama.io
@@ -45,7 +45,6 @@ gits:
 - https://cnb.cool/unmayx/mayx
 - https://atomgit.com/mayx/blog
 - https://sourceforge.net/projects/mayx/
-
 static:
 - https://mayx.nekoweb.org/
 - https://mayx.neocities.org/

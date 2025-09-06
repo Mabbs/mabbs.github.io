@@ -18,8 +18,8 @@ title: 代理列表
 {% for item in site.data.proxylist.mirrors %}- <{{ item }}> <img src="{{ item }}images/online.svg" style="width: 1.2em; vertical-align: text-bottom;" onerror="this.outerHTML='ⓧ'"/>   
 {% endfor %}
 
-# Git列表 
-{% for item in site.data.proxylist.gits %}- <{{ item }}>    
+# Git仓库列表 
+{% for item in site.data.proxylist.repos %}- <{{ item }}>    
 {% endfor %}
 
 其他更多社区/个人类型实例托管的Git仓库列表参见[这里](/other_repo_list.html)
