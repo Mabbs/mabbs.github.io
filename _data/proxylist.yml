@@ -18,8 +18,9 @@ mirrors:
 - https://mayx.pixie.homes/
 - https://mabbs.kinsta.page/
 - https://mayx.codeberg.page/
-- https://mayx.4everland.app/
 - https://mayx.pages.lain.la/
+- https://mayx.4everland.app/
+- https://mayx.readthedocs.io/
 - https://mayx.sourceforge.io/
 - https://unmayx.bitbucket.io/
 - https://mayx.pages.debian.net/
@@ -31,31 +32,20 @@ gits:
 - https://gitlab.com/mayx/mayx.gitlab.io
 - https://framagit.org/mayx/mayx.frama.io
 - https://salsa.debian.org/mayx/mayx.pages.debian.net
-- https://gitlab.lain.la/mayx/mayx.pages.lain.la
 - https://codeberg.org/mayx/blog
 - https://git.gay/mayx/mayx
 - https://gitea.com/mayx/mayx
-- https://gitea.moe/Mayx/mayx
 - https://gitgud.io/mayx/mayx
 - https://git.sr.ht/~mayx/mayx
-- https://tvoygit.ru/Mayx/mayx
-- https://git.envs.net/Mayx/mayx
-- https://tildegit.org/Mayx/mayx
 - https://git.launchpad.net/mayx
-- https://git.pixie.town/mayx/mayx
-- https://cgit.tilde.town/~mayx/blog
+- https://git.disroot.org/mayx/mayx
 - https://bitbucket.org/unmayx/mayx
 - https://sourcecraft.dev/mayx/mayx
-- https://git.disroot.org/mayx/mayx
-- https://gitlab.haskell.org/mayx/mayx
-- https://git.gammaspectra.live/Mayx/blog
-- https://repo2.serv00.com/git/pub/Mayx/mayx/
 - https://gitee.com/mabbs/mabbs
 - https://cnb.cool/unmayx/mayx
 - https://atomgit.com/mayx/blog
 - https://sourceforge.net/projects/mayx/
-- http://gdatura24gtdy23lxd7ht3xzx6mi7mdlkabpvuefhrjn4t5jduviw5ad.onion/Mayx/mayx
-- http://giteabolfdejtdzblkooalqei6jr67imiugmhtsh6ocw4hlj5a4q.b32.i2p/mayx/blog
+
 static:
 - https://mayx.nekoweb.org/
 - https://mayx.neocities.org/

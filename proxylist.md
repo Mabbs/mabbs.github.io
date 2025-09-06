@@ -22,6 +22,8 @@ title: 代理列表
 {% for item in site.data.proxylist.gits %}- <{{ item }}>    
 {% endfor %}
 
+其他更多社区/个人类型实例托管的Git仓库列表参见[这里](/other_repo_list.html)
+
 # 服务架构
 ```mermaid
 graph LR;
