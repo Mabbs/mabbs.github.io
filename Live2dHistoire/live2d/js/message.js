@@ -201,7 +201,9 @@ if (!norunFlag) {
 						eventFlag = true;
 					}
 					var data = JSON.parse(event.data);
-					outputContainer.textContent += data.response;
+                    if (data.response) {
+						outputContainer.textContent += data.response;
+                    }
 				}
 			}
 		} else {
