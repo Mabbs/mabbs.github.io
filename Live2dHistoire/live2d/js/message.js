@@ -201,9 +201,9 @@ if (!norunFlag) {
 						eventFlag = true;
 					}
 					var data = JSON.parse(event.data);
-                    if (data.response) {
+					if (data.response) {
 						outputContainer.textContent += data.response;
-                    }
+					}
 				}
 			}
 		} else {
