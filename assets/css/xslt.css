@@ -1,0 +1,35 @@
+@namespace xsl "http://www.w3.org/1999/XSL/Transform";
+
+xsl|template {
+    display: none !important;
+}
+
+:root {
+    display: flex !important;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 2em 1em;
+    font-family: system-ui, -apple-system, sans-serif;
+    box-sizing: border-box;
+    margin-left: max(1em, env(safe-area-inset-left));
+    margin-right: max(1em, env(safe-area-inset-right));
+}
+
+:root::before {
+    content: "💀 这个 XSLT 模板已被谷歌 (Chrome) 杀死";
+    display: block;
+    color: #d93025;
+    font-size: 24px;
+    font-weight: 800;
+    padding: 20px;
+    border: 2px solid #d93025;
+    border-radius: 8px;
+    background: #fff1f0;
+    margin-bottom: 10px;
+    box-shadow: 0 4px 12px rgba(217, 48, 37, 0.1);
+    text-align: center;
+}

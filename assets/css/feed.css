@@ -1,0 +1,131 @@
+@namespace atom "http://www.w3.org/2005/Atom";
+@namespace content "http://purl.org/rss/1.0/modules/content/";
+@namespace dc "http://purl.org/dc/elements/1.1/";
+
+body,
+rss,
+atom|feed {
+    font-family: -apple-system, BlinkMacSystemFont,
+        "Segoe UI", Roboto,
+        "Noto Sans SC", "PingFang SC",
+        "Microsoft YaHei", Arial, sans-serif;
+    background: #f4f5f7;
+    color: #222;
+    margin: 0;
+    padding: 2em 1em;
+    /* 左右内边距 1em，竖屏不贴边 */
+    font-size: 14px;
+    line-height: 1.6;
+
+    max-width: 780px;
+    /* 最大宽度，桌面端居中 */
+    margin-left: auto;
+    margin-right: auto;
+}
+
+channel>title,
+atom|feed>atom|title {
+    display: block;
+    font-size: 1.7em;
+    font-weight: 700;
+    margin: 0 0 1.2em 0;
+    text-align: center;
+    letter-spacing: -0.01em;
+}
+
+item,
+atom|entry {
+    display: block;
+    background: #ffffff;
+    padding: 1.1em 1.2em;
+    margin-bottom: 1.1em;
+    border-radius: 14px;
+    box-shadow:
+        0 8px 24px rgba(0, 0, 0, 0.04),
+        0 2px 6px rgba(0, 0, 0, 0.03);
+}
+
+item>title,
+atom|entry>atom|title {
+    display: block;
+    font-size: 1.15em;
+    font-weight: 600;
+    margin-bottom: 0.45em;
+    color: #111;
+    letter-spacing: -0.01em;
+}
+
+item>description,
+atom|entry>atom|summary {
+    display: block;
+    color: #555;
+    line-height: 1.65;
+    max-height: 16.5em;
+    overflow: hidden;
+    position: relative;
+}
+
+item>description::after,
+atom|entry>atom|summary::after {
+    content: "…";
+    position: absolute;
+    right: 0.3em;
+    bottom: 0;
+    padding-left: 1.5em;
+    background: linear-gradient(to right,
+            rgba(255, 255, 255, 0),
+            #ffffff 70%);
+    font-weight: 600;
+}
+
+link,
+guid,
+pubDate,
+author,
+category,
+comments,
+source,
+enclosure,
+content|encoded,
+dc|creator,
+lastBuildDate,
+atom|id,
+atom|link,
+atom|updated,
+atom|published,
+atom|author,
+atom|category,
+atom|rights,
+atom|content,
+language,
+generator {
+    display: none;
+}
+
+channel>description,
+atom|feed>atom|subtitle {
+    display: block;
+    margin: 0.4em 0 2em 0;
+    /* 与条目明显拉开 */
+    text-align: center;
+    color: #666;
+    font-size: 0.95em;
+}
+
+channel>title,
+atom|feed>atom|title {
+    margin-bottom: 0.4em;
+    /* 原来较紧，这里放松 */
+}
+
+atom|feed>atom|subtitle::after,
+channel>description::after {
+    content: "这是一个订阅源（Feed）。复制当前URL到任何支持 Atom/RSS 的阅读器，即可订阅本博客的最新文章。\A以下展示了此订阅源包含的最新文章：";
+    display: block;
+    text-align: center;
+    font-size: 0.95em;
+    color: #666;
+    margin: 1em 0 2em 0;
+    line-height: 1.5;
+    white-space: pre-wrap;
+}
