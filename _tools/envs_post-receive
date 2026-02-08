@@ -5,7 +5,7 @@ git --work-tree=/home/mayx/blog --git-dir=/home/mayx/blog.git checkout -f
 cd blog
 mkdir Mabbs
 curl -L -o Mabbs/README.md https://github.com/Mabbs/Mabbs/raw/main/README.md
-bundle2.7 exec jekyll build -d ../public_html
+bundle exec jekyll build -d ../public_html
 tar czvf MayxBlog.tgz --exclude-vcs ../public_html/
 mv MayxBlog.tgz ../public_html/
 cd ../public_html/
