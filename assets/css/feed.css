@@ -1,6 +1,6 @@
-@namespace atom "http://www.w3.org/2005/Atom";
-@namespace content "http://purl.org/rss/1.0/modules/content/";
-@namespace dc "http://purl.org/dc/elements/1.1/";
+@namespace atom url("http://www.w3.org/2005/Atom");
+@namespace content url("http://purl.org/rss/1.0/modules/content/");
+@namespace dc url("http://purl.org/dc/elements/1.1/");
 
 :root {
     --bg-color: #f4f5f7;
@@ -11,7 +11,6 @@
     --max-width: 780px;
 }
 
-/* 深色模式适配 */
 @media (prefers-color-scheme: dark) {
     :root {
         --bg-color: #1a1a1c;
@@ -28,25 +27,23 @@ atom|feed {
     font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
     background: var(--bg-color);
     color: var(--text-main);
-    margin: 0 auto; /* 合并 margin */
+    margin: 0px auto;
     padding: 2rem 1rem;
-    font-size: 16px; /* 稍微调大基础字号提升阅读感 */
+    font-size: 16px;
     line-height: 1.6;
     max-width: var(--max-width);
 }
 
-/* 标题样式优化 */
-channel > title,
-atom|feed > atom|title {
+channel>title,
+atom|feed>atom|title {
     display: block;
     font-size: 2rem;
     font-weight: 800;
     text-align: center;
-    margin: 0 0 0.5rem 0;
+    margin: 0px 0px 0.5rem;
     letter-spacing: -0.02em;
 }
 
-/* 列表卡片 */
 item,
 atom|entry {
     display: block;
@@ -54,17 +51,17 @@ atom|entry {
     padding: 1.5rem;
     margin-bottom: 1.25rem;
     border-radius: 16px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-    transition: transform 0.2s ease;
+    box-shadow: rgba(0, 0, 0, 0.05) 0px 4px 20px;
+    transition: transform 0.2s;
 }
 
 item:hover,
 atom|entry:hover {
-    transform: translateY(-2px); /* 轻微悬停效果 */
+    transform: translateY(-2px);
 }
 
-item > title,
-atom|entry > atom|title {
+item>title,
+atom|entry>atom|title {
     display: block;
     font-size: 1.25rem;
     font-weight: 600;
@@ -72,39 +69,49 @@ atom|entry > atom|title {
     color: var(--text-main);
 }
 
-/* 多行省略号优化 */
-item > description,
-atom|entry > atom|summary {
+item>description,
+atom|entry>atom|summary {
     display: -webkit-box;
     -webkit-box-orient: vertical;
-    -webkit-line-clamp: 4; /* 最多显示4行，自动加省略号 */
+    -webkit-line-clamp: 4;
     overflow: hidden;
     color: var(--text-muted);
     font-size: 0.95rem;
     line-height: 1.6;
 }
 
-/* 元数据（日期） */
-item > pubDate,
-atom|entry > atom|updated {
+item>pubDate,
+atom|entry>atom|updated {
     display: block;
     color: var(--text-light);
     font-size: 0.85rem;
     margin-top: 0.75rem;
 }
 
-/* 隐藏不需要的元素 */
-link, guid, author, category, comments, source, enclosure, 
-content|encoded, dc|creator, lastBuildDate, 
-atom|id, atom|link, atom|updated, atom|published, atom|author, 
-atom|category, atom|rights, atom|content, 
-language, generator {
+link,
+guid,
+author,
+category,
+comments,
+source,
+enclosure,
+content|encoded,
+dc|creator,
+atom|id,
+atom|link,
+atom|updated,
+atom|published,
+atom|author,
+atom|category,
+atom|rights,
+atom|content,
+language,
+generator {
     display: none;
 }
 
-/* 副标题与说明文字 */
-channel > description,
-atom|feed > atom|subtitle {
+channel>description,
+atom|feed>atom|subtitle {
     display: block;
     text-align: center;
     color: var(--text-muted);
@@ -112,14 +119,42 @@ atom|feed > atom|subtitle {
     margin-bottom: 2rem;
 }
 
-channel > description::after,
-atom|feed > atom|subtitle::after {
-    content: "这是一个订阅源（Feed）。复制当前URL到任何支持 Atom/RSS 的阅读器，即可订阅本博客的最新文章。\A以下展示了此订阅源包含的最新文章：";
+channel>description::after,
+atom|feed>atom|subtitle::after {
+    content: "这是一个订阅源（Feed）。复制当前URL到任何支持 Atom/RSS 的阅读器，即可订阅本博客的最新文章。\a 以下展示了此订阅源包含的最新文章：";
     display: block;
     white-space: pre-wrap;
     font-size: 0.875rem;
     color: var(--text-light);
     margin-top: 1rem;
     padding: 1rem;
-    border-top: 1px solid rgba(128, 128, 128, 0.2);
+    border-top-width: 1px;
+    border-top-style: solid;
+    border-top-color: rgba(128, 128, 128, 0.2);
+}
+
+rss,
+channel,
+atom|feed {
+    display: flex;
+    flex-direction: column;
+}
+
+channel>lastBuildDate,
+atom|feed>atom|updated:not(atom|entry atom|updated) {
+    order: 999;
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top-width: 1px;
+    border-top-style: solid;
+    border-top-color: rgba(128, 128, 128, 0.2);
+    color: var(--text-light);
+    font-size: 0.85rem;
+    display: block !important;
+}
+
+channel>lastBuildDate::before,
+atom|feed>atom|updated:not(atom|entry atom|updated)::before {
+    content: "更新于 ";
 }
