@@ -27,6 +27,7 @@ mirrors:
 - https://mayx.dappling.network/
 - https://mayx-blog.statichost.eu/
 - https://mabbs-blog.static.hf.space/
+- http://mayx.gitlink.net/
 repos:
 - https://github.com/Mabbs/mabbs.github.io
 - https://gitlab.com/mayx/mayx.gitlab.io
@@ -50,6 +51,7 @@ repos:
 - https://atomgit.com/mayx/blog
 - https://sourceforge.net/projects/mayx/
 - https://dev.azure.com/unmayx/_git/Mayx
+- https://www.gitlink.org.cn/mayx/mayx.gitlink.net
 static:
 - https://mayx.nekoweb.org/
 - https://mayx.neocities.org/
