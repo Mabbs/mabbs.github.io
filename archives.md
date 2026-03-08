@@ -5,23 +5,16 @@ title: Archives
 
 # Archives
 
-* * *
+---
 
-{% for post in site.posts %}
-{% capture this_year %}{{ post.date | date: "%Y" }}{% endcapture %}
-{% capture next_year %}{{ post.previous.date | date: "%Y" }}{% endcapture %} 
-{% if forloop.first %}
+{% assign posts_by_year = site.posts | group_by_exp: "post", "post.date | date: '%Y'" %}
 
-## {{ this_year }}
+{% for year in posts_by_year %}
 
-{% endif %} 
+## {{ year.name }} (共 {{ year.items | size }} 篇)
 
-- {{ post.date | date: "%Y/%m/%d" }} - [{{ post.title }}{% if post.layout == "encrypt" %} [加密] {% endif %}]({{ post.url }})    
+{% for post in year.items %}
+- {{ post.date | date: "%Y/%m/%d" }} - [{{ post.title }}{% if post.layout == "encrypt" %} [加密]{% endif %}]({{ post.url }})
+{% endfor %}
 
-{% if forloop.last %} 
-{% else %}
-{% if this_year != next_year %}
-
-## {{next_year}}
-
-{% endif %} {% endif %} {% endfor %} 
+{% endfor %}
