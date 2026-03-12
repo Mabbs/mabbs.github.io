@@ -27,6 +27,7 @@ mirrors:
 - https://mayx-blog.statichost.eu/
 - https://mabbs-blog.static.hf.space/
 - http://mayx.gitlink.net/
+- https://mayx.pixie.homes/
 repos:
 - https://github.com/Mabbs/mabbs.github.io
 - https://gitlab.com/mayx/mayx.gitlab.io
