@@ -1,6 +1,7 @@
 ---
 layout: default
 title: 其他Git仓库镜像列表
+robots: noindex, nofollow
 ---
 
 # 其他Git仓库镜像列表

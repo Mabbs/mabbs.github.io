@@ -1,6 +1,7 @@
 ---
 layout: default
 title: 代理列表
+robots: nofollow
 ---
 
   源站：<https://mabbs.github.io/> <img src="https://mabbs.github.io/images/online.svg" style="width: 1.2em; vertical-align: text-bottom;" onerror="this.outerHTML='ⓧ'"/>   

@@ -4,11 +4,12 @@ title: Links
 date: 2019-05-03
 id: links
 tags: [links]
+robots: nofollow
 ---
 
 | Link | Description |
 | - | - |
-{% for item in site.data.links %}| <a href="{{ item.link }}" target="_blank" rel="noopener sponsored" {% if item.feed_url %}data-feed="{{ item.feed_url }}"{% endif %}>{{ item.title }}</a> | {% if item.description %}{{ item.description }}{% else %}*No description*{% endif %} |
+{% for item in site.data.links %}| <a href="{{ item.link }}" target="_blank" rel="noopener" {% if item.feed_url %}data-feed="{{ item.feed_url }}"{% endif %}>{{ item.title }}</a> | {% if item.description %}{{ item.description }}{% else %}*No description*{% endif %} |
 {% endfor %}
 
 订阅以上链接：[OPML](/blogroll.opml)   
