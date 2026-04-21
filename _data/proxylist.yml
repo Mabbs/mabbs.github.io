@@ -14,6 +14,7 @@ mirrors:
 - https://mayx.serv00.net/
 - https://mayx.vercel.app/
 - https://mayx.netlify.app/
+- https://mayx.gitnet.page/
 - https://mabbs.kinsta.page/
 - https://mayx.codeberg.page/
 - https://mayx.tildepages.org/
@@ -37,6 +38,7 @@ repos:
 - https://pagure.io/mayx
 - https://git.gay/mayx/mayx
 - https://gitea.com/mayx/mayx
+- https://gitnet.fr/mayx/blog
 - https://gitgud.io/mayx/mayx
 - https://git.sr.ht/~mayx/mayx
 - https://git.launchpad.net/mayx
@@ -47,6 +49,7 @@ repos:
 - https://sourcecraft.dev/mayx/mayx
 - https://code.forgejo.org/mayx/blog
 - https://gitflic.ru/project/mayx/blog
+- https://rocketgit.com/user/mayx/blog/
 - https://tangled.org/mayx.tngl.sh/blog/
 - https://gitee.com/mabbs/mabbs
 - https://cnb.cool/unmayx/mayx
