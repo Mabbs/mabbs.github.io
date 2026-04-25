@@ -50,4 +50,4 @@ Powered by [Jekyll](https://github.com/jekyll/jekyll)
 本站转载的文章如无特别说明，均按原文章的协议执行
 
 ## 打赏/赞助 Mayx 
-![QRCode](/images/QRCode.png)   
+![QRCode](images/QRCode.png)   
