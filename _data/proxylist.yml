@@ -11,6 +11,7 @@ mirrors:
 - https://mayx.frama.io/
 - https://mayx.surge.sh/
 - https://mayx.pages.gay/
+- https://mayx.gitpage.si/
 - https://mayx.serv00.net/
 - https://mayx.vercel.app/
 - https://mayx.netlify.app/
@@ -39,7 +40,6 @@ repos:
 - https://git.gay/mayx/mayx
 - https://repo.or.cz/mayx.git
 - https://gitea.com/mayx/mayx
-- https://gitnet.fr/mayx/blog
 - https://gitgud.io/mayx/mayx
 - https://git.sr.ht/~mayx/mayx
 - https://git.launchpad.net/mayx

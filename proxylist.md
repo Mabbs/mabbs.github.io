@@ -32,7 +32,8 @@ graph LR;
     GH@{ shape: bow-rect, label: "GitHub" }
     GL@{ shape: bow-rect, label: "GitLab" }
     GE@{ shape: bow-rect, label: "Gitee" }
-    OG@{ shape: bow-rect, label: "Other..." }
+    OG@{ shape: bow-rect, label: "And more..." }
+    OGP@{ shape: docs, label: "And more..." }
     CFP@{ shape: docs, label: "CloudFlare Pages" }
     GHP@{ shape: docs, label: "GitHub Pages" }
     GLP@{ shape: docs, label: "GitLab Pages" }
@@ -41,14 +42,13 @@ graph LR;
     GF@{ shape: lin-cyl, label: "Greenfield" }
     Vercel@{ shape: docs, label: "Vercel" }
     Netlify@{ shape: docs, label: "Netlify" }
-    SH@{ shape: docs, label: "statichost.eu" }
     DA@{ shape: docs, label: "dAppling" }
     CFW@{ label: "CloudFlare Workers" }
     CFAI@{ shape: procs, label: "CloudFlare AI" }
     CFD@{ shape: lin-cyl, label: "CloudFlare D1" }
     Deno@{ shape: curv-trap, label: "Deno" }
     Glitch@{ shape: curv-trap, label: "Glitch" }
-    Other@{ shape: curv-trap, label: "Other..." }
+    Other@{ shape: curv-trap, label: "And more..." }
     subgraph Repo
     GH
     GL
@@ -60,11 +60,11 @@ graph LR;
     GHP
     GLP
     CFP
-    SH
     FELH
     DA
     Vercel
     Netlify
+    OGP
     end
 
     subgraph API[API Service]
@@ -87,7 +87,7 @@ graph LR;
     GH <-- Sync --> GL
     GH -- Sync --> GE
     GH -. Sync .-> OG
-    GH -- Deploy --> GHP & SH & Netlify & FELH & DA
+    GH -- Deploy --> GHP & Netlify & FELH & DA & OGP
     GL -- Deploy --> CFP & Vercel & GLP
     CFW -- Reverse Proxy --> GHP
     Deno -- Reverse Proxy --> GHP
