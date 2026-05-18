@@ -2,10 +2,13 @@
 ---
 
 /* AUTHOR */
-    Name: Mayx
-    Contact: mayx@outlook.com
-    GitHub: Mabbs
-    From: China
+	Name: Mayx
+	Contact: mayx@outlook.com
+	GitHub: Mabbs
+	From: China
+
+/* THANKS */
+	Built with: Jekyll (https://jekyllrb.com)
 
 /* SITE */
 	Last update: {{ site.time | date: "%F" }}

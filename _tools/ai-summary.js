@@ -98,7 +98,7 @@ export default {
         { role: "user", content: questsion }
       ]
 
-      const answer = await env.AI.run('@cf/google/gemma-3-12b-it', {
+      const answer = await env.AI.run('@cf/meta/llama-4-scout-17b-16e-instruct', {
         messages,
         stream: true,
       });
@@ -175,7 +175,7 @@ export default {
         }
       ]
 
-      const stream = await env.AI.run('@cf/google/gemma-3-12b-it', {
+      const stream = await env.AI.run('@cf/meta/llama-4-scout-17b-16e-instruct', {
         messages,
         stream: true,
       });
@@ -235,7 +235,7 @@ export default {
             }
           ]
 
-          const answer = await env.AI.run('@cf/google/gemma-3-12b-it', {
+          const answer = await env.AI.run('@cf/meta/llama-4-scout-17b-16e-instruct', {
             messages,
             stream: false,
           });
