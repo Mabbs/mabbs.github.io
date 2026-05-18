@@ -1,0 +1,14 @@
+---
+---
+
+/* AUTHOR */
+    Name: Mayx
+    Contact: mayx@outlook.com
+    GitHub: Mabbs
+    From: China
+
+/* SITE */
+	Last update: {{ site.time | date: "%F" }}
+	Language: Chinese / English
+	Doctype: HTML5
+	IDE: VSCode

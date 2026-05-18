@@ -1,0 +1,10 @@
+---
+---
+
+# {{ site.title }}
+> {{ site.description }}
+
+## Posts:
+{% for post in site.posts %}
+- [{{ post.title }}{% if post.layout == "encrypt" %} [加密] {% endif %}]({{ post.url }}): {% assign ai_cache = site.data.ai-cache[post.url] %}{% if ai_cache %}{{ ai_cache | strip_html }}{% elsif post.excerpt %}{{ post.excerpt | strip_html }}{% else %}Just a Post.{% endif %}
+{% endfor %}
