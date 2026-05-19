@@ -14,8 +14,10 @@ mirrors:
 - https://mayx.gitpage.si/
 - https://mayx.serv00.net/
 - https://mayx.vercel.app/
+- https://mayx-blog.pgs.sh/
 - https://mayx.netlify.app/
 - https://mayx.gitnet.page/
+- https://mayx.grebedoc.dev/
 - https://mabbs.kinsta.page/
 - https://mayx.codeberg.page/
 - https://mayx.tildepages.org/
@@ -42,6 +44,7 @@ repos:
 - https://gitea.com/mayx/mayx
 - https://gitgud.io/mayx/mayx
 - https://git.sr.ht/~mayx/mayx
+- https://worktree.ca/mayx/blog
 - https://git.launchpad.net/mayx
 - https://gin.g-node.org/mayx/blog
 - https://tildeforge.dev/mayx/blog
