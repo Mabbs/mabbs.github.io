@@ -27,7 +27,7 @@ if (mykeyword) {
 </script>
 <script src="/assets/js/simple-jekyll-search.min.js"></script>
 <script>
-getSearchJSON(function(json){
+function _doSearch(json) {
   var sjs = SimpleJekyllSearch({
      searchInput: sbox,
      resultsContainer: document.getElementById('results-container'),
@@ -37,5 +37,22 @@ getSearchJSON(function(json){
   });
   sjs.search(mykeyword);
   document.getElementById('search-loading').style.display = "none";
+}
+getSearchJSON(function(json) {
+  if (typeof SimpleJekyllSearch !== 'undefined') {
+    _doSearch(json);
+  } else {
+    // PJAX 场景：外部脚本通过 pjax 库异步加载，需要等待加载完成
+    var _poll = 0;
+    var _waitSJS = setInterval(function() {
+      if (typeof SimpleJekyllSearch !== 'undefined') {
+        clearInterval(_waitSJS);
+        _doSearch(json);
+      } else if (++_poll > 100) {
+        clearInterval(_waitSJS);
+        document.getElementById('search-loading').style.display = "none";
+      }
+    }, 50);
+  }
 });
 </script>

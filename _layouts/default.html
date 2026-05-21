@@ -35,6 +35,15 @@ layout: xslt_container
   <script>
     var lastUpdated = new Date("{{ site.time | date_to_rfc822 }}");
     var BlogAPI = "https://summary.mayx.eu.org";
+    var GitalkConfig = {
+      clientID: '36557aec4c3cb04f7ac6',
+      clientSecret: 'ac32993299751cb5a9ba81cf2b171cca65879cdb',
+      repo: 'mabbs.github.io',
+      owner: 'Mabbs',
+      admin: ['Mabbs'],
+      distractionFreeMode: false,
+      proxy: 'https://cors-anywhere.mayx.eu.org/?https://github.com/login/oauth/access_token'
+    };
   </script>
   <script src="/assets/js/main.js"></script>
   <!--[if !IE]> -->
@@ -91,7 +100,7 @@ layout: xslt_container
         {% endif %}
       </ul>
     </header>
-    <section{% unless page.layout == "default" %} class="h-entry"{% endunless %}>
+    <section id="pjax-container"{% unless page.layout == "default" %} class="h-entry"{% endunless %}>
 
       {{ content }}
 
@@ -105,6 +114,8 @@ layout: xslt_container
   </div>
   <script src="{{ "/assets/js/scale.fix.js" | relative_url }}"></script>
   <!--[if !IE]> -->
+  <script src="/assets/js/jquery.pjax.min.js"></script>
+  <script src="/assets/js/pjax.js"></script>
   <script src="/assets/js/main_new.js"></script>
   <script src="/Live2dHistoire/live2d/js/live2d.js"></script>
   <script src="/Live2dHistoire/live2d/js/message.js"></script>

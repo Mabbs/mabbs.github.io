@@ -22,6 +22,8 @@ if (!norunFlag) {
 	var sleepTimer_ = null;
 	var AITalkFlag = false;
 	var talkNum = 0;
+	// 暴露到全局，供 pjax.js 在页面切换后重新调用
+	window._live2d = { initTips: null, showMessage: null, showHitokoto: null };
 	(function () {
 		function renderTip(template, context) {
 			var tokenReg = /(\\)?\{([^\{\}\\]+)(\\)?\}/g;
@@ -33,11 +35,11 @@ if (!norunFlag) {
 				var currentObject = context;
 				var i, length, variable;
 				for (i = 0, length = variables.length; i < length; ++i) {
-					variable = variables[i];
-					currentObject = currentObject[variable];
-					if (currentObject === undefined || currentObject === null) return '';
+					variable = currentObject[variables[i]];
+					if (variable === undefined || variable === null) return '';
+					currentObject = variable;
 				}
-				return currentObject;
+				return String(currentObject);
 			});
 		}
 
@@ -56,14 +58,20 @@ if (!norunFlag) {
 			showMessage('你都复制了些什么呀，转载要记得加上出处哦~~', 5000);
 		});
 
+		// 缓存 message.json 数据，供 PJAX 重绑定使用
+		var tipsData = null;
+
 		function initTips() {
 			$.ajax({
 				cache: true,
 				url: message_Path + 'message.json',
 				dataType: "json",
 				success: function (result) {
+					tipsData = result;
+					// 解绑旧事件（用命名空间避免影响其他绑定）
 					$.each(result.mouseover, function (index, tips) {
-						$(tips.selector).mouseover(function () {
+						$(tips.selector).off('mouseover._live2d_tips mouseout._live2d_tips');
+						$(tips.selector).on('mouseover._live2d_tips', function () {
 							var text = tips.text;
 							if (Array.isArray(tips.text)) text = tips.text[Math.floor(Math.random() * tips.text.length + 1) - 1];
 							text = text.renderTip({ text: $(this).text() });
@@ -72,7 +80,7 @@ if (!norunFlag) {
 							clearInterval(liveTlakTimer);
 							liveTlakTimer = null;
 						});
-						$(tips.selector).mouseout(function () {
+						$(tips.selector).on('mouseout._live2d_tips', function () {
 							showHitokoto();
 							if (liveTlakTimer == null) {
 								liveTlakTimer = window.setInterval(function () {
@@ -82,7 +90,8 @@ if (!norunFlag) {
 						});
 					});
 					$.each(result.click, function (index, tips) {
-						$(tips.selector).click(function () {
+						$(tips.selector).off('click._live2d_tips');
+						$(tips.selector).on('click._live2d_tips', function () {
 							if (hitFlag) {
 								return false
 							}
@@ -106,23 +115,26 @@ if (!norunFlag) {
 				}
 			});
 		}
+		window._live2d.initTips = initTips;
 		initTips();
 
 		var text;
 		if (document.referrer !== '' && document.referrer.split('/')[2] !== window.location.host) {
 			var referrer = document.createElement('a');
 			referrer.href = document.referrer;
-			text = '嗨！来自 <span style="color:#0099cc;">' + referrer.hostname + '</span> 的朋友！';
 			var domain = referrer.hostname.split('.')[1];
-			if (domain == 'baidu') {
-				text = '嗨！ 来自 百度搜索 的朋友！<br>欢迎访问<span style="color:#0099cc;">「 ' + document.title.split(' | ')[0] + ' 」</span>';
-			} else if (domain == 'so') {
-				text = '嗨！ 来自 360搜索 的朋友！<br>欢迎访问<span style="color:#0099cc;">「 ' + document.title.split(' | ')[0] + ' 」</span>';
-			} else if (domain == 'google') {
-				text = '嗨！ 来自 谷歌搜索 的朋友！<br>欢迎访问<span style="color:#0099cc;">「 ' + document.title.split(' | ')[0] + ' 」</span>';
+			if (domain == 'baidu' || domain == 'so' || domain == 'google') {
+				var source = domain == 'baidu' ? '百度搜索' : domain == 'so' ? '360搜索' : '谷歌搜索';
+				text = '嗨！ 来自 ' + source + ' 的朋友！<br>欢迎访问<span style="color:#0099cc;">「 ' + document.title.split(' | ')[0] + ' 」</span>';
+			} else {
+				text = '嗨！来自 <span style="color:#0099cc;">' + referrer.hostname + '</span> 的朋友！';
 			}
+		} else if (typeof window._pjaxGetWelcomeText === 'function') {
+			// 复用 pjax.js 中的欢迎语生成函数，避免重复逻辑
+			text = window._pjaxGetWelcomeText();
 		} else {
-			if (window.location.pathname == "/") { //主页URL判断，需要斜杠结尾
+			// pjax.js 尚未加载时的兜底（首次访问且 pjax.js 在 message.js 之后加载）
+			if (window.location.pathname == "/") {
 				var now = (new Date()).getHours();
 				if (now > 23 || now <= 5) {
 					text = '你是夜猫子呀？这么晚还不睡觉，明天起的来嘛？';
@@ -172,6 +184,7 @@ if (!norunFlag) {
 			console.log(sleepTimer_);
 		}
 	}
+	window._live2d.showHitokoto = showHitokoto;
 
 	function checkSleep() {
 		var sleepStatu = sessionStorage.getItem("Sleepy");
@@ -213,6 +226,7 @@ if (!norunFlag) {
 		//if (timeout === null) timeout = 5000;
 		//hideMessage(timeout);
 	}
+	window._live2d.showMessage = showMessage;
 	function talkValTimer() {
 		$('#live_talk').val('1');
 	}
@@ -384,74 +398,100 @@ if (!norunFlag) {
 			};
 		};
 		//获取音乐信息初始化
-		var bgmListInfo = $('input[name=live2dBGM]');
-		if (bgmListInfo.length == 0) {
-			$('#musicButton').hide();
-		} else {
-			var bgmPlayNow = parseInt($('#live2d_bgm').attr('data-bgm'));
-			var bgmPlayTime = 0;
-			var live2dBGM_Num = sessionStorage.getItem("live2dBGM_Num");
-			var live2dBGM_PlayTime = sessionStorage.getItem("live2dBGM_PlayTime");
-			if (live2dBGM_Num) {
-				if (live2dBGM_Num <= $('input[name=live2dBGM]').length - 1) {
-					bgmPlayNow = parseInt(live2dBGM_Num);
-				}
-			}
-			if (live2dBGM_PlayTime) {
-				bgmPlayTime = parseInt(live2dBGM_PlayTime);
-			}
-			var live2dBGMSrc = bgmListInfo.eq(bgmPlayNow).val();
-			$('#live2d_bgm').attr('data-bgm', bgmPlayNow);
-			$('#live2d_bgm').attr('src', live2dBGMSrc);
-			$('#live2d_bgm')[0].currentTime = bgmPlayTime;
-			$('#live2d_bgm')[0].volume = 0.5;
-			var live2dBGM_IsPlay = sessionStorage.getItem("live2dBGM_IsPlay");
-			var live2dBGM_WindowClose = sessionStorage.getItem("live2dBGM_WindowClose");
-			if (live2dBGM_IsPlay == '0' && live2dBGM_WindowClose == '0') {
-				$('#live2d_bgm')[0].play();
+		var $bgm = $('#live2d_bgm');
+
+		// 音乐按钮点击事件（幂等，使用命名空间避免重复绑定）
+		$('#musicButton').off('click._bgm').on('click._bgm', function () {
+			if ($('#musicButton').hasClass('play')) {
+				$bgm[0].pause();
+				$('#musicButton').removeClass('play');
+				sessionStorage.setItem("live2dBGM_IsPlay", '1');
+			} else {
+				$bgm[0].play();
 				$('#musicButton').addClass('play');
+				sessionStorage.setItem("live2dBGM_IsPlay", '0');
 			}
-			sessionStorage.setItem("live2dBGM_WindowClose", '1');
-			$('#musicButton').on('click', function () {
-				if ($('#musicButton').hasClass('play')) {
-					$('#live2d_bgm')[0].pause();
-					$('#musicButton').removeClass('play');
-					sessionStorage.setItem("live2dBGM_IsPlay", '1');
-				} else {
-					$('#live2d_bgm')[0].play();
-					$('#musicButton').addClass('play');
-					sessionStorage.setItem("live2dBGM_IsPlay", '0');
+		});
+
+		// BGM 事件监听（仅绑定一次，使用标志位避免重复）
+		if (!window._live2d._bgmEventsBound) {
+			$bgm[0].addEventListener("timeupdate", function () {
+				sessionStorage.setItem("live2dBGM_PlayTime", $bgm[0].currentTime);
+			});
+			$bgm[0].addEventListener("ended", function () {
+				var listNow = parseInt($bgm.attr('data-bgm'));
+				listNow++;
+				var inputs = $('input[name=live2dBGM]');
+				if (inputs.length === 0) return;
+				if (listNow > inputs.length - 1) {
+					listNow = 0;
 				}
+				var listNewSrc = inputs.eq(listNow).val();
+				if (!listNewSrc) return;
+				sessionStorage.setItem("live2dBGM_Num", listNow);
+				$bgm.attr('src', listNewSrc);
+				$bgm[0].play();
+				$bgm.attr('data-bgm', listNow);
+			});
+			$bgm[0].addEventListener("error", function () {
+				$bgm[0].pause();
+				$('#musicButton').removeClass('play');
+				showMessage('音乐似乎加载不出来了呢！', 0);
 			});
 			window.onbeforeunload = function () {
 				sessionStorage.setItem("live2dBGM_WindowClose", '0');
 				if ($('#musicButton').hasClass('play')) {
 					sessionStorage.setItem("live2dBGM_IsPlay", '0');
 				}
-			}
-			document.getElementById('live2d_bgm').addEventListener("timeupdate", function () {
-				var live2dBgmPlayTimeNow = document.getElementById('live2d_bgm').currentTime;
-				sessionStorage.setItem("live2dBGM_PlayTime", live2dBgmPlayTimeNow);
-			});
-			document.getElementById('live2d_bgm').addEventListener("ended", function () {
-				var listNow = parseInt($('#live2d_bgm').attr('data-bgm'));
-				listNow++;
-				if (listNow > $('input[name=live2dBGM]').length - 1) {
-					listNow = 0;
-				}
-				var listNewSrc = $('input[name=live2dBGM]').eq(listNow).val();
-				sessionStorage.setItem("live2dBGM_Num", listNow);
-				$('#live2d_bgm').attr('src', listNewSrc);
-				$('#live2d_bgm')[0].play();
-				$('#live2d_bgm').attr('data-bgm', listNow);
-			});
-			document.getElementById('live2d_bgm').addEventListener("error", function () {
-				$('#live2d_bgm')[0].pause();
-				$('#musicButton').removeClass('play');
-				showMessage('音乐似乎加载不出来了呢！', 0);
-			});
+			};
+			window._live2d._bgmEventsBound = true;
+		}
+
+		// 初始化 BGM（根据当前页面是否有 BGM 输入）
+		if (typeof window._live2d.initBGM === 'function') {
+			window._live2d.initBGM();
 		}
 	}
+
+	// 暴露 BGM 初始化函数，供 PJAX 重初始化时调用
+	window._live2d.initBGM = function() {
+		var bgmListInfo = $('input[name=live2dBGM]');
+		var $bgm = $('#live2d_bgm');
+		if (bgmListInfo.length === 0) {
+			$('#musicButton').hide();
+			if ($bgm.length) $bgm[0].pause();
+			return;
+		}
+		var bgmPlayNow = parseInt($bgm.attr('data-bgm')) || 0;
+		var bgmPlayTime = 0;
+		var live2dBGM_Num = sessionStorage.getItem("live2dBGM_Num");
+		var live2dBGM_PlayTime = sessionStorage.getItem("live2dBGM_PlayTime");
+		if (live2dBGM_Num) {
+			if (parseInt(live2dBGM_Num) <= bgmListInfo.length - 1) {
+				bgmPlayNow = parseInt(live2dBGM_Num);
+			}
+		}
+		if (live2dBGM_PlayTime) {
+			bgmPlayTime = parseFloat(live2dBGM_PlayTime);
+		}
+		var newSrc = bgmListInfo.eq(bgmPlayNow).val();
+		$bgm.attr('data-bgm', bgmPlayNow);
+		if ($bgm.attr('src') !== newSrc) {
+			$bgm[0].pause();
+			$bgm.attr('src', newSrc);
+			$bgm[0].currentTime = bgmPlayTime;
+		}
+		$bgm[0].volume = 0.5;
+		var live2dBGM_IsPlay = sessionStorage.getItem("live2dBGM_IsPlay");
+		var live2dBGM_WindowClose = sessionStorage.getItem("live2dBGM_WindowClose");
+		if (live2dBGM_IsPlay == '0' && live2dBGM_WindowClose == '0') {
+			$bgm[0].play();
+			$('#musicButton').addClass('play');
+		}
+		sessionStorage.setItem("live2dBGM_WindowClose", '1');
+		$('#musicButton').show();
+	};
+
 	$(document).ready(function () {
 		var AIimgSrc = [
 			message_Path + "model/histoire/histoire.1024/texture_00.png",

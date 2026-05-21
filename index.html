@@ -5,14 +5,14 @@ image: https://screenshot.mayx.eu.org/
 ---
 
 {% if paginator.page == 1 %}<div class="hslice" id="LatestPost">{% endif %}
-<h1 class="entry-title" style="display:inline"> 首页 - 我的文章 </h1><small><a href="/archives.html">Archives</a> | <a href="javascript:getSearchJSON(function(data){location=data[Math.floor(Math.random()*data.length)].url})">Random</a></small><br /><br />
+<h1 class="entry-title" style="display:inline"> 首页 - 我的文章 </h1><small><a href="/archives.html">Archives</a> | <a href="javascript:void(0)" onclick="getSearchJSON(function(data){go(data[Math.floor(Math.random()*data.length)].url)})">Random</a></small><br /><br />
 
 <hr />
 
 <!-- 遍历分页后的文章 -->
 <table class="entry-content h-feed">
 {% for post in paginator.posts %}
-  <tr><td class="h-entry" onclick="location='{{ post.url }}'">
+  <tr><td class="h-entry" onclick="go('{{ post.url }}')">
     <h2 class="p-name"><a class="post-link u-url" href="{{ post.url }}">{{ post.title }}{% if post.layout == "encrypt" %} [加密] {% endif %}</a></h2>
   <p>
     <time class="date dt-published" datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%-d %B %Y" }}</time>
@@ -44,7 +44,7 @@ image: https://screenshot.mayx.eu.org/
     <span>&laquo; Prev</span>
   {% endif %}
 
-<select onchange="window.location = this.value == 1 ? '/index.html' : '/page' + this.value + '/index.html'">
+<select onchange="go(this.value == 1 ? '/index.html' : '/page' + this.value + '/index.html')">
   {% for page in (1..paginator.total_pages) %}
     {% if page == paginator.page %}
       <option value="{{ page }}" selected>{{ page }}</option>

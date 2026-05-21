@@ -1,6 +1,7 @@
 proxies:
 - https://blog.mayx.workers.dev/
 - https://mayx.deno.dev/
+- https://mayx.val.run/
 - https://yuki.gear.host/
 - https://mayx.global.ssl.fastly.net/
 mirrors:
@@ -17,6 +18,7 @@ mirrors:
 - https://mayx-blog.pgs.sh/
 - https://mayx.netlify.app/
 - https://mayx.gitnet.page/
+- https://mayx.stormkit.dev/
 - https://mayx.grebedoc.dev/
 - https://mabbs.kinsta.page/
 - https://mayx.codeberg.page/

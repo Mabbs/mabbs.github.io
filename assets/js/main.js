@@ -39,7 +39,7 @@ $(function () {
             "-webkit-filter": "grayscale(100%)",
             "filter": "progid:DXImageTransform.Microsoft.BasicImage(grayscale=1)"
         })
-        $('body').html(function(_, oldHTML) {
+        $('body').html(function (_, oldHTML) {
             return oldHTML.replace(/Mayx/g, 'Ghost');
         });
         console.warn("Mayx may already be Dead");
@@ -65,5 +65,11 @@ function getSearchJSON(callback) {
         });
     } else {
         callback(searchData);
+    }
+}
+if (typeof window.go === 'undefined') {
+    window.go = function (url) {
+        window.location.href = url;
+        return;
     }
 }
