@@ -17,6 +17,7 @@
     // ========== 工具函数 ==========
 
     var _loadedScripts = {};
+    var _pendingScripts = [];
 
     /** 动态加载外部 CSS（避免重复加载） */
     function loadCSS(href) {
@@ -24,7 +25,11 @@
         $('<link rel="stylesheet" href="' + href + '" />').appendTo('head');
     }
 
-    /** 动态加载外部 JS（去重） */
+    /**
+     * 动态加载外部 JS（避免重复）
+     * 用对象跟踪已加载的 URL，而不是检查 DOM 中的 <script> 标签
+     * （pjax 替换容器内容后，惰性 <script> 标签存在但不代表已执行）
+     */
     function loadScript(src, callback) {
         if (_loadedScripts[src]) {
             if (typeof callback === 'function') callback();
@@ -35,6 +40,32 @@
         s.src = src;
         s.onload = callback || null;
         document.body.appendChild(s);
+    }
+
+    /**
+     * 按顺序执行脚本数组（内联和外部混合）
+     * 外部脚本加载完成后再执行后续内联脚本，保持依赖顺序
+     */
+    function executeScripts(scripts) {
+        var idx = 0;
+        function runNext() {
+            while (idx < scripts.length) {
+                var s = scripts[idx];
+                idx++;
+                if (s.src) {
+                    loadScript(s.src, runNext);
+                    return; // 等待 onload 回调
+                }
+                try {
+                    (window.execScript || function (code) {
+                        window['eval'].call(window, code);
+                    })(s.text);
+                } catch (e) {
+                    console.warn('[pjax] inline script exec error:', e);
+                }
+            }
+        }
+        runNext();
     }
 
     // ========== 页面类型判断 ==========
@@ -98,7 +129,7 @@
         }
     }
 
-    /** AI 摘要（post.html 内联脚本，pjax 后触发） */
+    /** AI 摘要（post.html 内联脚本，pjax 后由 executeScripts 触发） */
     function reinitAISummary() {
         if (typeof ai_gen === 'function' && $('#ai-output').length) {
             try { ai_gen(); } catch (e) { /* ignore */ }
@@ -231,16 +262,17 @@
         $('body').removeClass('pjax-loading');
         // 清理可能残留的浮层（如推荐文章 tooltip，hover 后点击跳转时 mouseleave 来不及触发）
         $('.content-tooltip').hide();
+        // go() 路径：脚本在 DOM 替换前提取到了 _pendingScripts，需在此执行
+        // pjax 库路径：_pendingScripts 为空，pjax 库自行处理了脚本执行
+        if (_pendingScripts.length > 0) {
+            executeScripts(_pendingScripts);
+            _pendingScripts = [];
+        }
         onPjaxComplete();
     }
 
     /** 暴露给模板内 onclick/onchange 调用的导航函数 */
     window.go = function (url) {
-        if (!url || url === '#') return;
-        if (/^(https?:)?\/\//.test(url) || url.startsWith('mailto:')) {
-            window.location.href = url;
-            return;
-        }
         $('body').addClass('pjax-loading');
         $.ajax({
             url: url,
@@ -253,13 +285,16 @@
                     var doc = (new DOMParser()).parseFromString(html, 'text/html');
                     var fragment = doc.querySelector(CONTAINER);
                     if (fragment) {
-                        // 用 adoptNode 搬运所有子节点（包括 script 元素），让浏览器自行处理脚本执行
-                        // 这能正确支持 type="module"、顶层 await 等，避免手动提取重建的坑
-                        $(CONTAINER).empty();  // jQuery 清理旧元素的事件和数据，避免内存泄漏
-                        var container = document.querySelector(CONTAINER);
-                        while (fragment.firstChild) {
-                            container.appendChild(document.adoptNode(fragment.firstChild));
-                        }
+                        // 先提取脚本（jQuery html() 会移除并可能异步处理脚本）
+                        _pendingScripts = [];
+                        fragment.querySelectorAll('script').forEach(function (s) {
+                            _pendingScripts.push({
+                                src: s.src || null,
+                                text: s.textContent
+                            });
+                            s.remove();
+                        });
+                        $(CONTAINER).html(fragment.innerHTML);
                         document.title = doc.title;
                         history.pushState({ url: url }, document.title, url);
                         doPjaxComplete();

@@ -12,7 +12,7 @@ image: https://screenshot.mayx.eu.org/
 <!-- 遍历分页后的文章 -->
 <table class="entry-content h-feed">
 {% for post in paginator.posts %}
-  <tr><td class="h-entry" onclick="go('{{ post.url }}')">
+    <tr><td class="h-entry" onclick="if (!event.target.closest('a.p-category')) go('{{ post.url }}')">
     <h2 class="p-name"><a class="post-link u-url" href="{{ post.url }}">{{ post.title }}{% if post.layout == "encrypt" %} [加密] {% endif %}</a></h2>
   <p>
     <time class="date dt-published" datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%-d %B %Y" }}</time>
@@ -24,7 +24,7 @@ image: https://screenshot.mayx.eu.org/
   {% if post.tags %}
   <span>
     {% for tag in post.tags %}
-    <a rel="category tag" class="p-category" href="/search.html?keyword={{ tag | uri_escape }}" onclick="event.stopPropagation()"><code style="white-space: nowrap">#{{ tag }}</code></a>
+    <a rel="category tag" class="p-category" href="/search.html?keyword={{ tag | uri_escape }}"><code style="white-space: nowrap">#{{ tag }}</code></a>
     {% endfor %}
   </span>
   {% endif %}
