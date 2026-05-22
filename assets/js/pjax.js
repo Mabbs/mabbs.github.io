@@ -174,7 +174,7 @@
             ':not([href$=".xml"]):not([href$=".json"]):not([href$=".tgz"]):not([href$=".zip"])' +
             ':not([href^="/Live2dHistoire"])';
         $(document).pjax('a' + exclude, PJAX_OPTS.container, PJAX_OPTS);
-        $(document).on('submit', 'form', function (e) {
+        $(document).on('submit', 'form#search-input-all', function (e) {
             $.pjax.submit(e, PJAX_OPTS.container, PJAX_OPTS);
         });
         $(document).on('pjax:send', function () {

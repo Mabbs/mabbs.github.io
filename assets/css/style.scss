@@ -191,3 +191,15 @@ td.h-entry {
 td.h-entry:hover {
     background: #f9f9f9;
 }
+
+body.pjax-loading::after {
+    content: '';
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    width: 20px;
+    height: 20px;
+    background: url('/images/loading.svg') center / contain no-repeat;
+    z-index: 9999;
+    pointer-events: none;
+  }
