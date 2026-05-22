@@ -184,7 +184,28 @@
         $(document).on('pjax:error', function (xhr, textStatus, error) {
             console.warn('[pjax] error, fallback:', error);
         });
+        $(document).on('pjax:end', function (event, xhr, options) {
+            var $container = $(options.container || PJAX_OPTS.container);
 
+            $container.find('script[type="module"]').each(function () {
+                var oldScript = this;
+                var newScript = document.createElement('script');
+                newScript.type = 'module';
+
+                // 如果是外链脚本 (<script src="..."></script>)
+                if (oldScript.src) {
+                    newScript.src = oldScript.src;
+                } else {
+                    // 如果是行内脚本 (<script>...code...</script>)
+                    newScript.textContent = oldScript.textContent;
+                }
+                // 插入到 body 中触发浏览器执行
+                document.body.appendChild(newScript);
+
+                // 运行完后建议移除，防止 DOM 变得混乱（不影响模块执行）
+                newScript.remove();
+            });
+        });
         // 首次加载初始化
         reinitCopyButtons();
     });

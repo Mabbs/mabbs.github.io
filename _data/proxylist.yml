@@ -2,6 +2,7 @@ proxies:
 - https://blog.mayx.workers.dev/
 - https://mayx.deno.dev/
 - https://mayx.val.run/
+- https://mayx.azion.app/
 - https://yuki.gear.host/
 - https://mayx.global.ssl.fastly.net/
 mirrors:

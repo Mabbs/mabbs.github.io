@@ -1,0 +1,1 @@
+curl -LO https://github.com/Homebrew/homebrew-portable-ruby/releases/download/3.4.5/portable-ruby-3.4.5.x86_64_linux.bottle.tar.gz && mkdir -p ~/.local/portable-ruby && tar -xvf portable-ruby-3.4.5.x86_64_linux.bottle.tar.gz -C ~/.local/portable-ruby --strip-components=1 && export PATH="$HOME/.local/portable-ruby/3.4.5/bin:$PATH" && bundle install
