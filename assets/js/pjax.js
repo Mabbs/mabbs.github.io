@@ -14,100 +14,6 @@
         scrollTo: false
     };
 
-    // ========== 工具函数 ==========
-
-    var _loadedScripts = {};
-    var _pendingScripts = [];
-
-    /** 动态加载外部 CSS（避免重复加载） */
-    function loadCSS(href) {
-        if ($('link[href="' + href + '"]').length) return;
-        $('<link rel="stylesheet" href="' + href + '" />').appendTo('head');
-    }
-
-    /**
-     * 动态加载外部 JS（避免重复）
-     * 用对象跟踪已加载的 URL，而不是检查 DOM 中的 <script> 标签
-     * （pjax 替换容器内容后，惰性 <script> 标签存在但不代表已执行）
-     */
-    function loadScript(src, callback) {
-        if (_loadedScripts[src]) {
-            if (typeof callback === 'function') callback();
-            return;
-        }
-        _loadedScripts[src] = true;
-        var s = document.createElement('script');
-        s.src = src;
-        s.onload = callback || null;
-        document.body.appendChild(s);
-    }
-
-    /**
-     * 按顺序执行脚本数组（内联和外部混合）
-     * 外部脚本加载完成后再执行后续内联脚本，保持依赖顺序
-     */
-    function executeScripts(scripts) {
-        var idx = 0;
-        function runNext() {
-            while (idx < scripts.length) {
-                var s = scripts[idx];
-                idx++;
-                if (s.src) {
-                    loadScript(s.src, runNext);
-                    return; // 等待 onload 回调
-                }
-                try {
-                    (window.execScript || function (code) {
-                        window['eval'].call(window, code);
-                    })(s.text);
-                } catch (e) {
-                    console.warn('[pjax] inline script exec error:', e);
-                }
-            }
-        }
-        runNext();
-    }
-
-    // ========== 页面类型判断 ==========
-
-    /** 是否为文章页（非首页/分页） */
-    function isPostPage(pathname) {
-        return !/^(\/(index\.html)?|\/page\d+(\/index\.html)?)$/.test(pathname || window.location.pathname);
-    }
-
-    /** 是否为真正的文章页（用 DOM 特征判断，仅 post 布局才有这些元素） */
-    function isRealPostPage() {
-        return $(CONTAINER + ' #gitalk-container').length > 0;
-    }
-
-    // ========== 欢迎语生成 ==========
-
-    /**
-     * 根据当前时间和页面生成 Live2D 欢迎语
-     * 此函数暴露到 window._live2d.getWelcomeText，供 message.js 首次加载时复用
-     * @param {string} [pathname] - 页面路径，默认当前路径
-     * @param {string} [title] - 页面标题，默认从 document.title 提取
-     * @returns {string} 欢迎语 HTML
-     */
-    function getWelcomeText(pathname, title) {
-        pathname = pathname || window.location.pathname;
-        title = title || document.title.split(' | ')[0];
-
-        if (pathname === '/' || pathname === '/index.html') {
-            var now = (new Date()).getHours();
-            if (now > 23 || now <= 5) return '你是夜猫子呀？这么晚还不睡觉，明天起的来嘛？';
-            if (now > 5 && now <= 7) return '早上好！一日之计在于晨，美好的一天就要开始了！';
-            if (now > 7 && now <= 11) return '上午好！工作顺利嘛，不要久坐，多起来走动走动哦！';
-            if (now > 11 && now <= 14) return '中午了，工作了一个上午，现在是午餐时间！';
-            if (now > 14 && now <= 17) return '午后很容易犯困呢，今天的运动目标完成了吗？';
-            if (now > 17 && now <= 19) return '傍晚了！窗外夕阳的景色很美丽呢，最美不过夕阳红~~';
-            if (now > 19 && now <= 21) return '晚上好，今天过得怎么样？';
-            if (now > 21 && now <= 23) return '已经这么晚了呀，早点休息吧，晚安~~';
-            return '嗨~ 快来逗我玩吧！';
-        }
-        return '欢迎阅读<span style="color:#0099cc;">「 ' + title + ' 」</span>';
-    }
-
     // ========== 各组件重初始化 ==========
 
     /** 访问量统计 */
@@ -151,28 +57,6 @@
                     .finally(function () { setTimeout(function () { $btn.text('📋'); }, 1500); });
             });
         });
-    }
-
-    /** Gitalk 评论（post 页面专属） */
-    function reinitGitalk() {
-        if ($(CONTAINER + ' #gitalk-container').length === 0) return;
-        loadCSS('/assets/css/gitalk.css');
-
-        function doInitGitalk() {
-            if (typeof Gitalk === 'undefined') {
-                loadScript('/assets/js/gitalk.min.js', doInitGitalk);
-                return;
-            }
-            var pageId = $(CONTAINER + ' #gitalk-container').data('page-id') || window.location.pathname;
-            try {
-                new Gitalk(Object.assign({ id: pageId }, window.GitalkConfig))
-                    .render('gitalk-container');
-            } catch (e) {
-                console.warn('[pjax] Gitalk init error:', e);
-            }
-        }
-        $('#gitalk-container').empty();
-        doInitGitalk();
     }
 
     /** 关键词高亮 */
@@ -220,7 +104,7 @@
 
         // 更新"想问这篇文章"相关状态（仅真正的文章页显示）
         $('#post_id').val(pathname);
-        if (isRealPostPage()) {
+        if ($(CONTAINER + ' #gitalk-container').length > 0) {
             $('.live_talk_input_name_body').show();
         } else {
             $('.live_talk_input_name_body').hide();
@@ -261,58 +145,14 @@
     function doPjaxComplete() {
         $('body').removeClass('pjax-loading');
         // 清理可能残留的浮层（如推荐文章 tooltip，hover 后点击跳转时 mouseleave 来不及触发）
-        $('.content-tooltip').hide();
-        // go() 路径：脚本在 DOM 替换前提取到了 _pendingScripts，需在此执行
-        // pjax 库路径：_pendingScripts 为空，pjax 库自行处理了脚本执行
-        if (_pendingScripts.length > 0) {
-            executeScripts(_pendingScripts);
-            _pendingScripts = [];
-        }
+        $('.content-tooltip').remove();
         onPjaxComplete();
     }
 
     /** 暴露给模板内 onclick/onchange 调用的导航函数 */
     window.go = function (url) {
-        $('body').addClass('pjax-loading');
-        $.ajax({
-            url: url,
-            beforeSend: function (xhr) {
-                xhr.setRequestHeader('X-PJAX', 'true');
-                xhr.setRequestHeader('X-PJAX-Container', CONTAINER);
-            },
-            success: function (html) {
-                try {
-                    var doc = (new DOMParser()).parseFromString(html, 'text/html');
-                    var fragment = doc.querySelector(CONTAINER);
-                    if (fragment) {
-                        // 先提取脚本（jQuery html() 会移除并可能异步处理脚本）
-                        _pendingScripts = [];
-                        fragment.querySelectorAll('script').forEach(function (s) {
-                            _pendingScripts.push({
-                                src: s.src || null,
-                                text: s.textContent
-                            });
-                            s.remove();
-                        });
-                        $(CONTAINER).html(fragment.innerHTML);
-                        document.title = doc.title;
-                        history.pushState({ url: url }, document.title, url);
-                        doPjaxComplete();
-                    } else {
-                        window.location.href = url;
-                    }
-                } catch (e) {
-                    console.warn('[go] parse error, fallback:', e);
-                    window.location.href = url;
-                }
-            },
-            error: function () { window.location.href = url; },
-            timeout: PJAX_OPTS.timeout
-        });
+        $.pjax({ url: url, ...PJAX_OPTS });
     };
-
-    /** 暴露 getWelcomeText 供 message.js 首次加载时复用，避免欢迎语逻辑重复 */
-    window._pjaxGetWelcomeText = getWelcomeText;
 
     // ========== 初始化 ==========
 
@@ -321,7 +161,6 @@
         reinitVisitors();
         reinitCopyButtons();
         reinitHighlight();
-        reinitGitalk();
         reinitAISummary();
         reinitLive2d();
         trackPageView();
@@ -335,7 +174,9 @@
             ':not([href$=".xml"]):not([href$=".json"]):not([href$=".tgz"]):not([href$=".zip"])' +
             ':not([href^="/Live2dHistoire"])';
         $(document).pjax('a' + exclude, PJAX_OPTS.container, PJAX_OPTS);
-
+        $(document).on('submit', 'form', function (e) {
+            $.pjax.submit(e, PJAX_OPTS.container, PJAX_OPTS);
+        });
         $(document).on('pjax:send', function () {
             $('body').addClass('pjax-loading');
         });

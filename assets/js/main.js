@@ -73,3 +73,22 @@ if (typeof window.go === 'undefined') {
         return;
     }
 }
+
+function getWelcomeText(pathname, title) {
+    pathname = pathname || window.location.pathname;
+    title = title || document.title.split(' | ')[0];
+
+    if (pathname === '/' || pathname === '/index.html') {
+        var now = (new Date()).getHours();
+        if (now > 23 || now <= 5) return '你是夜猫子呀？这么晚还不睡觉，明天起的来嘛？';
+        if (now > 5 && now <= 7) return '早上好！一日之计在于晨，美好的一天就要开始了！';
+        if (now > 7 && now <= 11) return '上午好！工作顺利嘛，不要久坐，多起来走动走动哦！';
+        if (now > 11 && now <= 14) return '中午了，工作了一个上午，现在是午餐时间！';
+        if (now > 14 && now <= 17) return '午后很容易犯困呢，今天的运动目标完成了吗？';
+        if (now > 17 && now <= 19) return '傍晚了！窗外夕阳的景色很美丽呢，最美不过夕阳红~~';
+        if (now > 19 && now <= 21) return '晚上好，今天过得怎么样？';
+        if (now > 21 && now <= 23) return '已经这么晚了呀，早点休息吧，晚安~~';
+        return '嗨~ 快来逗我玩吧！';
+    }
+    return '欢迎阅读<span style="color:#0099cc;">「 ' + title + ' 」</span>';
+}
