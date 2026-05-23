@@ -1,6 +1,22 @@
 var message_Path = '/Live2dHistoire/live2d/';
 var talkAPI = BlogAPI + "/ai_chat";
 
+function initVisitors() {
+    if ($('.visitors').length === 1) {
+        var $visitor = $('.visitors:first');
+        $.get(BlogAPI + '/count_click_add?id=' + $visitor.attr('id'), function (data) {
+            $visitor.text(Number(data));
+        });
+    } else if ($('.visitors-index').length > 0) {
+        $('.visitors-index').each(function () {
+            var $elem = $(this);
+            $.get(BlogAPI + '/count_click?id=' + $elem.attr('id'), function (data) {
+                $elem.text(Number(data));
+            });
+        });
+    }
+}
+
 $(function () {
     (function () {
         var $backToTopTxt = "返回顶部", $backToTopEle = $('<div class="backToTop"></div>').appendTo($("body"))
@@ -14,25 +30,7 @@ $(function () {
         $(function () { $backToTopFun(); });
     })();
 
-    function showHitCount() {
-        $(".visitors-index").each(function () {
-            var $elem = $(this);
-            $.get(BlogAPI + "/count_click?id=" + $elem.attr('id'), function (data) {
-                $elem.text(Number(data));
-            });
-        });
-    }
-    function addCount() {
-        var $visitor = $(".visitors:first");
-        $.get(BlogAPI + "/count_click_add?id=" + $visitor.attr('id'), function (data) {
-            $visitor.text(Number(data));
-        });
-    }
-    if ($('.visitors').length == 1) {
-        addCount();
-    } else if ($('.visitors-index').length > 0) {
-        showHitCount();
-    }
+    initVisitors();
 
     if (Math.floor((new Date().getTime() - lastUpdated.getTime()) / (24 * 60 * 60 * 1000)) > 90) {
         $("html").css({

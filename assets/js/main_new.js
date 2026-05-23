@@ -43,35 +43,21 @@ $(function () {
     });
 });
 
-$(function() {
-    var $codeBlocks = $('div.highlight');
-
-    $codeBlocks.each(function() {
-        var $copyButton = $('<button>', {
-            class: 'copy',
-            type: 'button',
-            text: '📋'
-        });
-
-        $(this).append($copyButton);
-
-        $copyButton.on('click', function() {
-            var code = $(this).siblings('pre').find('code').text().trim();
-            var $button = $(this);
-            
+function initCopyButtons() {
+    $('.copy').remove();
+    $('div.highlight').each(function () {
+        var $btn = $('<button>', { class: 'copy', type: 'button', text: '📋' });
+        $(this).append($btn);
+        $btn.on('click', function () {
+            var code = $btn.siblings('pre').find('code').text().trim();
             navigator.clipboard.writeText(code)
-                .then(function() {
-                    $button.text('✅');
-                })
-                .catch(function(err) {
-                    $button.text('❌');
-                    console.error('复制失败:', err);
-                })
-                .finally(function() {
-                    setTimeout(function() {
-                        $button.text('📋');
-                    }, 1500);
-                });
+                .then(function () { $btn.text('✅'); })
+                .catch(function () { $btn.text('❌'); })
+                .finally(function () { setTimeout(function () { $btn.text('📋'); }, 1500); });
         });
     });
+}
+
+$(function() {
+    initCopyButtons();
 });

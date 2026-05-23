@@ -16,47 +16,11 @@
 
     // ========== 各组件重初始化 ==========
 
-    /** 访问量统计 */
-    function reinitVisitors() {
-        if (typeof BlogAPI === 'undefined') return;
-        var apiBase = BlogAPI;
-        if ($('.visitors').length === 1) {
-            var $visitor = $('.visitors:first');
-            $.get(apiBase + '/count_click_add?id=' + $visitor.attr('id'), function (data) {
-                $visitor.text(Number(data));
-            });
-        } else if ($('.visitors-index').length > 0) {
-            $('.visitors-index').each(function () {
-                var $elem = $(this);
-                $.get(apiBase + '/count_click?id=' + $elem.attr('id'), function (data) {
-                    $elem.text(Number(data));
-                });
-            });
-        }
-    }
-
     /** AI 摘要（post.html 内联脚本，pjax 后由 executeScripts 触发） */
     function reinitAISummary() {
         if (typeof ai_gen === 'function' && $('#ai-output').length) {
             try { ai_gen(); } catch (e) { /* ignore */ }
         }
-    }
-
-    /** 代码块复制按钮 */
-    function reinitCopyButtons() {
-        $('.copy').remove();
-        $('div.highlight').each(function () {
-            var $block = $(this);
-            var $btn = $('<button>', { class: 'copy', type: 'button', text: '📋' });
-            $block.append($btn);
-            $btn.on('click', function () {
-                var code = $btn.siblings('pre').find('code').text().trim();
-                navigator.clipboard.writeText(code)
-                    .then(function () { $btn.text('✅'); })
-                    .catch(function () { $btn.text('❌'); })
-                    .finally(function () { setTimeout(function () { $btn.text('📋'); }, 1500); });
-            });
-        });
     }
 
     /** 关键词高亮 */
@@ -158,8 +122,8 @@
 
     /** 每次 pjax 完成后执行所有重初始化 */
     function onPjaxComplete() {
-        reinitVisitors();
-        reinitCopyButtons();
+        initVisitors();
+        initCopyButtons();
         reinitHighlight();
         reinitAISummary();
         reinitLive2d();
@@ -206,8 +170,6 @@
                 newScript.remove();
             });
         });
-        // 首次加载初始化
-        reinitCopyButtons();
     });
 
 })(jQuery);
