@@ -23,34 +23,6 @@
         }
     }
 
-    /** 关键词高亮 */
-    function reinitHighlight() {
-        var keyword = new URLSearchParams(window.location.search).get('kw');
-        if (!keyword) return;
-        keyword = keyword.trim();
-        if (!keyword) return;
-
-        var escaped = keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-        var regex = new RegExp('(' + escaped + ')', 'gi');
-        var escapeHTML = function (str) {
-            return str.replace(/[&<>"']/g, function (t) {
-                return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[t] || t;
-            });
-        };
-        function walk(node) {
-            $(node).contents().each(function () {
-                if (this.nodeType === Node.TEXT_NODE) {
-                    var $t = $(this);
-                    var text = escapeHTML($t.text());
-                    if (regex.test(text)) $t.replaceWith(text.replace(regex, '<mark>$1</mark>'));
-                } else if (this.nodeType === Node.ELEMENT_NODE && !$(this).is('script, style, noscript, textarea')) {
-                    walk(this);
-                }
-            });
-        }
-        $('section').each(function () { walk(this); });
-    }
-
     /** Google Analytics 页面浏览事件 */
     function trackPageView() {
         if (typeof gtag === 'function') {
@@ -120,15 +92,32 @@
 
     // ========== 初始化 ==========
 
+    /** pjax 完成后滚动到目标位置：有锚点则定位锚点，否则回到顶部 */
+    function scrollToAnchor() {
+        var hash = window.location.hash;
+        if (hash) {
+            // 中文等非 ASCII 字符在 URL 中会被编码，需先解码再匹配元素 id
+            var id = hash.slice(1);
+            try { id = decodeURIComponent(id); } catch (e) { /* 保持原值 */ }
+            var target = document.getElementById(id) ||
+                         document.querySelector('a[name="' + id + '"]');
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                return;
+            }
+        }
+        window.scrollTo(0, 0);
+    }
+
     /** 每次 pjax 完成后执行所有重初始化 */
     function onPjaxComplete() {
         initVisitors();
         initCopyButtons();
-        reinitHighlight();
+        highlightKeyword();
         reinitAISummary();
         reinitLive2d();
         trackPageView();
-        window.scrollTo(0, 0);
+        scrollToAnchor();
     }
 
     $(document).ready(function () {

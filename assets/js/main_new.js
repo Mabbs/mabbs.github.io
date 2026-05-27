@@ -1,4 +1,8 @@
-$(function () {
+/**
+ * 根据 URL ?kw= 参数高亮页面内匹配的关键词。
+ * 提取为全局函数，供 pjax.js 在页面切换后复用，避免重复实现。
+ */
+function highlightKeyword() {
     const urlParams = new URLSearchParams(window.location.search);
     const keyword = urlParams.get('kw')?.trim();
 
@@ -10,7 +14,7 @@ $(function () {
     const regex = new RegExp(`(${escapedKeyword})`, 'gi');
 
     // 递归遍历并高亮文本节点
-    const escapeHTML = str => str.replace(/[&<>"']/g, 
+    const escapeHTML = str => str.replace(/[&<>"']/g,
         tag => ({
             '&': '&amp;',
             '<': '&lt;',
@@ -41,7 +45,7 @@ $(function () {
     $('section').each(function () {
         highlightTextNodes(this);
     });
-});
+};
 
 function initCopyButtons() {
     $('.copy').remove();
@@ -58,6 +62,7 @@ function initCopyButtons() {
     });
 }
 
-$(function() {
+$(function () {
+    highlightKeyword();
     initCopyButtons();
 });
