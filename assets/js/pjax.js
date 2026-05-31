@@ -87,7 +87,7 @@
 
     /** 暴露给模板内 onclick/onchange 调用的导航函数 */
     window.go = function (url) {
-        $.pjax({ url: url, ...PJAX_OPTS });
+        $.pjax($.extend({ url: url }, PJAX_OPTS));
     };
 
     // ========== 初始化 ==========
