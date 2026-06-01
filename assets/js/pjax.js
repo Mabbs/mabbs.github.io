@@ -10,18 +10,11 @@
     var PJAX_OPTS = {
         container: CONTAINER,
         fragment: CONTAINER,
-        timeout: 8000,
+        timeout: 5000,
         scrollTo: false
     };
 
     // ========== 各组件重初始化 ==========
-
-    /** AI 摘要（post.html 内联脚本，pjax 后由 executeScripts 触发） */
-    function reinitAISummary() {
-        if (typeof ai_gen === 'function' && $('#ai-output').length) {
-            try { ai_gen(); } catch (e) { /* ignore */ }
-        }
-    }
 
     /** Google Analytics 页面浏览事件 */
     function trackPageView() {
@@ -114,7 +107,6 @@
         initVisitors();
         initCopyButtons();
         highlightKeyword();
-        reinitAISummary();
         reinitLive2d();
         trackPageView();
         scrollToAnchor();
@@ -134,9 +126,6 @@
             $('body').addClass('pjax-loading');
         });
         $(document).on('pjax:complete', doPjaxComplete);
-        $(document).on('pjax:error', function (xhr, textStatus, error) {
-            console.warn('[pjax] error, fallback:', error);
-        });
         $(document).on('pjax:end', function (event, xhr, options) {
             var $container = $(options.container || PJAX_OPTS.container);
 

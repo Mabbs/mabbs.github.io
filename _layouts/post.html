@@ -162,7 +162,7 @@ $.get(BlogAPI + "/suggest?id={{ page.url }}&update=" + lastUpdated.valueOf(), fu
 <div id="gitalk-container" data-page-id="{{ page.id }}"></div>
 
 <script>
-  var gitalk = new Gitalk(Object.assign({ id: '{{ page.id }}' }, GitalkConfig))
-  gitalk.render('gitalk-container')
+  var gitalk = new Gitalk($.extend({ id: '{{ page.id }}' }, GitalkConfig));
+  gitalk.render('gitalk-container');
 </script>
 <!-- <![endif]-->
