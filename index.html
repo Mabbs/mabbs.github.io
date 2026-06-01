@@ -12,7 +12,7 @@ image: https://screenshot.mayx.eu.org/
 <!-- 遍历分页后的文章 -->
 <table class="entry-content h-feed">
 {% for post in paginator.posts %}
-    <tr><td class="h-entry" data-url="{{ post.url }}">
+    <tr><td class="h-entry post-row" data-url="{{ post.url }}">
     <h2 class="p-name"><a class="post-link u-url" href="{{ post.url }}">{{ post.title }}{% if post.layout == "encrypt" %} [加密] {% endif %}</a></h2>
   <p>
     <time class="date dt-published" datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%-d %B %Y" }}</time>
@@ -79,7 +79,7 @@ image: https://screenshot.mayx.eu.org/
   <a href="https://xn--sr8hvo.ws/next">→</a><br /><a href="https://icp.gov.moe/?keyword=20218888" target="_blank">萌ICP备 20218888号</a></small>
 <input name="live2dBGM" value="https://music.163.com/song/media/outer/url?id=523658881.mp3" type="hidden" />
 <script>
-$(document).on('click', '.h-entry', function(e) {
+$(document).on('click', '.post-row', function(e) {
     if ($(e.target).closest('.p-category').length === 0) {
         go($(this).attr('data-url'));
     }

@@ -1,51 +1,21 @@
-/**
- * 根据 URL ?kw= 参数高亮页面内匹配的关键词。
- * 提取为全局函数，供 pjax.js 在页面切换后复用，避免重复实现。
- */
 function highlightKeyword() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const keyword = urlParams.get('kw')?.trim();
+    var match = location.search.match(/[?&]kw=([^&]+)/);
+    var kw = match ? $.trim(decodeURIComponent(match[1].replace(/\+/g, ' '))) : '';
+    if (!kw) return;
 
-    if (!keyword) return;
+    var reg = new RegExp('(' + kw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
+    var escapeMap = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
 
-    // 转义正则表达式特殊字符，避免安全问题
-    const escapedKeyword = keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    // 创建不区分大小写的正则表达式（全局匹配）
-    const regex = new RegExp(`(${escapedKeyword})`, 'gi');
-
-    // 递归遍历并高亮文本节点
-    const escapeHTML = str => str.replace(/[&<>"']/g,
-        tag => ({
-            '&': '&amp;',
-            '<': '&lt;',
-            '>': '&gt;',
-            '"': '&quot;',
-            "'": '&#39;'
-        }[tag] || tag));
-    function highlightTextNodes(element) {
-        $(element).contents().each(function () {
-            if (this.nodeType === Node.TEXT_NODE) {
-                const $this = $(this);
-                const text = escapeHTML($this.text());
-
-                // 使用正则替换并保留原始大小写
-                if (regex.test(text)) {
-                    const replaced = text.replace(regex, '<mark>$1</mark>');
-                    $this.replaceWith(replaced);
-                }
-            } else if (
-                this.nodeType === Node.ELEMENT_NODE &&
-                !$(this).is('script, style, noscript, textarea')
-            ) {
-                highlightTextNodes(this);
-            }
-        });
-    }
-
-    $('section').each(function () {
-        highlightTextNodes(this);
+    $('section, section *').not('script, style, textarea').contents().filter(function() {
+        return this.nodeType === 3; 
+    }).each(function() {
+        var escapedText = this.nodeValue.replace(/[&<>"']/g, function(m) { return escapeMap[m]; });
+        var highlighted = escapedText.replace(reg, '<mark>$1</mark>');
+        if (escapedText !== highlighted) {
+            $(this).replaceWith(highlighted);
+        }
     });
-};
+}
 
 function initCopyButtons() {
     $('.copy').remove();
