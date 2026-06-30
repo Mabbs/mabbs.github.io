@@ -17,6 +17,25 @@ function initVisitors() {
     }
 }
 
+function highlightKeyword() {
+    var match = location.search.match(/[?&]kw=([^&]+)/);
+    var kw = match ? $.trim(decodeURIComponent(match[1].replace(/\+/g, ' '))) : '';
+    if (!kw) return;
+
+    var reg = new RegExp('(' + kw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
+    var escapeMap = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
+
+    $('section, section *').not('script, style, textarea').contents().filter(function () {
+        return this.nodeType === 3;
+    }).each(function () {
+        var escapedText = this.nodeValue.replace(/[&<>"']/g, function (m) { return escapeMap[m]; });
+        var highlighted = escapedText.replace(reg, '<mark>$1</mark>');
+        if (escapedText !== highlighted) {
+            $(this).replaceWith(highlighted);
+        }
+    });
+}
+
 $(function () {
     (function () {
         var $backToTopTxt = "返回顶部", $backToTopEle = $('<div class="backToTop"></div>').appendTo($("body"))
@@ -42,6 +61,7 @@ $(function () {
         });
         console.warn("Mayx may already be Dead");
     }
+    highlightKeyword();
 });
 
 function getSearchJSON(callback) {
