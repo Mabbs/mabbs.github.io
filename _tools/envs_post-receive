@@ -6,7 +6,8 @@ cd blog
 mkdir Mabbs
 curl -L -o Mabbs/README.md https://github.com/Mabbs/Mabbs/raw/main/README.md
 bundle exec jekyll build -d ../public_html
-rsync --delete -rv ../public_html/ mayx@pgs.sh:/blog
+ssh pgs.sh rm blog --write
+rsync --delete --exclude='.git' -rv ../public_html/ mayx@pgs.sh:/blog
 tar czvf MayxBlog.tgz --exclude-vcs ../public_html/
 mv MayxBlog.tgz ../public_html/
 cd ../public_html/
