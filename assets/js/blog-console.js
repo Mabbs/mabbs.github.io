@@ -1108,7 +1108,7 @@
                 annotations: t.annotations,
                 execute: t.execute
             };
-            return ctx.registerTool(tool, { signal: controller.signal }).then(function () {
+            return Promise.resolve(ctx.registerTool(tool, { signal: controller.signal })).then(function () {
                 state.registered.push(t.name);
             });
         })).then(function () {
