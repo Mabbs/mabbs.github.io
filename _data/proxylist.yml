@@ -22,7 +22,6 @@ mirrors:
 - https://mabbs.kinsta.page/
 - https://mayx.codeberg.page/
 - https://mayx.tildepages.org/
-- https://mayx.pandastack.app/
 - https://mayx.pages.lain.la/
 - https://mayx.4everland.app/
 - https://mayx.readthedocs.io/
@@ -40,7 +39,6 @@ repos:
 - https://framagit.org/mayx/mayx.frama.io
 - https://salsa.debian.org/mayx/mayx.pages.debian.net
 - https://codeberg.org/mayx/blog
-- https://pagure.io/mayx
 - https://git.gay/mayx/mayx
 - https://repo.or.cz/mayx.git
 - https://gitea.com/mayx/mayx
