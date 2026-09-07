@@ -12,5 +12,5 @@ build:
     - mkdir Mabbs
     - curl -L -o Mabbs/README.md https://github.com/Mabbs/Mabbs/raw/main/README.md
     - bundle exec jekyll build --destination $READTHEDOCS_OUTPUT/html
-    - tar czvf MayxBlog.tgz -C $READTHEDOCS_OUTPUT html
-    - mv MayxBlog.tgz $READTHEDOCS_OUTPUT/html
+    - python3 _tools/blogquine.py $READTHEDOCS_OUTPUT/html MayxBlog.7z
+    - mv MayxBlog.7z $READTHEDOCS_OUTPUT/html
