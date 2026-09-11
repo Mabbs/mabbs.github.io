@@ -7,12 +7,13 @@ import lzma
 import os
 import struct
 import sys
+import time
 
 # ============================================================
 # Part 1: 最小 LZMA1 range coder（只做编码）
 #
 # 设计目标：只实现 quine 构造需要的 token：literal / match / rep0-match /
-# end-marker，编码字节与历史内容无关（track=False 时不维护输出历史），
+# end-marker，编码字节与历史内容无关（不维护输出历史），
 # 这是"先算结构、后填数据"两阶段装配的基础。
 # 参考：Igor Pavlov 的 LZMA SDK (LzmaEnc.c / LzmaDec.c)。
 # ============================================================
@@ -125,14 +126,12 @@ def _pos_slot_and_bits(d):
 
 
 class LzmaEncoder:
-    def __init__(self, lc=3, lp=0, pb=2, track=False):
+    def __init__(self, lc=3, lp=0, pb=2):
         """
-        track=True 时维护输出假历史（literal/match 复制内容），用于一般用途；
-        quine 构造用 track=False：match 的编码字节只取决于 (dist,len,pos)，
-        与历史内容无关，可跳过 37MB 级假历史的逐字节复制。
+        不维护输出假历史：match 的编码字节只取决于 (dist,len,pos)，与历史内容无关，
+        因此 quine 构造（先算结构、后填数据）不需要逐字节复制假历史。
         """
         self.lc, self.lp, self.pb = lc, lp, pb
-        self.track = track
         self.pos_mask = (1 << pb) - 1
         self.lp_mask = (1 << lp) - 1
         self.rc = RangeEncoder()
@@ -184,13 +183,6 @@ class LzmaEncoder:
                 self.rc.encode_bit(choice, 1, 1)
                 self.rc.bittree_encode(high, 0, kNumHighLenBits, l - kNumMidLenSymbols)
 
-    def _copy_out(self, dist, length):
-        """track=True 时把 match 的输出复制进假历史。"""
-        src = len(self.out) - dist
-        for i in range(length):
-            self.out.append(self.out[src + i])
-        self.prev_byte = self.out[-1]
-
     # ---------- 对外 token ----------
     def literal(self, b):
         if self.state >= kNumLitStates:
@@ -240,36 +232,19 @@ class LzmaEncoder:
         self.state = 7 if self.state < kNumLitStates else 10
         self.reps[3], self.reps[2], self.reps[1], self.reps[0] = \
             self.reps[2], self.reps[1], self.reps[0], d
-        if self.track:
-            self._copy_out(dist, length)
         self.pos += length
 
-    def rep_match(self, length, rep_idx=0):
+    def rep_match(self, length):
+        """rep0 匹配：只使用最近一次 match 的距离（quine 构造只需要这种）。"""
         assert kMatchMinLen <= length <= 273, length
         ps = self.pos_state
         self.rc.encode_bit(self.p_is_match, (self.state << kNumPosBitsMax) + ps, 1)
         self.rc.encode_bit(self.p_is_rep, self.state, 1)
-        if rep_idx == 0:
-            self.rc.encode_bit(self.p_is_rep_g0, self.state, 0)
-            self.rc.encode_bit(self.p_rep0_long, (self.state << kNumPosBitsMax) + ps, 1)
-        else:
-            self.rc.encode_bit(self.p_is_rep_g0, self.state, 1)
-            if rep_idx == 1:
-                self.rc.encode_bit(self.p_is_rep_g1, self.state, 0)
-            else:
-                self.rc.encode_bit(self.p_is_rep_g1, self.state, 1)
-                self.rc.encode_bit(self.p_is_rep_g2, self.state, 0 if rep_idx == 2 else 1)
-                if rep_idx == 3:
-                    self.reps[3] = self.reps[2]
-                self.reps[2] = self.reps[1]
-            self.reps[1] = self.reps[0]
-            self.reps[0] = self.reps[rep_idx]
+        self.rc.encode_bit(self.p_is_rep_g0, self.state, 0)
+        self.rc.encode_bit(self.p_rep0_long, (self.state << kNumPosBitsMax) + ps, 1)
         self._encode_len(self.p_rep_len_choice,
                          self.p_rep_len_low, self.p_rep_len_mid, self.p_rep_len_high, length)
-        dist = self.reps[0] + 1
         self.state = 8 if self.state < kNumLitStates else 11
-        if self.track:
-            self._copy_out(dist, length)
         self.pos += length
 
     def end(self):
@@ -293,6 +268,8 @@ class LzmaEncoder:
 SIG = b"7z\xbc\xaf'\x1c"
 VER = b"\x00\x04"
 MAX_MATCH = 273                       # LZMA1 单个 match 长度上限
+# FILETIME 纪元（1601-01-01）与 Unix 纪元（1970-01-01）之差，单位 100ns
+FILETIME_EPOCH_OFFSET = 116444736000000000
 
 
 def crc32(b, v=0):
@@ -356,7 +333,7 @@ def dict_prop_for(maxdist):
 
 def lzma_chunk(tokens, out_pos):
     """编一个 LZMA chunk（0xC0: state+props reset，无 dict reset，无 end marker）。
-    match token 的编码字节只取决于 (dist,len,pos)，与历史内容无关（track=False）。"""
+    match token 的编码字节只取决于 (dist,len,pos)，与历史内容无关（不维护输出历史）。"""
     enc = LzmaEncoder()
     enc.pos = out_pos
     total = 0
@@ -365,7 +342,7 @@ def lzma_chunk(tokens, out_pos):
             enc.match(t[1], t[2])
             total += t[2]
         else:
-            enc.rep_match(t[1], 0)
+            enc.rep_match(t[1])
             total += t[1]
     data = enc.finish()
     assert total - 1 < 65536 and len(data) - 1 < 65536
@@ -375,27 +352,42 @@ def lzma_chunk(tokens, out_pos):
 
 
 class BlogQuine:
-    def __init__(self, root, quine_name="MayxBlog.7z", seed_name="_quine_seed.bin"):
+    def __init__(self, root, quine_name="MayxBlog.7z", seed_name="_quine_seed.bin",
+                 src_dir=""):
         self.quine_name = quine_name
         self.seed_name = seed_name
+        # 源文件在归档内的前缀目录（如 "src" → 归档内出现 src/hello.txt）；"" = 根目录
+        self.src_dir = src_dir.strip("/")
+        # 程序运行时间 → FILETIME（1601-01-01 起 100ns 计数），
+        # 本次运行只取一次，作为归档内所有文件条目的修改时间字段。
+        self.mtime_ft = time.time_ns() // 100 + FILETIME_EPOCH_OFFSET
         # walk_entries: walk 顺序（父先子后、同级 dirs 在前）的 (rel, is_dir)。
         # 子流顺序 = 非空条目在此列表中的顺序，必须自始至终保持同一顺序。
         self.walk_entries = []
         self.files = []       # (relpath, data bytes)，顺序 = walk_entries 中文件序
+        # src_dir 的各级父目录先作为目录条目挂入（父先子后），
+        # 这样归档结构完整：如 src_dir="public/src" → "public"、"public/src"
+        if self.src_dir:
+            parts = self.src_dir.split("/")
+            for i in range(1, len(parts) + 1):
+                self.walk_entries.append(("/".join(parts[:i]), True))
         for dirpath, dirnames, filenames in os.walk(root):
             dirnames.sort()
             for dn in dirnames:
                 rel = os.path.relpath(os.path.join(dirpath, dn), root)
-                self.walk_entries.append((rel.replace(os.sep, "/"), True))
+                self.walk_entries.append((self._prefixed(rel), True))
             for fn in sorted(filenames):
                 p = os.path.join(dirpath, fn)
                 rel = os.path.relpath(p, root).replace(os.sep, "/")
                 with open(p, "rb") as fp:
                     data = fp.read()
-                self.walk_entries.append((rel.replace(os.sep, "/"), False))
-                self.files.append((rel.replace(os.sep, "/"), data))
+                self.walk_entries.append((self._prefixed(rel), False))
+                self.files.append((self._prefixed(rel), data))
         self.dirs = [r for r, isd in self.walk_entries if isd]
         self.content = b"".join(data for _, data in self.files)
+
+    def _prefixed(self, rel):
+        return self.src_dir + "/" + rel if self.src_dir else rel
 
     def entries(self):
         ent = [{"name": self.seed_name, "dir": False}]
@@ -428,6 +420,9 @@ class BlogQuine:
             if e["dir"]:
                 bits[i // 8] |= 1 << (7 - i % 8)
         h += b"\x0e" + varint(len(bits)) + bytes(bits)
+        # kMTime：所有条目（文件与目录）写入修改时间（= 本次程序运行时间）
+        mt = b"\x01\x00" + struct.pack("<Q", self.mtime_ft) * N
+        h += b"\x14" + varint(len(mt)) + mt
         names = bytearray(b"\x00")                         # kName: external=0
         for e in entries:
             names += e["name"].encode("utf-16-le") + b"\x00\x00"
@@ -556,7 +551,7 @@ class BlogQuine:
     # ---------- 装配 ----------
     def assemble(self, lay):
         F = bytearray(lay["total"])
-        d, T, h = lay["d"], lay["T"], lay["h"]
+        d, h = lay["d"], lay["h"]
         d_seed = lay["d_seed"]
         hoff = lay["total"] - h
         # pass A: sig + 所有非 payload 字节
@@ -672,7 +667,7 @@ class BlogQuine:
                 F[p:p + 4] = struct.pack("<I", vals[g])
         t = targets()
         assert t == tuple(vals), "CRC 定点失败: %s != %s" % (t, vals)
-        return vals, known
+        return vals
 
     def build(self, maxdist_hint=None):
         if maxdist_hint is None:
@@ -688,15 +683,15 @@ class BlogQuine:
             try:
                 lay = self.layout(d_seed, maxdist_hint)
                 F, seed = self.assemble(lay)
-                crcs, known = self.solve_crc(F, lay, seed)
-                return bytes(F), lay, seed, (crcs, known)
+                crcs = self.solve_crc(F, lay, seed)
+                return bytes(F), lay, seed, crcs
             except (RuntimeError, AssertionError) as e:
                 last_err = e
                 d_seed += 1
         raise RuntimeError("build 多次失败: %s" % last_err)
 
 
-def verify(F, lay, seed, files, quine_name):
+def verify(F, lay, seed, files):
     """解码 LZMA2 流并逐文件校验。"""
     d, d_seed = lay["d"], lay["d_seed"]
     dec = lzma.LZMADecompressor(
@@ -729,6 +724,8 @@ def main():
     ap.add_argument("--quine-name", default=None,
                     help="归档内 quine 文件名（默认 = output 的文件名）")
     ap.add_argument("--seed-name", default=".this_is_mayx_blog")
+    ap.add_argument("--src-dir", default="",
+                    help="源文件在归档内的前缀目录（如 src；默认根目录）")
     ap.add_argument("--quine-dir", default="",
                     help="quine 在归档内所在的目录（如 public；默认根目录）")
     args = ap.parse_args()
@@ -738,16 +735,17 @@ def main():
         quine_dir = args.quine_dir.strip("/")
         quine_name = quine_dir + "/" + quine_name
 
-    bq = BlogQuine(args.srcdir, quine_name=quine_name, seed_name=args.seed_name)
+    bq = BlogQuine(args.srcdir, quine_name=quine_name, seed_name=args.seed_name,
+                   src_dir=args.src_dir)
     print("[blogquine] %d 个文件, %d 个目录, 内容 %d 字节"
           % (len(bq.files), len(bq.dirs), len(bq.content)))
-    F, lay, seed, (crcs, known) = bq.build()
+    F, lay, seed, crcs = bq.build()
     with open(args.output, "wb") as fp:
         fp.write(F)
     print("[blogquine] written %s: %d 字节 (d=%d, k=%d chunks, n=%d, h=%d, T=%d)"
           % (args.output, len(F), lay["d"], lay["k"], lay["n"], lay["h"], lay["T"]))
     print("[blogquine] CRC 定点: D(quine)=%08x N(hdr)=%08x S(sig)=%08x" % tuple(crcs))
-    ok = verify(F, lay, seed, bq.files, quine_name)
+    ok = verify(F, lay, seed, bq.files)
     sys.exit(0 if ok else 1)
 
 

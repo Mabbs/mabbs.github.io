@@ -6,8 +6,8 @@ cd blog
 mkdir Mabbs
 curl -L -o Mabbs/README.md https://github.com/Mabbs/Mabbs/raw/main/README.md
 bundle exec jekyll build -d ../public_html
-tar czvf MayxBlog.tgz --exclude-vcs ../public_html/
-mv MayxBlog.tgz ../public_html/
+python3 _tools/blogquine.py --src-dir blog --quine-dir blog ../public_html/ MayxBlog.7z
+mv MayxBlog.7z ../public_html/
 cd ../public_html/
 unset GIT_DIR
 git init
