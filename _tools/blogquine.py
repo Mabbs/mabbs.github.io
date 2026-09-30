@@ -12,8 +12,8 @@ import time
 # ============================================================
 # Part 1: 最小 LZMA1 range coder（只做编码）
 #
-# 设计目标：只实现 quine 构造需要的 token：literal / match / rep0-match /
-# end-marker，编码字节与历史内容无关（不维护输出历史），
+# 设计目标：只实现 quine 构造需要的 token：match / rep0-match，
+# 编码字节与历史内容无关（不维护输出历史），
 # 这是"先算结构、后填数据"两阶段装配的基础。
 # 参考：Igor Pavlov 的 LZMA SDK (LzmaEnc.c / LzmaDec.c)。
 # ============================================================
@@ -126,27 +126,21 @@ def _pos_slot_and_bits(d):
 
 
 class LzmaEncoder:
-    def __init__(self, lc=3, lp=0, pb=2):
+    def __init__(self, pb=2):
         """
         不维护输出假历史：match 的编码字节只取决于 (dist,len,pos)，与历史内容无关，
         因此 quine 构造（先算结构、后填数据）不需要逐字节复制假历史。
         """
-        self.lc, self.lp, self.pb = lc, lp, pb
+        self.pb = pb
         self.pos_mask = (1 << pb) - 1
-        self.lp_mask = (1 << lp) - 1
         self.rc = RangeEncoder()
         self.pos = 0            # 已输出字节数
         self.state = 0
-        self.prev_byte = 0
-        self.reps = [0, 0, 0, 0]      # rep0..rep3，存的是 0 基距离
-        self.out = bytearray()
         # 概率模型
         n = PROB_INIT
         self.p_is_match = [n] * (kNumStates << kNumPosBitsMax)
         self.p_is_rep = [n] * kNumStates
         self.p_is_rep_g0 = [n] * kNumStates
-        self.p_is_rep_g1 = [n] * kNumStates
-        self.p_is_rep_g2 = [n] * kNumStates
         self.p_rep0_long = [n] * (kNumStates << kNumPosBitsMax)
         self.p_pos_slot = [n] * (kNumLenToPosStates << kNumPosSlotBits)
         self.p_spec_pos = [n] * (kNumFullDistances - kEndPosModelIndex)   # 114
@@ -159,7 +153,6 @@ class LzmaEncoder:
         self.p_rep_len_low = [n] * (16 * kNumLowLenSymbols)
         self.p_rep_len_mid = [n] * (16 * kNumMidLenSymbols)
         self.p_rep_len_high = [n] * (1 << kNumHighLenBits)
-        self.p_lit = [n] * (0x300 << (lc + lp))
 
     # ---------- 内部 ----------
     @property
@@ -184,25 +177,6 @@ class LzmaEncoder:
                 self.rc.bittree_encode(high, 0, kNumHighLenBits, l - kNumMidLenSymbols)
 
     # ---------- 对外 token ----------
-    def literal(self, b):
-        if self.state >= kNumLitStates:
-            raise NotImplementedError("matched-literal 未实现（quine 构造不需要）")
-        # 每个符号先编 isMatch 位：0 表示这是 literal
-        ps = self.pos_state
-        self.rc.encode_bit(self.p_is_match, (self.state << kNumPosBitsMax) + ps, 0)
-        lit_state = ((self.pos & self.lp_mask) << self.lc) + (self.prev_byte >> (8 - self.lc))
-        self.rc.bittree_encode(self.p_lit, lit_state * 0x300, 8, b)
-        self.out.append(b)
-        self.prev_byte = b
-        self.pos += 1
-        # UpdateState_Literal
-        if self.state <= 3:
-            self.state = 0
-        elif self.state <= 9:
-            self.state -= 3
-        else:
-            self.state -= 6
-
     def _write_dist(self, dist, lts):
         d = dist - 1
         slot, n, low_bits = _pos_slot_and_bits(d)
@@ -217,7 +191,6 @@ class LzmaEncoder:
                 self.rc.encode_direct_bits(low_bits >> kNumAlignBits, n - kNumAlignBits)
                 self.rc.bittree_reverse_encode(self.p_align, 0, kNumAlignBits,
                                                low_bits & ((1 << kNumAlignBits) - 1))
-        return d
 
     def match(self, dist, length):
         assert kMatchMinLen <= length <= 273, length
@@ -227,11 +200,9 @@ class LzmaEncoder:
         lts = min(length - kMatchMinLen, kNumLenToPosStates - 1)
         self._encode_len(self.p_len_choice,
                          self.p_len_low, self.p_len_mid, self.p_len_high, length)
-        d = self._write_dist(dist, lts)
-        # 状态与 rep 链更新
+        self._write_dist(dist, lts)
+        # 状态更新
         self.state = 7 if self.state < kNumLitStates else 10
-        self.reps[3], self.reps[2], self.reps[1], self.reps[0] = \
-            self.reps[2], self.reps[1], self.reps[0], d
         self.pos += length
 
     def rep_match(self, length):
@@ -246,16 +217,6 @@ class LzmaEncoder:
                          self.p_rep_len_low, self.p_rep_len_mid, self.p_rep_len_high, length)
         self.state = 8 if self.state < kNumLitStates else 11
         self.pos += length
-
-    def end(self):
-        """LZMA 结束标记：编码一个 0 基距离为 0xFFFFFFFF 的 match。"""
-        ps = self.pos_state
-        self.rc.encode_bit(self.p_is_match, (self.state << kNumPosBitsMax) + ps, 1)
-        self.rc.encode_bit(self.p_is_rep, self.state, 0)
-        self._encode_len(self.p_len_choice,
-                         self.p_len_low, self.p_len_mid, self.p_len_high, kMatchMinLen)
-        self._write_dist(0x100000000, 0)
-        self.state = 7 if self.state < kNumLitStates else 10
 
     def finish(self):
         return self.rc.finish()
@@ -374,7 +335,7 @@ class BlogQuine:
         for dirpath, dirnames, filenames in os.walk(root):
             dirnames.sort()
             for dn in dirnames:
-                rel = os.path.relpath(os.path.join(dirpath, dn), root)
+                rel = os.path.relpath(os.path.join(dirpath, dn), root).replace(os.sep, "/")
                 self.walk_entries.append((self._prefixed(rel), True))
             for fn in sorted(filenames):
                 p = os.path.join(dirpath, fn)
