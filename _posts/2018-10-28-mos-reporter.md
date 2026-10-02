@@ -20,7 +20,7 @@ tags: [Mayx,MOS]
   MOS是一个用来解释我不能解释的东西的一个代替品，就如同UFO和人们定义的神一样，因为未知，而又需要一种解释的方法，于是出现了MOS。
 ***
 ## 正文
-![MOS_DEMO](/images/MOS_Demo.png "MOS的大概效果图")
+![MOS_DEMO](/images/MOS_Demo.webp "MOS的大概效果图")
 ```
 MOS Log System has been Load.
 MOS Analysis System is Ready.
