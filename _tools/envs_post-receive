@@ -7,7 +7,8 @@ mkdir Mabbs
 curl -L -o Mabbs/README.md https://github.com/Mabbs/Mabbs/raw/main/README.md
 bundle exec jekyll build -d ../public_html
 python3 _tools/blogquine.py --src-dir blog --quine-dir blog ../public_html/ MayxBlog.7z
-mv MayxBlog.7z ../public_html/
+7z a -mx9 -bd -bb0 MayxBlog-new.7z MayxBlog.7z
+mv MayxBlog-new.7z ../public_html/MayxBlog.7z
 cd ../public_html/
 unset GIT_DIR
 git init
@@ -18,6 +19,6 @@ git branch pages
 git remote add codeberg ssh://git@codeberg.org/mayx/pages.git
 git remote add bitbucket ssh://git@bitbucket.org/unmayx/unmayx.bitbucket.io.git
 git push -f codeberg main
-git push -f codeberg pages
+git push -f codeberg pages 
 git push -f bitbucket main
 /home/mayx/blog-env/node_modules/surge/bin/surge /home/mayx/public_html/ mayx.surge.sh

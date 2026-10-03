@@ -7,13 +7,15 @@ mkdir Mabbs
 curl -L -o Mabbs/README.md https://github.com/Mabbs/Mabbs/raw/main/README.md
 bundle exec jekyll build -d ../domains/mayx.serv00.net/public_html/
 python3 _tools/blogquine.py --src-dir blog --quine-dir blog ../domains/mayx.serv00.net/public_html/ MayxBlog.7z
-mv MayxBlog.7z ../domains/mayx.serv00.net/public_html/
+7zz a -mx9 -bd -bb0 MayxBlog-new.7z MayxBlog.7z
+mv MayxBlog-new.7z ../domains/mayx.serv00.net/public_html/MayxBlog.7z
 rsync -avz --delete ../domains/mayx.serv00.net/public_html/ mayx@web.sourceforge.net:/home/project-web/mayx/htdocs/
 cd ../domains/mayx.serv00.net/public_html/
 unset GIT_DIR
 git init
 git lfs install
 git lfs track "*.png"
+git lfs track "*.webp"
 git lfs track "*.moc"
 git lfs track "*.tgz"
 git lfs track "*.jpg"
