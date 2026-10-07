@@ -21,6 +21,7 @@ git lfs track "*.tgz"
 git lfs track "*.jpg"
 git lfs track "*.zip"
 git lfs track "*.7z"
+git lfs track "*.wasm"
 git branch -m main
 echo "---
 title: Mayx
