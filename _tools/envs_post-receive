@@ -17,7 +17,7 @@ git add .
 git commit -m "update"
 git branch pages
 git remote add codeberg ssh://git@codeberg.org/mayx/pages.git
-git remote add bitbucket ssh://git@bitbucket.org/unmayx/unmayx.bitbucket.io.git
+git remote add bitbucket ssh://git@ssh.bitbucket.org/unmayx/unmayx.bitbucket.io.git
 git push -f codeberg main
 git push -f codeberg pages 
 git push -f bitbucket main

@@ -19,6 +19,7 @@ mirrors:
 - https://mayx.gitnet.page/
 - https://mayx.grebedoc.dev/
 - https://mayx.codeberg.page/
+- https://mayx.codefloe.page/
 - https://mayx.tildepages.org/
 - https://mayx.4everland.app/
 - https://mayx.readthedocs.io/
@@ -43,6 +44,7 @@ repos:
 - https://git.sr.ht/~mayx/mayx
 - https://worktree.ca/mayx/blog
 - https://git.launchpad.net/mayx
+- https://codefloe.com/mayx/blog
 - https://gin.g-node.org/mayx/blog
 - https://tildeforge.dev/mayx/blog
 - https://git.disroot.org/mayx/mayx
