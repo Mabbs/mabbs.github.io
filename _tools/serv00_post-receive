@@ -1,6 +1,6 @@
 #!/bin/bash
 cd /home/Mayx/
-rm -rf domains/mayx.serv00.net/public_html/
+rm -rf domains/mayx.serv00.net/public_html/ blog/*
 git --work-tree=/home/Mayx/blog --git-dir=/home/Mayx/repo/git/pub/mayx checkout -f
 cd blog
 mkdir Mabbs

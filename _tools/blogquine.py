@@ -1,110 +1,83 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""LZMA2 7z quine 生成器，仅依赖 Python 标准库。
 
+用法：python blogquine.py 源目录 输出.7z [--quine-name 名称]
+                         [--src-dir 前缀目录] [--quine-dir 自身所在目录]
+解压得到源文件及输出归档自身；内容原样存储，辅助信息位于归档内部。
+"""
 import argparse
 import binascii
+from dataclasses import dataclass
 import lzma
 import os
+from pathlib import Path
 import struct
-import sys
 import time
 
-# ============================================================
-# Part 1: 最小 LZMA1 range coder（只做编码）
-#
-# 设计目标：只实现 quine 构造需要的 token：match / rep0-match，
-# 编码字节与历史内容无关（不维护输出历史），
-# 这是"先算结构、后填数据"两阶段装配的基础。
-# 参考：Igor Pavlov 的 LZMA SDK (LzmaEnc.c / LzmaDec.c)。
-# ============================================================
-
-kNumBitModelTotalBits = 11
-kBitModelTotal = 1 << kNumBitModelTotalBits          # 2048
-kNumMoveBits = 5
-kTopValue = 1 << 24                                   # 0x1000000
-
-kNumStates = 12
-kNumLitStates = 7
-kNumPosBitsMax = 4
-kNumLenToPosStates = 4
-kNumAlignBits = 4
-kEndPosModelIndex = 14
-kNumFullDistances = 1 << (kEndPosModelIndex >> 1)     # 128
-kMatchMinLen = 2
-kNumLowLenBits = 3
-kNumMidLenBits = 3
-kNumHighLenBits = 8
-kNumLowLenSymbols = 1 << kNumLowLenBits               # 8
-kNumMidLenSymbols = 1 << kNumMidLenBits               # 8
-kNumPosSlotBits = 6
-
-PROB_INIT = kBitModelTotal >> 1                       # 1024
+SIG = b"7z\xbc\xaf'\x1c"
+VER = b"\x00\x04"
+CHUNK = 1 << 16                         # LZMA2 未压缩 chunk 上限
+MAX_CHUNK_OUTPUT = 1 << 21              # LZMA2 压缩 chunk 解压上限
+MAX_MATCH = 273
+PROPS_BYTE = 0x5D                       # lc=3, lp=0, pb=2
+FILETIME_EPOCH_OFFSET = 116444736000000000
+PROB_INIT = 1024
 
 
 class RangeEncoder:
-    """LZMA 的区间编码器。low 是 64 位（要容纳进位），range 是 32 位。"""
+    """LZMA 区间编码器；所有整数截断与 SDK 的 UInt32 运算一致。"""
 
     def __init__(self):
         self.low = 0
         self.range = 0xFFFFFFFF
         self.cache = 0
-        self.cache_size = 1          # 初值 1 -> 第一个输出字节恒为 0x00
+        self.cache_size = 1
         self.buf = bytearray()
 
     def _shift_low(self):
-        if (self.low & 0xFFFFFFFF) < 0xFF000000 or (self.low >> 32) != 0:
+        carry = self.low >> 32
+        if (self.low & 0xFFFFFFFF) < 0xFF000000 or carry:
             temp = self.cache
-            while True:
-                self.buf.append((temp + (self.low >> 32)) & 0xFF)
+            while self.cache_size:
+                self.buf.append((temp + carry) & 0xFF)
                 temp = 0xFF
                 self.cache_size -= 1
-                if self.cache_size == 0:
-                    break
             self.cache = (self.low >> 24) & 0xFF
         self.cache_size += 1
-        # 注意：C 里 `(UInt32)low << 8` 会截断回 32 位，必须照做，
-        # 否则 low 的高位会一直累积，进位位 (low>>32) 就不止 0/1 了。
-        self.low = ((self.low & 0xFFFFFFFF) << 8) & 0xFFFFFFFF
+        self.low = (self.low << 8) & 0xFFFFFFFF
 
-    def encode_bit(self, probs, idx, bit):
-        p = probs[idx]
-        bound = (self.range >> kNumBitModelTotalBits) * p
-        if bit == 0:
-            self.range = bound
-            probs[idx] = p + ((kBitModelTotal - p) >> kNumMoveBits)
-        else:
-            self.low += bound
-            self.range -= bound
-            probs[idx] = p - (p >> kNumMoveBits)
-        while self.range < kTopValue:
+    def _normalize(self):
+        while self.range < 1 << 24:
             self.range = (self.range << 8) & 0xFFFFFFFF
             self._shift_low()
 
-    def encode_direct_bits(self, value, num_bits):
-        for i in range(num_bits - 1, -1, -1):
+    def encode_bit(self, probs, index, bit):
+        probability = probs[index]
+        bound = (self.range >> 11) * probability
+        if bit:
+            self.low += bound
+            self.range -= bound
+            probs[index] -= probability >> 5
+        else:
+            self.range = bound
+            probs[index] += (2048 - probability) >> 5
+        self._normalize()
+
+    def encode_direct_bits(self, value, bits):
+        for shift in range(bits - 1, -1, -1):
             self.range >>= 1
-            if (value >> i) & 1:
+            if value >> shift & 1:
                 self.low += self.range
-            while self.range < kTopValue:
-                self.range = (self.range << 8) & 0xFFFFFFFF
-                self._shift_low()
+            self._normalize()
 
-    def bittree_encode(self, probs, off, num_bits, symbol):
-        """普通位树：MSB 优先，节点下标从 1 开始。"""
-        m = 1
-        for i in range(num_bits - 1, -1, -1):
-            bit = (symbol >> i) & 1
-            self.encode_bit(probs, off + m, bit)
-            m = (m << 1) | bit
-
-    def bittree_reverse_encode(self, probs, off, num_bits, symbol):
-        """反向位树：LSB 优先，用于 SpecPos / Align。"""
-        m = 1
-        for i in range(num_bits):
-            bit = symbol & 1
-            symbol >>= 1
-            self.encode_bit(probs, off + m, bit)
-            m = (m << 1) | bit
+    def bit_tree(self, probs, offset, bits, symbol, reverse=False):
+        node = 1
+        shifts = range(bits) if reverse else range(bits - 1, -1, -1)
+        for shift in shifts:
+            bit = symbol >> shift & 1
+            self.encode_bit(probs, offset + node, bit)
+            node = (node << 1) | bit
 
     def finish(self):
         for _ in range(5):
@@ -112,602 +85,487 @@ class RangeEncoder:
         return bytes(self.buf)
 
 
-def _pos_slot_and_bits(d):
-    """把 0 基距离 d (=真实距离-1) 拆成 (posSlot, 低位数, 低位值)。"""
-    if d < 4:
-        return d, 0, 0
-    # posSlot >= 4 时：numDirectBits=(slot>>1)-1, base=(2|(slot&1))<<numDirectBits
-    for slot in range(4, 64):
-        n = (slot >> 1) - 1
-        base = (2 | (slot & 1)) << n
-        if d < base + (1 << n):
-            return slot, n, d - base
-    raise ValueError("distance too large: %d" % d)
+class LengthEncoder:
+    """普通 match 和 rep0 使用独立概率，但共享长度编码逻辑。"""
+
+    def __init__(self):
+        self.choice = [PROB_INIT] * 2
+        self.low = [PROB_INIT] * 32
+        self.mid = [PROB_INIT] * 32
+        self.high = [PROB_INIT] * 256
+
+    def encode(self, rc, pos_state, length):
+        value = length - 2
+        rc.encode_bit(self.choice, 0, value >= 8)
+        if value < 8:
+            rc.bit_tree(self.low, pos_state << 3, 3, value)
+        else:
+            rc.encode_bit(self.choice, 1, value >= 16)
+            if value < 16:
+                rc.bit_tree(self.mid, pos_state << 3, 3, value - 8)
+            else:
+                rc.bit_tree(self.high, 0, 8, value - 16)
 
 
 class LzmaEncoder:
-    def __init__(self, pb=2):
-        """
-        不维护输出假历史：match 的编码字节只取决于 (dist,len,pos)，与历史内容无关，
-        因此 quine 构造（先算结构、后填数据）不需要逐字节复制假历史。
-        """
-        self.pb = pb
-        self.pos_mask = (1 << pb) - 1
+    """只编码 match/rep0，编码结果不依赖历史字节，供布局后填充数据。"""
+
+    def __init__(self, out_pos=0):
         self.rc = RangeEncoder()
-        self.pos = 0            # 已输出字节数
+        self.pos = out_pos
         self.state = 0
-        # 概率模型
-        n = PROB_INIT
-        self.p_is_match = [n] * (kNumStates << kNumPosBitsMax)
-        self.p_is_rep = [n] * kNumStates
-        self.p_is_rep_g0 = [n] * kNumStates
-        self.p_rep0_long = [n] * (kNumStates << kNumPosBitsMax)
-        self.p_pos_slot = [n] * (kNumLenToPosStates << kNumPosSlotBits)
-        self.p_spec_pos = [n] * (kNumFullDistances - kEndPosModelIndex)   # 114
-        self.p_align = [n] * (1 << kNumAlignBits)
-        self.p_len_choice = [n] * 2
-        self.p_len_low = [n] * (16 * kNumLowLenSymbols)
-        self.p_len_mid = [n] * (16 * kNumMidLenSymbols)
-        self.p_len_high = [n] * (1 << kNumHighLenBits)
-        self.p_rep_len_choice = [n] * 2
-        self.p_rep_len_low = [n] * (16 * kNumLowLenSymbols)
-        self.p_rep_len_mid = [n] * (16 * kNumMidLenSymbols)
-        self.p_rep_len_high = [n] * (1 << kNumHighLenBits)
+        self.is_match = [PROB_INIT] * (12 << 4)
+        self.is_rep = [PROB_INIT] * 12
+        self.is_rep_g0 = [PROB_INIT] * 12
+        self.rep0_long = [PROB_INIT] * (12 << 4)
+        self.pos_slot = [PROB_INIT] * (4 << 6)
+        self.spec_pos = [PROB_INIT] * 114
+        self.align = [PROB_INIT] * 16
+        self.match_len = LengthEncoder()
+        self.rep_len = LengthEncoder()
 
-    # ---------- 内部 ----------
-    @property
-    def pos_state(self):
-        return self.pos & self.pos_mask
-
-    def _encode_len(self, choice, low, mid, high, length):
-        """choice 是 2 元素数组：choice[0]=choice 位，choice[1]=choice2 位。"""
-        ps = self.pos_state
-        l = length - kMatchMinLen
-        if l < kNumLowLenSymbols:
-            self.rc.encode_bit(choice, 0, 0)
-            self.rc.bittree_encode(low, ps << kNumLowLenBits, kNumLowLenBits, l)
-        else:
-            self.rc.encode_bit(choice, 0, 1)
-            l -= kNumLowLenSymbols
-            if l < kNumMidLenSymbols:
-                self.rc.encode_bit(choice, 1, 0)
-                self.rc.bittree_encode(mid, ps << kNumMidLenBits, kNumMidLenBits, l)
-            else:
-                self.rc.encode_bit(choice, 1, 1)
-                self.rc.bittree_encode(high, 0, kNumHighLenBits, l - kNumMidLenSymbols)
-
-    # ---------- 对外 token ----------
-    def _write_dist(self, dist, lts):
-        d = dist - 1
-        slot, n, low_bits = _pos_slot_and_bits(d)
-        self.rc.bittree_encode(self.p_pos_slot, lts << kNumPosSlotBits,
-                               kNumPosSlotBits, slot)
+    def _write_dist(self, dist, length):
+        if not 1 <= dist <= 0xFFFFFFFF:
+            raise ValueError("LZMA distance must be 1..2^32-1")
+        value = dist - 1
+        bits = max(0, value.bit_length() - 2)
+        slot = value if value < 4 else 2 * (bits + 1) + (value >> bits & 1)
+        self.rc.bit_tree(self.pos_slot, min(length - 2, 3) << 6, 6, slot)
         if slot >= 4:
-            if slot < kEndPosModelIndex:
-                base = (2 | (slot & 1)) << n
-                off = base - slot - 1
-                self.rc.bittree_reverse_encode(self.p_spec_pos, off, n, low_bits)
+            base = (2 | (slot & 1)) << bits
+            extra = value - base
+            if slot < 14:
+                self.rc.bit_tree(self.spec_pos, base - slot - 1, bits, extra, True)
             else:
-                self.rc.encode_direct_bits(low_bits >> kNumAlignBits, n - kNumAlignBits)
-                self.rc.bittree_reverse_encode(self.p_align, 0, kNumAlignBits,
-                                               low_bits & ((1 << kNumAlignBits) - 1))
+                self.rc.encode_direct_bits(extra >> 4, bits - 4)
+                self.rc.bit_tree(self.align, 0, 4, extra & 15, True)
 
     def match(self, dist, length):
-        assert kMatchMinLen <= length <= 273, length
-        ps = self.pos_state
-        self.rc.encode_bit(self.p_is_match, (self.state << kNumPosBitsMax) + ps, 1)
-        self.rc.encode_bit(self.p_is_rep, self.state, 0)          # 非 rep
-        lts = min(length - kMatchMinLen, kNumLenToPosStates - 1)
-        self._encode_len(self.p_len_choice,
-                         self.p_len_low, self.p_len_mid, self.p_len_high, length)
-        self._write_dist(dist, lts)
-        # 状态更新
-        self.state = 7 if self.state < kNumLitStates else 10
+        if not 2 <= length <= MAX_MATCH:
+            raise ValueError("LZMA match length must be 2..273")
+        self.rc.encode_bit(self.is_match, (self.state << 4) + (self.pos & 3), 1)
+        self.rc.encode_bit(self.is_rep, self.state, 0)
+        self.match_len.encode(self.rc, self.pos & 3, length)
+        self._write_dist(dist, length)
+        self.state = 7 if self.state < 7 else 10
         self.pos += length
 
     def rep_match(self, length):
-        """rep0 匹配：只使用最近一次 match 的距离（quine 构造只需要这种）。"""
-        assert kMatchMinLen <= length <= 273, length
-        ps = self.pos_state
-        self.rc.encode_bit(self.p_is_match, (self.state << kNumPosBitsMax) + ps, 1)
-        self.rc.encode_bit(self.p_is_rep, self.state, 1)
-        self.rc.encode_bit(self.p_is_rep_g0, self.state, 0)
-        self.rc.encode_bit(self.p_rep0_long, (self.state << kNumPosBitsMax) + ps, 1)
-        self._encode_len(self.p_rep_len_choice,
-                         self.p_rep_len_low, self.p_rep_len_mid, self.p_rep_len_high, length)
-        self.state = 8 if self.state < kNumLitStates else 11
+        if not 2 <= length <= MAX_MATCH:
+            raise ValueError("LZMA rep0 length must be 2..273")
+        index = (self.state << 4) + (self.pos & 3)
+        self.rc.encode_bit(self.is_match, index, 1)
+        self.rc.encode_bit(self.is_rep, self.state, 1)
+        self.rc.encode_bit(self.is_rep_g0, self.state, 0)
+        self.rc.encode_bit(self.rep0_long, index, 1)
+        self.rep_len.encode(self.rc, self.pos & 3, length)
+        self.state = 8 if self.state < 7 else 11
         self.pos += length
 
     def finish(self):
         return self.rc.finish()
 
 
-# ============================================================
-# Part 2: 7z 格式原语
-# ============================================================
-
-SIG = b"7z\xbc\xaf'\x1c"
-VER = b"\x00\x04"
-MAX_MATCH = 273                       # LZMA1 单个 match 长度上限
-# FILETIME 纪元（1601-01-01）与 Unix 纪元（1970-01-01）之差，单位 100ns
-FILETIME_EPOCH_OFFSET = 116444736000000000
+def crc32(data, value=0):
+    return binascii.crc32(data, value) & 0xFFFFFFFF
 
 
-def crc32(b, v=0):
-    return binascii.crc32(b, v) & 0xFFFFFFFF
-
-
-def varint(v):
-    """7z UINT64 变长编码：首字节高位连续 n 个 1 + 值的 (7-n) 个高位，再跟 n 字节 LE。"""
-    if v < 0x80:
-        return bytes([v])
-    for n in range(1, 9):
-        if v < (1 << (8 * n + 7 - n)):
-            break
-    else:
-        raise ValueError("varint too big")
-    first = ((0xFF << (8 - n)) & 0xFF) | ((v >> (8 * n)) & ((1 << (7 - n)) - 1))
-    return bytes([first]) + (v & ((1 << (8 * n)) - 1)).to_bytes(n, "little")
+def varint(value):
+    """7z UINT64：首字节给出后续小端字节数，最多九字节。"""
+    if not 0 <= value < 1 << 64:
+        raise ValueError("7z UINT64 out of range")
+    for size in range(8):
+        if value < 1 << (7 * (size + 1)):
+            first = ((0xFF << (8 - size)) & 0xFF) | (value >> (8 * size))
+            return bytes([first]) + (value & ((1 << (8 * size)) - 1)).to_bytes(size, "little")
+    return b"\xff" + value.to_bytes(8, "little")
 
 
 def store_hdr(payload_len, first=False):
-    """LZMA2 uncompressed chunk 头（3 字节，大端 size-1）。"""
-    assert 1 <= payload_len <= 65536
-    return bytes([0x01 if first else 0x02]) + (payload_len - 1).to_bytes(2, "big")
+    if not 1 <= payload_len <= CHUNK:
+        raise ValueError("LZMA2 stored chunk must contain 1..65536 bytes")
+    return bytes([1 if first else 2]) + (payload_len - 1).to_bytes(2, "big")
 
 
 def matches_for(dist, total):
-    """dist 固定、总长 total 的 token 序列：首个 match + 后续 rep0。
-    长度按 273 上限切分，并避开"只剩 1 字节"（rep0 最小长度为 2）。"""
-    assert total >= 2
-    toks = []
-    first = min(MAX_MATCH, total)
-    if total - first == 1:
-        first -= 1
-    toks.append(("m", dist, first))
-    total -= first
-    while total > 0:
-        l = min(MAX_MATCH, total)
-        if total - l == 1:
-            l -= 1
-        toks.append(("r0", l))
-        total -= l
-    return toks
-
-
-# ============================================================
-# Part 3: 多文件 7z quine 构造器
-# ============================================================
-
-PROPS_BYTE = 0x5D                      # lc=3, lp=0, pb=2
-CHUNK = 65536                          # LZMA2 单 chunk 解压上限
-SEED_NOTE = ("\nMayx's Blog!").encode("utf-8")
+    """固定距离的首个 match 加 rep0；分段时不留下单字节。"""
+    if total < 2:
+        raise ValueError("match sequence must output at least two bytes")
+    tokens = []
+    while total:
+        length = min(MAX_MATCH, total)
+        if total - length == 1:
+            length -= 1
+        tokens.append(("r0", length) if tokens else ("m", dist, length))
+        total -= length
+    return tokens
 
 
 def dict_prop_for(maxdist):
-    """选最小的 LZMA2 dict prop 使字典 >= maxdist。"""
-    for p in range(41):
-        if (2 | (p & 1)) << (p // 2 + 11) >= maxdist:
-            return p, (2 | (p & 1)) << (p // 2 + 11)
-    raise ValueError("distance too large")
+    for prop in range(41):
+        size = 0xFFFFFFFF if prop == 40 else (2 | (prop & 1)) << (prop // 2 + 11)
+        if size >= maxdist:
+            return prop, size
+    raise ValueError("LZMA2 dictionary distance exceeds 2^32-1")
 
 
 def lzma_chunk(tokens, out_pos):
-    """编一个 LZMA chunk（0xC0: state+props reset，无 dict reset，无 end marker）。
-    match token 的编码字节只取决于 (dist,len,pos)，与历史内容无关（不维护输出历史）。"""
-    enc = LzmaEncoder()
-    enc.pos = out_pos
-    total = 0
-    for t in tokens:
-        if t[0] == "m":
-            enc.match(t[1], t[2])
-            total += t[2]
+    """重置状态和概率，保留字典；21-bit 解压长度，不写结束标记。"""
+    enc = LzmaEncoder(out_pos)
+    for token in tokens:
+        if token[0] == "m":
+            enc.match(token[1], token[2])
+        elif token[0] == "r0":
+            enc.rep_match(token[1])
         else:
-            enc.rep_match(t[1])
-            total += t[1]
+            raise ValueError("unsupported LZMA token: %r" % (token[0],))
     data = enc.finish()
-    assert total - 1 < 65536 and len(data) - 1 < 65536
-    hdr = bytes([0xC0]) + (total - 1).to_bytes(2, "big") + \
-          (len(data) - 1).to_bytes(2, "big") + bytes([PROPS_BYTE])
-    return hdr + data, total
+    total = enc.pos - out_pos
+    if not 1 <= total <= MAX_CHUNK_OUTPUT or not 1 <= len(data) <= CHUNK:
+        raise ValueError("LZMA2 compressed chunk size out of range")
+    unpacked, packed = total - 1, len(data) - 1
+    header = (bytes([0xC0 | (unpacked >> 16)])
+              + (unpacked & 0xFFFF).to_bytes(2, "big")
+              + packed.to_bytes(2, "big") + bytes([PROPS_BYTE]))
+    return header + data, total
+
+
+@dataclass(frozen=True)
+class Entry:
+    name: str
+    is_dir: bool
+    data: bytes = b""
+
+
+@dataclass(frozen=True)
+class Layout:
+    prefix_size: int
+    chunks: tuple
+    samples: bytes
+    padding: int
+    matches: bytes
+    header: bytes
+    crc_offset: int
+    dict_size: int
+
+    @property
+    def packed_size(self):
+        return sum(self.chunks) + 3 * len(self.chunks) + len(self.matches) + 1
+
+
+class LayoutError(RuntimeError):
+    """当前填充量没有满足布局或 CRC 定点，换一个填充量重试。"""
+
+
+def split_sizes(size, limit):
+    """每片至少两字节，避免 match 无法表达的一字节尾片。"""
+    if size < 2:
+        raise ValueError("分片总长度必须至少为 2")
+    sizes = [limit] * (size // limit)
+    tail = size % limit
+    if tail == 1:
+        sizes[-1] -= 1
+        tail = 2
+    if tail:
+        sizes.append(tail)
+    return tuple(sizes)
+
+
+def bitfield(flags):
+    data = bytearray((len(flags) + 7) // 8)
+    for i, flag in enumerate(flags):
+        if flag:
+            data[i // 8] |= 1 << (7 - i % 8)
+    return bytes(data)
+
+
+def archive_path(value, allow_empty=False):
+    value = value.replace("\\", "/")
+    if not value and allow_empty:
+        return ""
+    parts = value.split("/")
+    if any(part in ("", ".", "..") for part in parts) or any(c in value for c in ("\0", ":")):
+        raise ValueError("归档内路径必须是相对路径，不能包含空段、. 或 ..：%r" % value)
+    return "/".join(parts)
+
+
+def encode_segments(segments, out_pos):
+    """把 (历史起点, 长度) 转成 match 流；跨 chunk 时保留字典。"""
+    result, tokens = bytearray(), []
+    used, max_distance = 0, 0
+    for source, length in segments:
+        for size in split_sizes(length, MAX_CHUNK_OUTPUT):
+            if used + size > MAX_CHUNK_OUTPUT:
+                block, _ = lzma_chunk(tokens, out_pos)
+                result += block
+                out_pos += used
+                tokens, used = [], 0
+            distance = out_pos + used - source
+            if distance <= 0:
+                raise LayoutError("回引源尚未输出")
+            max_distance = max(max_distance, distance)
+            tokens.extend(matches_for(distance, size))
+            used += size
+            source += size
+    if tokens:
+        block, _ = lzma_chunk(tokens, out_pos)
+        result += block
+    return bytes(result), max_distance
+
+
+def solve_fixed_crc(data, groups, targets):
+    """CRC 是 GF(2) 仿射函数；同步所有镜像，解三个 CRC 的 96-bit 定点。"""
+    def vector(values):
+        return sum(value << (32 * i) for i, value in enumerate(values))
+
+    base = vector(targets())
+    columns = []
+    for copies in groups:
+        for bit in range(32):
+            positions = [copy[bit // 8] for copy in copies]
+            for pos in positions:
+                data[pos] ^= 1 << (bit % 8)
+            columns.append(vector(targets()) ^ base)
+            for pos in positions:
+                data[pos] ^= 1 << (bit % 8)
+
+    rows = []
+    for bit in range(96):
+        coeff = 1 << bit
+        for j, column in enumerate(columns):
+            coeff ^= ((column >> bit) & 1) << j
+        rows.append([coeff, (base >> bit) & 1])
+    pivots = []
+    for column in range(96):
+        rank = len(pivots)
+        pivot = next((i for i in range(rank, 96) if rows[i][0] >> column & 1), None)
+        if pivot is None:
+            continue
+        rows[rank], rows[pivot] = rows[pivot], rows[rank]
+        for i in range(96):
+            if i != rank and rows[i][0] >> column & 1:
+                rows[i][0] ^= rows[rank][0]
+                rows[i][1] ^= rows[rank][1]
+        pivots.append(column)
+    if any(not coeff and rhs for coeff, rhs in rows):
+        raise LayoutError("CRC 定点方程无解")
+    solution = sum(rows[i][1] << column for i, column in enumerate(pivots))
+    values = [(solution >> (32 * i)) & 0xFFFFFFFF for i in range(3)]
+    for copies, value in zip(groups, values):
+        packed = struct.pack("<I", value)
+        for copy in copies:
+            for i, pos in enumerate(copy):
+                data[pos] = packed[i]
+    if tuple(values) != targets():
+        raise RuntimeError("CRC 定点校验失败")
 
 
 class BlogQuine:
-    def __init__(self, root, quine_name="MayxBlog.7z", seed_name="_quine_seed.bin",
-                 src_dir=""):
-        self.quine_name = quine_name
-        self.seed_name = seed_name
-        # 源文件在归档内的前缀目录（如 "src" → 归档内出现 src/hello.txt）；"" = 根目录
-        self.src_dir = src_dir.strip("/")
-        # 程序运行时间 → FILETIME（1601-01-01 起 100ns 计数），
-        # 本次运行只取一次，作为归档内所有文件条目的修改时间字段。
-        self.mtime_ft = time.time_ns() // 100 + FILETIME_EPOCH_OFFSET
-        # walk_entries: walk 顺序（父先子后、同级 dirs 在前）的 (rel, is_dir)。
-        # 子流顺序 = 非空条目在此列表中的顺序，必须自始至终保持同一顺序。
-        self.walk_entries = []
-        self.files = []       # (relpath, data bytes)，顺序 = walk_entries 中文件序
-        # src_dir 的各级父目录先作为目录条目挂入（父先子后），
-        # 这样归档结构完整：如 src_dir="public/src" → "public"、"public/src"
-        if self.src_dir:
-            parts = self.src_dir.split("/")
-            for i in range(1, len(parts) + 1):
-                self.walk_entries.append(("/".join(parts[:i]), True))
-        for dirpath, dirnames, filenames in os.walk(root):
-            dirnames.sort()
-            for dn in dirnames:
-                rel = os.path.relpath(os.path.join(dirpath, dn), root).replace(os.sep, "/")
-                self.walk_entries.append((self._prefixed(rel), True))
-            for fn in sorted(filenames):
-                p = os.path.join(dirpath, fn)
-                rel = os.path.relpath(p, root).replace(os.sep, "/")
-                with open(p, "rb") as fp:
-                    data = fp.read()
-                self.walk_entries.append((self._prefixed(rel), False))
-                self.files.append((self._prefixed(rel), data))
-        self.dirs = [r for r, isd in self.walk_entries if isd]
-        self.content = b"".join(data for _, data in self.files)
+    """单层 LZMA2：解码(P) = content || Q，无独立的辅助文件条目。
 
-    def _prefixed(self, rel):
-        return self.src_dir + "/" + rel if self.src_dir else rel
+    Q = V || P || H，V = S32 || H副本 || chunk头样本 || pad || M副本 || 00。
+    P 先 store(content || V)，再由 M 回引已输出的字节，复现 P || H。
+    内容按原样存储；M 的编码不依赖历史字节，可先求布局，再填头部与 CRC。
+    """
 
-    def entries(self):
-        ent = [{"name": self.seed_name, "dir": False}]
-        ent += [{"name": r, "dir": isd} for r, isd in self.walk_entries]
-        ent.append({"name": self.quine_name, "dir": False})
-        return ent
+    def __init__(self, root, quine_name="MayxBlog.7z", src_dir="", exclude=None):
+        root = Path(root).resolve()
+        if not root.is_dir():
+            raise ValueError("源目录不存在：%s" % root)
+        self.quine_name = archive_path(quine_name)
+        prefix = archive_path(src_dir.strip("/\\"), allow_empty=True)
+        excluded = Path(exclude).resolve() if exclude is not None else None
+        self.entries, self.files = [], []
+        names = {}
 
-    # ---------- 7z header ----------
-    def build_header(self, n, total, d, entries, sub_sizes):
-        n_sub = len(sub_sizes)
-        N = len(entries)
-        h = bytearray()
-        h += b"\x01\x04"                                   # kHeader, kMainStreamsInfo
-        h += b"\x06" + varint(0) + varint(1) + b"\x09" + varint(n) + b"\x00"  # PackInfo
-        h += b"\x07"                                       # UnpackInfo
-        h += b"\x0b" + varint(1) + b"\x00"                 # kFolder: 1, local
-        h += varint(1) + b"\x21\x21" + varint(1) + bytes([self.dict_prop])
-        h += b"\x0c" + varint(d + total)                   # kCodersUnpackSize
-        h += b"\x00"                                       # end UnpackInfo
-        h += b"\x08"                                       # SubStreamsInfo
-        h += b"\x0d" + varint(n_sub)                       # 子流数
-        h += b"\x09" + b"".join(varint(s) for s in sub_sizes[:-1])  # 前 n_sub-1 个大小
-        h += b"\x0a" + b"\x01"                             # kCRC: AllDefined
-        crc_base = len(h)
-        h += b"\x00" * (4 * n_sub)                         # CRC 槽（quine 的待定点）
-        h += b"\x00\x00"                                   # end SSI, end MainStreamsInfo
-        h += b"\x05" + varint(N)                           # FilesInfo
-        bits = bytearray((N + 7) // 8)                     # kEmptyStream 位域（MSB 优先）
-        for i, e in enumerate(entries):
-            if e["dir"]:
-                bits[i // 8] |= 1 << (7 - i % 8)
-        h += b"\x0e" + varint(len(bits)) + bytes(bits)
-        # kMTime：所有条目（文件与目录）写入修改时间（= 本次程序运行时间）
-        mt = b"\x01\x00" + struct.pack("<Q", self.mtime_ft) * N
-        h += b"\x14" + varint(len(mt)) + mt
-        names = bytearray(b"\x00")                         # kName: external=0
-        for e in entries:
-            names += e["name"].encode("utf-16-le") + b"\x00\x00"
-        h += b"\x11" + varint(len(names)) + bytes(names)
-        attrs = b"".join(struct.pack("<I", 0x10 if e["dir"] else 0x20)
-                         for e in entries)
-        h += b"\x15" + varint(2 + len(attrs)) + b"\x01\x00" + attrs  # kAttributes
-        h += b"\x00\x00"                                   # end FilesInfo, end Header
-        return bytes(h), crc_base
+        def add(name, is_dir, data=b""):
+            key = name.casefold()
+            if key in names:
+                if is_dir and names[key].is_dir and names[key].name == name:
+                    return
+                raise ValueError("归档内路径冲突：%s" % name)
+            entry = Entry(name, is_dir, data)
+            names[key] = entry
+            self.entries.append(entry)
+            if not is_dir:
+                self.files.append(entry)
 
-    # ---------- 结构计算 ----------
-    def layout(self, d_seed, maxdist_hint):
-        content_len = len(self.content)
-        d = d_seed + content_len
-        # C1 链：k 个 uncompressed chunk，载荷总长 d+35
-        Ls = []
-        rem = d + 35
-        while rem > CHUNK:
-            Ls.append(CHUNK)
-            rem -= CHUNK
-        Ls.append(rem)
-        assert Ls[-1] >= 2, "末 chunk 载荷 %d 太小，调整 d_seed" % Ls[-1]
-        k = len(Ls)
-        hdrA = store_hdr(CHUNK, first=False)               # 0x02 FF FF
-        hdrB = store_hdr(Ls[-1], first=False)              # 末 chunk 头（可能与 A 相同）
-        self.dict_prop, dict_size = dict_prop_for(maxdist_hint)
-        # 子流大小（quine 的 total 在迭代后填）：seed, 各文件, quine
-        file_sizes = [len(data) for _, data in self.files]
+        def add_parents(name):
+            parts = name.split("/")
+            for i in range(1, len(parts)):
+                add("/".join(parts[:i]), True)
 
-        T, h = 100, 100
-        for _ in range(30):
-            chunks = []
-            o, f = 0, 32
-            S = 0
-            for j, L in enumerate(Ls):                     # C1a..C1k
-                chunks.append({"kind": "store", "foff": f, "size": 3 + L,
-                               "ooff": o, "olen": L, "first": j == 0,
-                               "c1": True, "S": S})
-                o += L
-                f += 3 + L
-                S += L
-            assert o == d + 35
-            # repro：复现 file[35 : 32+3k+d+35) = pay0 hdr1 pay1 ... hdr(k-1) pay(k-1)
-            S = 0
-            for j, L in enumerate(Ls):
-                if j > 0:
-                    # chunk j 的 3 字节头：从 seed 开头样本复制
-                    srcpos = 0 if (j < k - 1 or L == CHUNK) else 3
-                    dist_h = (d + 35 + S + 3 * (j - 1)) - srcpos
-                    hb, hu = lzma_chunk([("m", dist_h, 3)], o)
-                    assert hu == 3
-                    chunks.append({"kind": "lzma", "foff": f, "size": len(hb),
-                                   "ooff": o, "olen": hu, "bytes": hb})
-                    o += hu
-                    f += len(hb)
-                # chunk j 的载荷：从 W[S:S+L) 复制
-                cb, cu = lzma_chunk(matches_for(d + 35 + 3 * j, L), o)
-                assert cu == L
-                chunks.append({"kind": "lzma", "foff": f, "size": len(cb),
-                               "ooff": o, "olen": cu, "bytes": cb})
-                o += cu
-                f += len(cb)
-                S += L
-            # gears: store(x)+copy(x) 把 slip 压到 <=16
-            while f - (o - d) > 16:
-                s = f - (o - d)
-                x = min(s + 3, CHUNK)
-                chunks.append({"kind": "store", "foff": f, "size": 3 + x,
-                               "ooff": o, "olen": x})
-                o += x
-                f += 3 + x
-                cb, cu = lzma_chunk(matches_for(x, x), o)
-                chunks.append({"kind": "lzma", "foff": f, "size": len(cb),
-                               "ooff": o, "olen": cu, "bytes": cb})
-                o += cu
-                f += len(cb)
-            # jump: 单 match 从 W[6:6+y)（seed 里的种植串）复制，使 slip = -3
-            s = f - (o - d)
-            y = s + 17
-            for _ in range(10):
-                jb, ju = lzma_chunk([("m", o - 6, y)], o)
-                y2 = s + 3 + len(jb)
-                if y2 == y:
-                    break
-                y = y2
-            assert ju == y and y2 == y, "jump 不动点失败"
-            assert y + 6 <= d_seed, "种植串 %d+6 超过 seed %d" % (y, d_seed)
-            chunks.append({"kind": "lzma", "foff": f, "size": len(jb),
-                           "ooff": o, "olen": ju, "bytes": jb, "jump": True})
-            o += ju
-            f += len(jb)
-            # gadget: 真空 store(T) + match(T,T) + 结束标记
-            assert f == (o - d) - 3, "slip=%d 应为 -3" % (f - (o - d))
-            chunks.append({"kind": "store", "foff": f, "size": 3 + T,
-                           "ooff": o, "olen": T, "vac": True})
-            f += 3 + T
-            o += T
-            gb, gu = lzma_chunk(matches_for(T, T), o)
-            assert gu == T
-            chunks.append({"kind": "lzma", "foff": f, "size": len(gb),
-                           "ooff": o, "olen": gu, "bytes": gb, "gmatch": True})
-            f += len(gb)
-            o += gu
-            # LZMA2 流结束标记（0x00）：7z t 需要它确认流完整结束
-            chunks.append({"kind": "term", "foff": f, "size": 1,
-                           "ooff": o, "olen": 0, "bytes": b"\x00"})
-            f += 1
-            n = f - 32
-            total = f + h
-            sub_sizes = [d_seed] + file_sizes + [total]
-            entries = self.entries()
-            hdr, crc_base = self.build_header(n, total, d, entries, sub_sizes)
-            h_new = len(hdr)
-            T_new = len(gb) + 1 + h_new
-            if T_new == T and h_new == h:
-                assert o == d + f + h, "输出终点 %d != d+total %d" % (o, d + f + h)
-                return {"d": d, "d_seed": d_seed, "k": k, "Ls": Ls,
-                        "chunks": chunks, "header": hdr, "crc_base": crc_base,
-                        "n": n, "total": f + h, "T": T, "h": h,
-                        "hdrA": hdrA, "hdrB": hdrB, "jump_y": y,
-                        "n_sub": len(sub_sizes), "sub_sizes": sub_sizes,
-                        "entries": entries, "dict_size": dict_size}
-            T, h = T_new, h_new
-        raise RuntimeError("layout 不收敛")
+        if prefix:
+            add_parents(prefix)
+            add(prefix, True)
 
-    # ---------- 装配 ----------
-    def assemble(self, lay):
-        F = bytearray(lay["total"])
-        d, h = lay["d"], lay["h"]
-        d_seed = lay["d_seed"]
-        hoff = lay["total"] - h
-        # pass A: sig + 所有非 payload 字节
-        F[0:6] = SIG
-        F[6:8] = VER
-        struct.pack_into("<Q", F, 12, lay["n"])             # NextHeaderOffset
-        struct.pack_into("<Q", F, 20, h)                    # NextHeaderSize
-        jump_c = vac_c = None
-        for c in lay["chunks"]:
-            if c["kind"] == "store":
-                F[c["foff"]:c["foff"] + 3] = store_hdr(c["olen"],
-                                                       first=c.get("first", False))
-                if c.get("vac"):
-                    vac_c = c
-            else:
-                F[c["foff"]:c["foff"] + c["size"]] = c["bytes"]
-                if c.get("jump"):
-                    jump_c = c
-        F[hoff:hoff + h] = lay["header"]
-        assert jump_c and vac_c
-        # pass B: seed = hdrA ‖ hdrB ‖ 种植串 ‖ 填充
-        y = lay["jump_y"]
-        plant = bytes(F[jump_c["ooff"] - d: jump_c["ooff"] - d + y])
-        seed = bytearray(d_seed)
-        seed[0:3] = lay["hdrA"]
-        seed[3:6] = lay["hdrB"]
-        seed[6:6 + y] = plant
-        pad = (SEED_NOTE * (d_seed // len(SEED_NOTE) + 2))[:d_seed - 6 - y]
-        seed[6 + y:] = pad
-        # pass C: 各 store 的 payload
-        P = bytes(seed) + self.content + bytes(F[0:35])      # = W[0:d+35)
-        assert len(P) == d + 35
-        for c in lay["chunks"]:
-            if c["kind"] != "store":
-                continue
-            ooff, olen = c["ooff"], c["olen"]
-            if c.get("c1"):
-                F[c["foff"] + 3:c["foff"] + 3 + olen] = P[c["S"]:c["S"] + olen]
-            elif c.get("vac"):
-                fo = ooff - d
-                F[fo:fo + olen] = F[fo + olen:fo + 2 * olen]
-            else:
-                fo = ooff - d
-                F[c["foff"] + 3:c["foff"] + 3 + olen] = F[fo:fo + olen]
-        return F, bytes(seed)
+        def walk_error(error):
+            raise error
 
-    # ---------- CRC 定点（96x96 GF(2)） ----------
-    def solve_crc(self, F, lay, seed):
-        T, h, d = lay["T"], lay["h"], lay["d"]
-        k, n_sub, crc_base = lay["k"], lay["n_sub"], lay["crc_base"]
-        hoff = lay["total"] - h
-        vout_f = lay["total"] - 2 * T
-        hcopy = vout_f + (T - h)
-        # 已知 CRC：seed + 各文件（quine 的是未知量 D）
-        known = [crc32(seed)] + [crc32(data) for _, data in self.files]
-        assert len(known) == n_sub - 1
-        for i, e in enumerate(known):
-            struct.pack_into("<I", F, hoff + crc_base + 4 * i, e)
-            struct.pack_into("<I", F, hcopy + crc_base + 4 * i, e)
-        # 未知量 D N S，各出现两处
-        dpos = crc_base + 4 * (n_sub - 1)
-        ncopy = 32 + 3 * k + d                            # C1k 载荷里 F[0:35) 副本起点
-        groups = [[hoff + dpos, hcopy + dpos],
-                  [28, ncopy + 28],
-                  [8, ncopy + 8]]
-        Fv = memoryview(F)
+        for directory, dirs, files in os.walk(root, onerror=walk_error):
+            dirs.sort()
+            children = [(name, True) for name in dirs]
+            children += [(name, False) for name in sorted(files)]
+            for name, is_dir in children:
+                path = Path(directory) / name
+                if not is_dir and path.resolve() == excluded:
+                    continue
+                rel = path.relative_to(root).as_posix()
+                name = archive_path(prefix + "/" + rel if prefix else rel)
+                add_parents(name)
+                add(name, is_dir, b"" if is_dir else path.read_bytes())
 
-        def targets():
-            return (crc32(Fv),
-                    crc32(Fv[hoff:hoff + h]),
-                    crc32(Fv[12:32]))
+        add_parents(self.quine_name)
+        if self.quine_name.casefold() in names:
+            raise ValueError("quine 文件名与源条目冲突：%s" % self.quine_name)
+        self.entries.append(Entry(self.quine_name, False))
+        self.content = b"".join(entry.data for entry in self.files)
+        self.stream_files = [entry for entry in self.files if entry.data]
+        self.stream_sizes = b"".join(varint(len(entry.data)) for entry in self.stream_files)
+        self.stream_crcs = b"".join(struct.pack("<I", crc32(entry.data)) for entry in self.stream_files)
+        self.mtime = time.time_ns() // 100 + FILETIME_EPOCH_OFFSET
 
-        base = targets()
-        basevec = base[0] | (base[1] << 32) | (base[2] << 64)
-        cols = []
-        for g in range(3):
-            for kb in range(32):
-                poss = [p + kb // 8 for p in groups[g]]
-                bb = kb % 8
-                for p in poss:
-                    F[p] ^= (1 << bb)
-                t = targets()
-                for p in poss:
-                    F[p] ^= (1 << bb)
-                cols.append((t[0] ^ base[0]) | ((t[1] ^ base[1]) << 32)
-                            | ((t[2] ^ base[2]) << 64))
-        # (I+A) x = basevec；方程 i: x_i ^ sum_j A[i][j] x_j = base_i
-        eqs = []
-        for i in range(96):
-            coeff = 0
-            for j in range(96):
-                if (cols[j] >> i) & 1:
-                    coeff |= 1 << j
-            coeff ^= 1 << i                    # 对角元 = 1 ^ A[i][i]
-            eqs.append([coeff, (basevec >> i) & 1])
-        for j in range(96):
-            p = next((i for i in range(j, 96) if (eqs[i][0] >> j) & 1), None)
-            if p is None:
-                raise RuntimeError("GF(2) 奇异 @bit%d" % j)
-            eqs[j], eqs[p] = eqs[p], eqs[j]
-            for i in range(96):
-                if i != j and ((eqs[i][0] >> j) & 1):
-                    eqs[i][0] ^= eqs[j][0]
-                    eqs[i][1] ^= eqs[j][1]
-        x = 0
-        for i in range(96):
-            assert eqs[i][0] == (1 << i)
-            if eqs[i][1]:
-                x |= 1 << i
-        vals = [x & 0xFFFFFFFF, (x >> 32) & 0xFFFFFFFF, (x >> 64) & 0xFFFFFFFF]
-        for g in range(3):
-            for p in groups[g]:
-                F[p:p + 4] = struct.pack("<I", vals[g])
-        t = targets()
-        assert t == tuple(vals), "CRC 定点失败: %s != %s" % (t, vals)
-        return vals
+    def build_header(self, prefix_size, packed_size, archive_size, dict_prop):
+        h = bytearray(b"\x01\x04\x06" + varint(prefix_size - 32)
+                      + b"\x01\x09" + varint(packed_size) + b"\x00\x07\x0b\x01\x00")
+        h += b"\x01\x21\x21\x01" + bytes([dict_prop])  # 一个 LZMA2 coder
+        h += b"\x0c" + varint(len(self.content) + archive_size) + b"\x00"
+        h += b"\x08\x0d" + varint(len(self.stream_files) + 1) + b"\x09" + self.stream_sizes
+        h += b"\x0a\x01" + self.stream_crcs
+        crc_offset = len(h)
+        h += b"\x00" * 4 + b"\x00\x00\x05" + varint(len(self.entries))
 
-    def build(self, maxdist_hint=None):
-        if maxdist_hint is None:
-            # 最大距离 ~ jump 的 dist ≈ 2d + repro/gear 余量
-            maxdist_hint = 2 * (len(self.content) + 128) + (1 << 21)
-        d_seed = 64
-        last_err = None
-        for _ in range(80):
-            d = d_seed + len(self.content)
-            if (d + 35) % CHUNK == 1:                     # L_k = 1 无法编 match
-                d_seed += 1
-                continue
+        def prop(kind, data):
+            return bytes([kind]) + varint(len(data)) + data
+
+        empty = [entry.is_dir or (not entry.data and i != len(self.entries) - 1)
+                 for i, entry in enumerate(self.entries)]
+        h += prop(0x0E, bitfield(empty))
+        if any(flag and not entry.is_dir for flag, entry in zip(empty, self.entries)):
+            empty_files = [not entry.is_dir for flag, entry in zip(empty, self.entries) if flag]
+            h += prop(0x0F, bitfield(empty_files))
+        h += prop(0x14, b"\x01\x00" + struct.pack("<Q", self.mtime) * len(self.entries))
+        names = b"".join(entry.name.encode("utf-16-le") + b"\x00\x00" for entry in self.entries)
+        attrs = b"".join(struct.pack("<I", 0x10 if entry.is_dir else 0x20) for entry in self.entries)
+        h += prop(0x11, b"\x00" + names)
+        h += prop(0x15, b"\x01\x00" + attrs)
+        return bytes(h + b"\x00\x00"), crc_offset
+
+    def layout(self, padding):
+        header_size, match_size = 256, 256
+        seen = set()
+        dc = len(self.content)
+        for _ in range(40):
+            prefix_size = 32 + header_size + 12 + padding + match_size + 1
+            output_size = dc + prefix_size
+            chunks = split_sizes(output_size, CHUNK)
+            samples = (store_hdr(chunks[0], True) + store_hdr(CHUNK)
+                       + store_hdr(CHUNK - 1) + store_hdr(chunks[-1]))
+            segments, offset = [], 0
+            for i, size in enumerate(chunks):
+                sample = 0 if i == 0 else 1 if size == CHUNK else 2 if size == CHUNK - 1 else 3
+                segments += [(dc + 32 + header_size + 3 * sample, 3), (offset, size)]
+                offset += size
+            segments += [(dc + 32 + header_size + 12 + padding, match_size + 1),
+                         (dc + 32, header_size)]
+            matches, max_distance = encode_segments(segments, output_size)
+            dict_prop, dict_size = dict_prop_for(max_distance)
+            packed_size = output_size + 3 * len(chunks) + len(matches) + 1
+            header, crc_offset = self.build_header(
+                prefix_size, packed_size, prefix_size + packed_size + header_size, dict_prop)
+            key = len(header), len(matches)
+            if key == (header_size, match_size):
+                return Layout(prefix_size, chunks, samples, padding, matches,
+                              header, crc_offset, dict_size)
+            if key in seen:
+                break
+            seen.add(key)
+            header_size, match_size = key
+        raise LayoutError("布局没有收敛")
+
+    def assemble(self, layout):
+        start = struct.pack("<QQI", layout.prefix_size - 32 + layout.packed_size,
+                            len(layout.header), 0)
+        signature = SIG + VER + b"\x00" * 4 + start
+        prefix = (signature + layout.header + layout.samples + b"\x00" * layout.padding
+                  + layout.matches + b"\x00")
+        initial = self.content + prefix
+        data, offset = bytearray(prefix), 0
+        for i, size in enumerate(layout.chunks):
+            data += store_hdr(size, first=i == 0) + initial[offset:offset + size]
+            offset += size
+        data += layout.matches + b"\x00" + layout.header
+        if len(prefix) != layout.prefix_size or offset != len(initial):
+            raise RuntimeError("装配布局不一致")
+
+        def stored_positions(output_offset, size):
+            result, consumed, physical = [], 0, layout.prefix_size
+            for length in layout.chunks:
+                begin = max(output_offset, consumed)
+                end = min(output_offset + size, consumed + length)
+                result.extend(range(physical + 3 + begin - consumed, physical + 3 + end - consumed))
+                consumed += length
+                physical += 3 + length
+            if len(result) != size:
+                raise RuntimeError("无法定位 store 载荷")
+            return result
+
+        slot = layout.crc_offset
+        hoff = layout.prefix_size + layout.packed_size
+        groups = [[list(range(32 + slot, 36 + slot)),
+                   stored_positions(len(self.content) + 32 + slot, 4),
+                   list(range(hoff + slot, hoff + slot + 4))]]
+        for slot in (28, 8):
+            groups.append([list(range(slot, slot + 4)), stored_positions(len(self.content) + slot, 4)])
+        view = memoryview(data)
+        solve_fixed_crc(data, groups, lambda: (crc32(view), crc32(view[hoff:]), crc32(view[12:32])))
+        return bytes(data)
+
+    def verify(self, data, layout):
+        dec = lzma.LZMADecompressor(format=lzma.FORMAT_RAW,
+            filters=[{"id": lzma.FILTER_LZMA2, "dict_size": layout.dict_size}])
+        expected = len(self.content) + len(data)
+        packed = data[layout.prefix_size:layout.prefix_size + layout.packed_size]
+        decoded = dec.decompress(packed, max_length=expected + 1)
+        view = memoryview(decoded)
+        if (not dec.eof or dec.unused_data or len(decoded) != expected
+                or view[:len(self.content)] != self.content or view[len(self.content):] != data):
+            raise RuntimeError("自解码校验失败")
+
+    def build(self):
+        last_error = None
+        for padding in range(256):
             try:
-                lay = self.layout(d_seed, maxdist_hint)
-                F, seed = self.assemble(lay)
-                crcs = self.solve_crc(F, lay, seed)
-                return bytes(F), lay, seed, crcs
-            except (RuntimeError, AssertionError) as e:
-                last_err = e
-                d_seed += 1
-        raise RuntimeError("build 多次失败: %s" % last_err)
-
-
-def verify(F, lay, seed, files):
-    """解码 LZMA2 流并逐文件校验。"""
-    d, d_seed = lay["d"], lay["d_seed"]
-    dec = lzma.LZMADecompressor(
-        format=lzma.FORMAT_RAW,
-        filters=[{"id": lzma.FILTER_LZMA2, "dict_size": lay["dict_size"]}])
-    W = dec.decompress(F[32:32 + lay["n"]])
-    assert len(W) == d + len(F), "|W|=%d 期望 %d" % (len(W), d + len(F))
-    ok = True
-    if W[:d_seed] != seed:
-        print("[verify] seed 不匹配")
-        ok = False
-    pos = d_seed
-    for rel, data in files:
-        if W[pos:pos + len(data)] != data:
-            print("[verify] 文件不匹配:", rel)
-            ok = False
-        pos += len(data)
-    assert pos == d
-    if W[d:] != F:
-        print("[verify] quine 自复制不匹配")
-        ok = False
-    print("[verify] 自解码: |W|=%d, seed/文件/quine 全部匹配: %s" % (len(W), ok))
-    return ok
+                layout = self.layout(padding)
+                data = self.assemble(layout)
+                self.verify(data, layout)
+                return data
+            except LayoutError as error:
+                last_error = error
+        raise RuntimeError("无法找到布局/CRC 定点：%s" % last_error)
 
 
 def main():
-    ap = argparse.ArgumentParser(description="多文件 7z quine 生成器")
-    ap.add_argument("srcdir")
-    ap.add_argument("output")
-    ap.add_argument("--quine-name", default=None,
-                    help="归档内 quine 文件名（默认 = output 的文件名）")
-    ap.add_argument("--seed-name", default=".this_is_mayx_blog")
-    ap.add_argument("--src-dir", default="",
-                    help="源文件在归档内的前缀目录（如 src；默认根目录）")
-    ap.add_argument("--quine-dir", default="",
-                    help="quine 在归档内所在的目录（如 public；默认根目录）")
-    args = ap.parse_args()
-    quine_name = args.quine_name or os.path.basename(args.output)
-    if args.quine_dir:
-        # 归档内路径用 / 分隔（与 walk 收集的目录条目一致）
-        quine_dir = args.quine_dir.strip("/")
-        quine_name = quine_dir + "/" + quine_name
-
-    bq = BlogQuine(args.srcdir, quine_name=quine_name, seed_name=args.seed_name,
-                   src_dir=args.src_dir)
-    print("[blogquine] %d 个文件, %d 个目录, 内容 %d 字节"
-          % (len(bq.files), len(bq.dirs), len(bq.content)))
-    F, lay, seed, crcs = bq.build()
-    with open(args.output, "wb") as fp:
-        fp.write(F)
-    print("[blogquine] written %s: %d 字节 (d=%d, k=%d chunks, n=%d, h=%d, T=%d)"
-          % (args.output, len(F), lay["d"], lay["k"], lay["n"], lay["h"], lay["T"]))
-    print("[blogquine] CRC 定点: D(quine)=%08x N(hdr)=%08x S(sig)=%08x" % tuple(crcs))
-    ok = verify(F, lay, seed, bq.files)
-    sys.exit(0 if ok else 1)
+    parser = argparse.ArgumentParser(description="LZMA2 7z quine 生成器")
+    parser.add_argument("srcdir", help="要打包的源目录")
+    parser.add_argument("output", help="输出的 7z 文件")
+    parser.add_argument("--quine-name", help="归档内自身文件名，默认使用输出文件名")
+    parser.add_argument("--src-dir", default="", help="源文件在归档内的前缀目录")
+    parser.add_argument("--quine-dir", default="", help="归档内自身文件所在目录")
+    args = parser.parse_args()
+    try:
+        output = Path(args.output)
+        name = args.quine_name or output.name
+        if args.quine_dir:
+            name = archive_path(args.quine_dir.strip("/\\")) + "/" + name
+        quine = BlogQuine(args.srcdir, name, args.src_dir, exclude=output)
+        data = quine.build()  # 验证成功后才写出，失败时保留已有输出。
+        output.write_bytes(data)
+    except (OSError, ValueError, RuntimeError, lzma.LZMAError) as error:
+        parser.exit(1, "blogquine: %s\n" % error)
+    print("[blogquine] %d 个文件，%d 个目录，内容 %d 字节" %
+          (len(quine.files), sum(entry.is_dir for entry in quine.entries), len(quine.content)))
+    print("[blogquine] 已写入 %s：%d 字节；自解码通过" % (output, len(data)))
 
 
 if __name__ == "__main__":

@@ -1,6 +1,6 @@
 #!/bin/bash
 cd /home/mayx/
-rm -rf public_html
+rm -rf public_html blog/*
 git --work-tree=/home/mayx/blog --git-dir=/home/mayx/blog.git checkout -f
 cd blog
 mkdir Mabbs
