@@ -1,7 +1,21 @@
 {
     "name": "mayx-blog",
     "version": "1.0.0",
+    "description": "Mayx's Home Page",
+    "homepage": "https://mabbs.github.io",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Mabbs/mabbs.github.io.git"
+    },
+    "bugs": {
+        "url": "https://github.com/Mabbs/mabbs.github.io/issues"
+    },
+    "author": "Mayx",
     "scripts": {
         "build": "bash deploy.sh"
+    },
+    "publishConfig": {
+        "access": "public",
+        "provenance": true
     }
 }

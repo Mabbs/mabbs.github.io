@@ -58,6 +58,7 @@ repos:
 - https://sourceforge.net/projects/mayx/
 - https://dev.azure.com/unmayx/_git/Mayx
 - https://www.gitlink.org.cn/mayx/mayx.gitlink.net
+- https://www.npmjs.com/package/mayx-blog
 static:
 - https://mayx.nekoweb.org/
 - https://mayx.neocities.org/

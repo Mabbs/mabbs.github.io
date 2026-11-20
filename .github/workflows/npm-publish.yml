@@ -1,0 +1,58 @@
+name: Mirror to npm
+
+on:
+  push:
+    branches: [master]
+
+# 只读仓库，不再回写 commit 和 tag
+# id-token: write 用于 Trusted Publishing（OIDC）换取短期发布凭据
+permissions:
+  contents: read
+  id-token: write
+
+# 同一时刻只允许一个发布任务
+concurrency:
+  group: npm-mirror
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: 'https://registry.npmjs.org'
+
+      # Trusted Publishing 要求 npm 11.5.1 以上，Node 22 自带的是 10.x
+      # 锁 11.x 而不是 latest，避免 npm 12 的 staged publishing 行为干扰
+      - name: Upgrade npm
+        run: npm install -g npm@11
+
+      # 版本号直接用 commit hash，仓库里的 package.json 不动
+      # 前缀 g 是为了防止 hash 恰好全是数字时被 semver 当成数字标识符
+      - name: Set version from commit hash
+        run: |
+          VERSION="0.0.0-g${GITHUB_SHA:0:7}"
+          npm pkg set version="$VERSION"
+          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
+          echo "本次发布版本: $VERSION"
+
+      # 同一个 commit 重跑时跳过，避免 409 版本已存在
+      - name: Check if version already published
+        id: check
+        run: |
+          if npm view "mayx-blog@${VERSION}" version >/dev/null 2>&1; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+            echo "版本 ${VERSION} 已存在，跳过发布"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      # 带 - 的版本是 prerelease，必须显式 --tag latest，
+      # 否则 npm i mayx-blog 拿不到这个版本
+      - name: Publish to npm
+        if: steps.check.outputs.exists == 'false'
+        run: npm publish --tag latest
